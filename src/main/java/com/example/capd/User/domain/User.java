@@ -39,10 +39,16 @@ public class User {
 
     //참여할게요 매핑
     @OneToMany(mappedBy = "user")
-    private List<Participation> participation = new ArrayList<>();
+    private List<Participation> participations = new ArrayList<>();
 
     //리뷰 매핑
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Review> receivedReviews = new ArrayList<>();
+
+    //공모전 매핑
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private List<Contest> contests  = new ArrayList<>();
+
 }

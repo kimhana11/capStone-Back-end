@@ -21,10 +21,10 @@ public interface ProfileService {
     public ProfileResponseDto getMyProfile(String userId);
 
     //필요스택 필터링 일치 하는 프로필 리스트 (ai 적용x)
-    public List<ProfileResponseDto> stackProfileList(StackParam stackParam);
+    public List<ProfileResponseDto> stackRecommendUsers(StackParam stackParam);
 
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
-    public List<ProfileResponseDto> aiProfileList(String userId, Long contestId);
+    public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId);
 
     //수정
     public void editProfile(ProfileRequestDto profileRequestDto);
