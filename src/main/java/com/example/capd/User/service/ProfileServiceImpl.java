@@ -2,7 +2,6 @@ package com.example.capd.User.service;
 
 import com.example.capd.User.domain.Career;
 import com.example.capd.User.domain.Profile;
-import com.example.capd.User.domain.Review;
 import com.example.capd.User.domain.User;
 import com.example.capd.User.dto.CareerParam;
 import com.example.capd.User.dto.ProfileRequestDto;
@@ -15,9 +14,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,36 +58,41 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileResponseDto> stackProfileList(StackParam stackParam) {
+    public List<ProfileResponseDto> stackRecommendUsers(StackParam stackParam) {
         List<String> stackList = stackParam.getStackList();
+        Long contestId = stackParam.getContestId();
+        String userId = stackParam.getUserId();
 
-        List<Profile> matchingProfiles = profileRepository.findProfilesByStackList(stackList);
+        List<User> matchingUsers;
 
-        if (!matchingProfiles.isEmpty()) {
-            return matchingProfiles.stream()
-                    .map(this::mapToDTO)
-                    .collect(Collectors.toList());
-        }
+        matchingUsers = userRepository.findUsersByContestParticipation(contestId);
 
-        // If no exact matches, try to find profiles with a subset of the stackList
-        for (int i = stackList.size() - 1; i > 0; i--) {
-            List<String> subsetStackList = stackList.subList(0, i);
-            List<Profile> subsetProfiles = profileRepository.findProfilesByStackList(subsetStackList);
 
-            // If profiles are found with a subset, convert and return them
-            if (!subsetProfiles.isEmpty()) {
-                return subsetProfiles.stream()
-                        .map(this::mapToDTO)
-                        .collect(Collectors.toList());
-            }
-        }
+        //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬
+        List<ProfileResponseDto> resultProfiles = matchingUsers.stream()
+                .filter(user ->
+                        !user.getUserId().equals(userId) &&
+                                user.getProfile() != null &&
+                                user.getProfile().getStackList().stream().anyMatch(stackList::contains)
+                )
+                .sorted((user1, user2) ->
+                        (int) user2.getProfile().getStackList().stream().filter(stackList::contains).count() -
+                                (int) user1.getProfile().getStackList().stream().filter(stackList::contains).count())
+                .map(user -> {
+                    if (user.getProfile() != null) {
+                        return mapToDTO(user.getProfile());
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        return Collections.emptyList();
+
+        return resultProfiles;
     }
 
-
     @Override
-    public List<ProfileResponseDto> aiProfileList(String userId, Long contestId) {
+    public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId) {
        //ai 추천 리스트 줘야 구현 가능함
         return null;
     }
@@ -156,6 +158,7 @@ public class ProfileServiceImpl implements ProfileService {
     private ProfileResponseDto mapToDTO(Profile profile) {
         ProfileResponseDto dto = new ProfileResponseDto();
         dto.setId(profile.getId());
+        dto.setUserId(profile.getUser().getUserId());
         dto.setIntro(profile.getIntro());
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());

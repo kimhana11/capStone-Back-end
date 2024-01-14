@@ -1,5 +1,6 @@
 package com.example.capd.User.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,11 +28,14 @@ public class Participation {
     @JsonManagedReference
     private List<String> stackList;
 
+    //유저 매핑
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    //공모전 매핑
     @ManyToOne
     @JoinColumn(name = "contest_id")
     private Contest contest;
+
 }

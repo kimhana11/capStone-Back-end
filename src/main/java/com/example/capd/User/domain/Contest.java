@@ -22,7 +22,12 @@ public class Contest {
 
     private String title;
 
+    //참여할게요 매핑
     @OneToMany(mappedBy = "contest")
-    private List<Participation> participation = new ArrayList<>();
+    private List<Participation> participations = new ArrayList<>();
 
+    //유저 매핑
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
