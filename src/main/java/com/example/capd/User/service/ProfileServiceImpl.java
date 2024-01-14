@@ -87,7 +87,6 @@ public class ProfileServiceImpl implements ProfileService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-
         return resultProfiles;
     }
 
