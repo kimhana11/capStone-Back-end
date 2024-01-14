@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 public class ProfileResponseDto {
 
-    private Long id;
+    private Long id;//프로필 기본키
     private String intro; //한줄 소개
     private double rate;
     private List<String> stackList; //스택

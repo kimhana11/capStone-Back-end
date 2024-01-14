@@ -2,6 +2,7 @@ package com.example.capd.User.service;
 
 import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
+import com.example.capd.User.dto.StackParam;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,17 +17,19 @@ public interface ProfileService {
     //프로필 저장, 후기가 없을시 평점을 3.5로 설정
     public void saveProfile(ProfileRequestDto profileRequestDto);
 
-    //경력 저장
-    //public void saveCareer(CareerParam carerrParam);
-
     //단일 조회 (본인 프로필, 추천 프로필 자세히 볼때)
     public ProfileResponseDto getMyProfile(String userId);
 
+    //필요스택 필터링 일치 하는 프로필 리스트 (ai 적용x)
+    public List<ProfileResponseDto> stackProfileList(StackParam stackParam);
+
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
     public List<ProfileResponseDto> aiProfileList(String userId, Long contestId);
+
     //수정
     public void editProfile(ProfileRequestDto profileRequestDto);
     //삭제
     public void deleteProfile(String userId);
+
 
 }

@@ -1,6 +1,8 @@
 package com.example.capd.User.dto;
 
 import com.example.capd.User.domain.Review;
+import com.example.capd.User.domain.Team;
+import com.example.capd.User.domain.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,11 +16,17 @@ public class ReviewRequestDto {
 
     private String content;
     private double rate;
-    private Long reviewerId;
+    private String reviewerId; //리뷰 쓰는
+    private String reviewedUserId; //리뷰 받는
     private Long teamId;
 
-    public Review toEntity() {
-        return Review.builder().content(content).rate(rate).build();
+    public Review toEntity(User reviewerId,User reviewedUserId, Team team) {
+        return Review.builder()
+                .content(content)
+                .rate(rate)
+                .reviewer(reviewerId)
+                .reviewedUser(reviewedUserId)
+                .team(team).build();
     }
 
 }

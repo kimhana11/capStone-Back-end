@@ -15,10 +15,8 @@ public interface ReviewService {
     //리뷰 저장
     public void saveReview(ReviewRequestDto reviewRequestDto);
     //리뷰 리스트 조회
-    public List<Review> getAllReview(String userId);
+    public List<ReviewRequestDto> getAllReview(String userId);
     //리뷰 평점 계산
     public double rateAverage(String userId);
 
-    //리뷰삭제가 필요한가
-   // public void deleteReview(String userId);
 }

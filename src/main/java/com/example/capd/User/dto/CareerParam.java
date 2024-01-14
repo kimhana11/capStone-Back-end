@@ -1,6 +1,7 @@
 package com.example.capd.User.dto;
 
 import com.example.capd.User.domain.Career;
+import com.example.capd.User.domain.Profile;
 import lombok.*;
 
 @Getter
@@ -22,7 +23,7 @@ public class CareerParam {
         this.gitHub = gitHub;
     }
 
-    public Career toEntity(){
-        return Career.builder().title(title).stack(stack).period(period).gitHub(gitHub).build();
+    public Career toEntity(Profile profile){
+        return Career.builder().title(title).stack(stack).period(period).gitHub(gitHub).profile(profile).build();
     }
 }

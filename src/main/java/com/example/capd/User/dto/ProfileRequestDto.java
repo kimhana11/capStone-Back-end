@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileRequestDto {
 
-    private String userId;
+    private String userId; //유저 기본키값
     private String intro; //한줄 소개
     private List<String> stackList; //스택
     private List<CareerParam> careers;

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,11 +31,20 @@ public class Profile {
 
     //경력 매핑
     @JsonManagedReference
-    @OneToMany(mappedBy = "profile",  orphanRemoval = true)
-    private List<Career> Careers = new ArrayList<>();
+    @OneToMany(mappedBy = "profile", orphanRemoval = true)
+    private List<Career> careers  = new ArrayList<>();
 
     public void setRate(double rate){
         this.rate = rate;
     }
 
+    @Builder
+    public Profile(Long id, String intro, List<String> stackList, User user, List<Career> careers, double rate){
+        this.id=id;
+        this.intro=intro;
+        this.stackList=stackList;
+        this.user=user;
+        this.careers=careers;
+        this.rate=rate;
+    }
 }
