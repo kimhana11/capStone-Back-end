@@ -3,10 +3,7 @@ package com.example.capd.User.service;
 import com.example.capd.User.domain.Career;
 import com.example.capd.User.domain.Profile;
 import com.example.capd.User.domain.User;
-import com.example.capd.User.dto.CareerParam;
-import com.example.capd.User.dto.ProfileRequestDto;
-import com.example.capd.User.dto.ProfileResponseDto;
-import com.example.capd.User.dto.StackParam;
+import com.example.capd.User.dto.*;
 import com.example.capd.User.repository.CareerRepository;
 import com.example.capd.User.repository.ProfileRepository;
 import com.example.capd.User.repository.UserRepository;
@@ -67,7 +64,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         matchingUsers = userRepository.findUsersByContestParticipation(contestId);
 
-
         //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬
         List<ProfileResponseDto> resultProfiles = matchingUsers.stream()
                 .filter(user ->
@@ -92,7 +88,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId) {
-       //ai 추천 리스트 줘야 구현 가능함
+       //******ai 추천 유저 리스트 필요함*************8
         return null;
     }
 
@@ -164,6 +160,12 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
         return dto;
     }
+
+    public void saveParticipation(ParticipationParam participationParam){
+
+
+    }
+
 
     private CareerParam mapCareerToDto(Career career) {
         CareerParam careerParam = new CareerParam();

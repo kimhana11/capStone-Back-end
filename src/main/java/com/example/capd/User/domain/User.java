@@ -33,7 +33,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
 
-    //팀멤버 매핑
+//    //팀멤버 매핑
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers = new ArrayList<>();
 
@@ -47,8 +47,8 @@ public class User {
     private List<Review> receivedReviews = new ArrayList<>();
 
     //공모전 매핑
-    @JsonManagedReference
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private List<Contest> contests  = new ArrayList<>();
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "user", orphanRemoval = true)
+//    private List<Contest> contests  = new ArrayList<>();
 
 }

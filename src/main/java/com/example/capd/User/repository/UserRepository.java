@@ -20,4 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u JOIN Participation part ON u.id = part.user.id WHERE part.contest.id = :contestId")
     List<User> findUsersByContestParticipation(@Param("contestId") Long contestId);
 
+    List<User> findAllByUserIdIn(List<String> membersId);
 }
