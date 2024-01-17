@@ -1,5 +1,6 @@
 package com.example.capd.User.service;
 
+import com.example.capd.User.dto.ParticipationParam;
 import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
 import com.example.capd.User.dto.StackParam;
@@ -26,10 +27,12 @@ public interface ProfileService {
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
     public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId);
 
-    //수정
+    //프로필 수정
     public void editProfile(ProfileRequestDto profileRequestDto);
-    //삭제
+    //프로필 삭제(user 매핑 때문에, user 삭제되어야 프로필 삭제됨, user 탈퇴시 사용)
     public void deleteProfile(String userId);
 
+    //공모전 참여할게요 저장
+    public void saveParticipation(ParticipationParam participationParam);
 
 }

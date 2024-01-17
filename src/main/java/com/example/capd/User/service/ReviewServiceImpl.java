@@ -1,9 +1,6 @@
 package com.example.capd.User.service;
 
-import com.example.capd.User.domain.Review;
-import com.example.capd.User.domain.Team;
-import com.example.capd.User.domain.TeamMember;
-import com.example.capd.User.domain.User;
+import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.CareerParam;
 import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.repository.ReviewRepository;
@@ -81,6 +78,5 @@ public class ReviewServiceImpl implements ReviewService{
 
         return reviewRequestDto;
     }
-
 
 }

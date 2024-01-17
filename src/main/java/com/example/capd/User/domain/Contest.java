@@ -27,7 +27,13 @@ public class Contest {
     private List<Participation> participations = new ArrayList<>();
 
     //유저 매핑
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    private User user;
+
+    // 팀 매핑
+    @OneToMany(mappedBy = "contest")
+    private List<Team> teams = new ArrayList<>();
+
+
 }
