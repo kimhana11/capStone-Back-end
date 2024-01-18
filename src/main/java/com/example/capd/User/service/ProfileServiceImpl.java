@@ -1,12 +1,8 @@
 package com.example.capd.User.service;
 
-import com.example.capd.User.domain.Career;
-import com.example.capd.User.domain.Profile;
-import com.example.capd.User.domain.User;
+import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.*;
-import com.example.capd.User.repository.CareerRepository;
-import com.example.capd.User.repository.ProfileRepository;
-import com.example.capd.User.repository.UserRepository;
+import com.example.capd.User.repository.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +17,8 @@ public class ProfileServiceImpl implements ProfileService {
     private final CareerRepository careerRepository;
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
+    private final ParticipationRepository participationRepository;
+
 
     @Override
     public void saveProfile(ProfileRequestDto profileRequestDto) {
@@ -55,21 +53,23 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileResponseDto> stackRecommendUsers(StackParam stackParam) {
-        List<String> stackList = stackParam.getStackList();
-        Long contestId = stackParam.getContestId();
-        String userId = stackParam.getUserId();
+    public List<ProfileResponseDto> stackRecommendUsers(Long contestId, String userId) {
+
+        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
+        List<String> stackList = (participation != null) ? participation.getStackList() : Collections.emptyList();
 
         List<User> matchingUsers;
 
         matchingUsers = userRepository.findUsersByContestParticipation(contestId);
 
-        //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬
+        //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬,팀 있는 유저 제외
         List<ProfileResponseDto> resultProfiles = matchingUsers.stream()
                 .filter(user ->
                         !user.getUserId().equals(userId) &&
                                 user.getProfile() != null &&
-                                user.getProfile().getStackList().stream().anyMatch(stackList::contains)
+                                user.getProfile().getStackList().stream().anyMatch(stackList::contains) &&
+                                (user.getTeamMembers() == null || user.getTeamMembers().isEmpty()
+                                )
                 )
                 .sorted((user1, user2) ->
                         (int) user2.getProfile().getStackList().stream().filter(stackList::contains).count() -
@@ -88,7 +88,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId) {
-       //******ai 추천 유저 리스트 필요함*************8
+       //******ai 추천 유저 리스트 필요*************8
         return null;
     }
 
@@ -102,6 +102,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("프로필이 존재하지 않습니다: " + userId));
 
         User user = userRepository.findByUserId(profileRequestDto.getUserId()).get();
+
 
         Profile updatedProfile = Profile.builder()
                 .id(profile.getId())
@@ -159,11 +160,6 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setStackList(profile.getStackList());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
         return dto;
-    }
-
-    public void saveParticipation(ParticipationParam participationParam){
-
-
     }
 
 
