@@ -13,7 +13,6 @@ public class TeamParam {
     private Boolean status;
     private List<String> memberIds;
     private Long contestId;
-    private Long teamId; //응답용 teamId
-
+    private Long teamId;
 
 }

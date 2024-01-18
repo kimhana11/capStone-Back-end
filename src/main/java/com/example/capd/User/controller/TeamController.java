@@ -33,12 +33,17 @@ public class TeamController {
 
     @GetMapping("/team-get/{teamId}")
     public TeamParam getTeam(@PathVariable Long teamId){
-        return teamService.getMyTeam(teamId);
+        return teamService.getTeam(teamId);
     }
 
-    @GetMapping("/my-team/{userId}")
+    @GetMapping("/teams-user/{userId}")
     public List<TeamParam> getMyTeamList(@PathVariable String userId){
         return teamService.MyteamList(userId);
+    }
+
+    @GetMapping("/teams-contest/{contestId}")
+    public List<TeamParam> getContestTeamList(@PathVariable Long contestId){
+        return teamService.contestTeamList(contestId);
     }
 
     @DeleteMapping("/team-delete/{teamId}")

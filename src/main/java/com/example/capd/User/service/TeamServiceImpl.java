@@ -52,7 +52,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public TeamParam getMyTeam(Long teamId) {
+    public TeamParam getTeam(Long teamId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀 아이디 입니다: " + teamId));
 
@@ -69,8 +69,11 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
-    public List<TeamParam> contestTeamList(String contestId) {
-        return null;
+    public List<TeamParam> contestTeamList(Long contestId) {
+        List<Team> teams = teamRepository.findByContestId(contestId);
+        return teams.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -91,6 +94,8 @@ public class TeamServiceImpl implements TeamService{
                 .status(status)
                 .members(teamMembers)
                 .build();
+
+        team.updateTeam(updatedTeam.getStatus(), updatedTeam.getMembers());
 
         teamRepository.save(updatedTeam);
     }
