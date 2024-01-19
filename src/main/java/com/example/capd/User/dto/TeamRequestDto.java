@@ -17,11 +17,13 @@ public class TeamRequestDto {
     private Boolean status;
     private List<String> memberIds;
     private Long contestId;
+    private String leaderId;
 
 
     public Team toEntity(Contest contest){
         return Team.builder()
                 .status(status)
+                .leaderId(leaderId)
                 .contest(contest).build();
     }
 
