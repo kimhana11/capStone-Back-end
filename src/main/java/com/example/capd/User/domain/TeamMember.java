@@ -33,4 +33,10 @@ public class TeamMember {
     public static TeamMember fromUserAndTeam(User user, Team team) {
         return new TeamMember(user, team);
     }
+//    public static TeamMember fromUser(User user, Team team) {
+//        return TeamMember.builder()
+//                .user(user)
+//                .team(team)
+//                .build();
+//    }
 }

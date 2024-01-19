@@ -25,11 +25,19 @@ public class TeamController {
         return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
 
-    @PostMapping("/team-update")
-    public ResponseEntity<CommonResponse> updateTeam(@RequestBody TeamParam teamParam){
-        teamService.updateTeam(teamParam);
+    @PostMapping("/team-update/status")
+    public ResponseEntity<CommonResponse> updateTeamStatus(@RequestBody TeamParam teamParam){
+        teamService.updateTeamStatus(teamParam.getTeamId(),teamParam.getStatus());
         return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
+
+
+    @PostMapping("/team-update/members")
+    public ResponseEntity<CommonResponse> updateTeamMember(@RequestBody TeamParam teamParam){
+        teamService.addMembersToTeam(teamParam.getTeamId(),teamParam.getMemberIds());
+        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+    }
+
 
     @GetMapping("/team-get/{teamId}")
     public TeamParam getTeam(@PathVariable Long teamId){
