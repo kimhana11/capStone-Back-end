@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
@@ -76,11 +76,18 @@ public class TeamServiceImpl implements TeamService{
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
+
     @Override
-    public void updateTeamStatus(Long teamId, Boolean newStatus) {
+    public void updateTeamStatus(Long teamId, Boolean newStatus,String userId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀입니다.: " + teamId));
 
+        User modifyingUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저 아이디: " + userId));
+
+        if (!modifyingUser.getUserId().equals(team.getLeaderId())) {
+            throw new UnauthorizedAccessException("해당 유저는 팀 멤버 수정 권한이 없습니다.");
+        }
         if (team.getStatus() != null && team.getStatus()) {
             throw new IllegalStateException("현재 팀이 확정상태 입니다.");
         }
@@ -88,11 +95,18 @@ public class TeamServiceImpl implements TeamService{
         team.setStatus(newStatus);
         teamRepository.save(team);
     }
+
     @Override
-    public void addMembersToTeam(Long teamId, List<String> memberIds) {
+    public void addMembersToTeam(Long teamId, List<String> memberIds, String userId) {
         Team team = teamRepository.findById(teamId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀입니다.: " + teamId));
 
+        User modifyingUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저 아이디: " + userId));
+
+        if (!modifyingUser.getUserId().equals(team.getLeaderId())) {
+            throw new UnauthorizedAccessException("해당 유저는 팀 멤버 수정 권한이 없습니다.");
+        }
         if (team.getStatus() != null && team.getStatus()) {
             throw new IllegalStateException("팀이 확정되어 멤버 수정이 불가능 합니다.");
         }
@@ -136,5 +150,12 @@ public class TeamServiceImpl implements TeamService{
         teamParam.setMemberIds(stringMemberIds);
 
         return teamParam;
+    }
+
+}
+
+class UnauthorizedAccessException extends RuntimeException {
+    public UnauthorizedAccessException(String message) {
+        super(message);
     }
 }
