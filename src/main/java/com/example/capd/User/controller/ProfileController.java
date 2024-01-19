@@ -44,9 +44,9 @@ public class ProfileController {
         return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
     }
 
-    @PostMapping("users-stack")
-    public List<ProfileResponseDto> stackProfileList(@RequestBody StackParam stackParam){
-       return profileService.stackRecommendUsers(stackParam);
+    @GetMapping("profile-stack/{contestId}/{userId}")
+    public List<ProfileResponseDto> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
+       return profileService.stackRecommendUsers(contestId, userId);
     }
 
 

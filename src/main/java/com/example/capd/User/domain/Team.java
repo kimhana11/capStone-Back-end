@@ -1,5 +1,6 @@
 package com.example.capd.User.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,11 +21,19 @@ public class Team {
     private Boolean status;
 
     //팀멤버 매핑
-    @OneToMany
-    @JoinColumn(name = "team_id") // JoinColumn을 사용하여 외래키를 직접 지정
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> members = new ArrayList<>();
 
-    //리뷰랑 매핑
+//    //리뷰랑 매핑
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> teamReviews = new ArrayList<>();
+
+    //공모전 매핑
+    @ManyToOne
+    @JoinColumn(name = "contest_id")
+    private Contest contest;
+
+    public void setStatus(Boolean status){
+        this.status = status;
+    }
 }

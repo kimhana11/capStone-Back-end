@@ -3,7 +3,6 @@ package com.example.capd.User.dto;
 import com.example.capd.User.domain.Review;
 import com.example.capd.User.domain.Team;
 import com.example.capd.User.domain.User;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

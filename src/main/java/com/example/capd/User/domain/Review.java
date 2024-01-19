@@ -37,7 +37,7 @@ public class Review {
     @JoinColumn(name = "reviewer_id")
     private User reviewer;
 
-    //팀이랑 매핑
+//    //팀이랑 매핑
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
