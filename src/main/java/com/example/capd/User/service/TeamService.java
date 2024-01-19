@@ -28,7 +28,7 @@ public interface TeamService {
     public void deleteTeam(Long teamId);
 
     //팀 status 변경
-    public void updateTeamStatus(Long teamId, Boolean newStatus);
+    public void updateTeamStatus(Long teamId, Boolean newStatus, String userId);
     //팀원 수정
-    public void addMembersToTeam(Long teamId, List<String> memberIds);
+    public void addMembersToTeam(Long teamId, List<String> memberIds, String userId);
 }

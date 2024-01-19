@@ -14,5 +14,4 @@ public class TeamParam {
     private List<String> memberIds;
     private Long contestId;
     private Long teamId;
-
 }
