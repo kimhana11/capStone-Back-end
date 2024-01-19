@@ -33,12 +33,7 @@ public class Team {
     @JoinColumn(name = "contest_id")
     private Contest contest;
 
-    public void updateTeam(Boolean status, List<TeamMember> members){
-        if(status != null){
-            this.status = status;
-        }
-        if(members !=null){
-            this.members = members;
-        }
+    public void setStatus(Boolean status){
+        this.status = status;
     }
 }

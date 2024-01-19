@@ -22,8 +22,13 @@ public interface TeamService {
     public List<TeamParam> contestTeamList(Long contestId);
 
     //팀원 수정(팀 확정 / 팀원 수정)
-    public void updateTeam(TeamParam teamParam);
+   // public void updateTeam(TeamParam teamParam);
 
     //팀 해산
     public void deleteTeam(Long teamId);
+
+    //팀 status 변경
+    public void updateTeamStatus(Long teamId, Boolean newStatus);
+    //팀원 수정
+    public void addMembersToTeam(Long teamId, List<String> memberIds);
 }

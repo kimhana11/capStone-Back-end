@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -75,29 +76,48 @@ public class TeamServiceImpl implements TeamService{
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
-
     @Override
-    public void updateTeam(TeamParam teamParam) {
-        Long teamId = teamParam.getTeamId();
-        Boolean status = teamParam.getStatus();
-
+    public void updateTeamStatus(Long teamId, Boolean newStatus) {
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀 아이디 입니다: " + teamId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀입니다.: " + teamId));
 
-        // 팀 상태와 멤버 변경
-        List<TeamMember> teamMembers = userRepository.findAllByUserIdIn(teamParam.getMemberIds())
-                .stream()
-                .map(user -> TeamMember.fromUserAndTeam(user, team))
-                .collect(Collectors.toList());
+        if (team.getStatus() != null && team.getStatus()) {
+            throw new IllegalStateException("현재 팀이 확정상태 입니다.");
+        }
 
-        Team updatedTeam = Team.builder()
-                .status(status)
-                .members(teamMembers)
-                .build();
+        team.setStatus(newStatus);
+        teamRepository.save(team);
+    }
+    @Override
+    public void addMembersToTeam(Long teamId, List<String> memberIds) {
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 팀입니다.: " + teamId));
 
-        team.updateTeam(updatedTeam.getStatus(), updatedTeam.getMembers());
+        if (team.getStatus() != null && team.getStatus()) {
+            throw new IllegalStateException("팀이 확정되어 멤버 수정이 불가능 합니다.");
+        }
 
-        teamRepository.save(updatedTeam);
+        List<TeamMember> teamMembers = new ArrayList<>();
+
+        for (String memberId : memberIds) {
+            User user = userRepository.findByUserId(memberId)
+                    .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 유저 아이디: " + memberId));
+
+            // 이미 저장되어 있는 멤버인지 확인
+            boolean isMember = team.getMembers().stream()
+                    .anyMatch(member -> member.getUser().equals(user));
+
+            if (!isMember) {
+                TeamMember teamMember = TeamMember.builder()
+                        .user(user)
+                        .team(team)
+                        .build();
+                teamMembers.add(teamMember);
+            }
+        }
+
+        team.getMembers().addAll(teamMembers);
+        teamRepository.save(team);
     }
 
     @Override
