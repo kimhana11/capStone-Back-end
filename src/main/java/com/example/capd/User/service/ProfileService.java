@@ -1,9 +1,6 @@
 package com.example.capd.User.service;
 
-import com.example.capd.User.dto.ParticipationParam;
-import com.example.capd.User.dto.ProfileRequestDto;
-import com.example.capd.User.dto.ProfileResponseDto;
-import com.example.capd.User.dto.StackParam;
+import com.example.capd.User.dto.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +19,7 @@ public interface ProfileService {
     public ProfileResponseDto getMyProfile(String userId);
 
     //필요스택 필터링 일치 하는 프로필 리스트 (ai 적용x)
-    public List<ProfileResponseDto> stackRecommendUsers(Long contestId, String userId);
+    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId);
 
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
     public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId);

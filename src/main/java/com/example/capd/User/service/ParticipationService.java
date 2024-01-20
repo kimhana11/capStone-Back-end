@@ -1,5 +1,6 @@
 package com.example.capd.User.service;
 
+import com.example.capd.Exception.AlreadyAppliedException;
 import com.example.capd.User.domain.Contest;
 import com.example.capd.User.domain.Participation;
 import com.example.capd.User.domain.User;
@@ -29,7 +30,7 @@ public class ParticipationService {
         Participation participationExists = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
 
         if (participationExists !=null) {
-            throw new RuntimeException("이미 참여한 상태입니다. userId = " + userId + "  contestId " + contestId);
+            throw new AlreadyAppliedException();
         }
 
         User user = userRepository.findByUserId(userId)
