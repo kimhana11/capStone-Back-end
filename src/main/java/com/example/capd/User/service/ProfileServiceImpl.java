@@ -53,7 +53,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileResponseDto> stackRecommendUsers(Long contestId, String userId) {
+    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId) {
 
         Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
         List<String> stackList = (participation != null) ? participation.getStackList() : Collections.emptyList();
@@ -63,7 +63,7 @@ public class ProfileServiceImpl implements ProfileService {
         matchingUsers = userRepository.findUsersByContestParticipation(contestId);
 
         //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬,팀 있는 유저 제외
-        List<ProfileResponseDto> resultProfiles = matchingUsers.stream()
+        List<ProfileParticipationRes> resultProfiles = matchingUsers.stream()
                 .filter(user ->
                         !user.getUserId().equals(userId) &&
                                 user.getProfile() != null &&
@@ -76,7 +76,7 @@ public class ProfileServiceImpl implements ProfileService {
                                 (int) user1.getProfile().getStackList().stream().filter(stackList::contains).count())
                 .map(user -> {
                     if (user.getProfile() != null) {
-                        return mapToDTO(user.getProfile());
+                        return mapToProfileParticipation(user.getProfile(),participation);
                     }
                     return null;
                 })
@@ -172,5 +172,16 @@ public class ProfileServiceImpl implements ProfileService {
         careerParam.setGitHub(career.getGitHub());
         return careerParam;
     }
-
+    private ProfileParticipationRes mapToProfileParticipation(Profile profile, Participation participation){
+        ProfileParticipationRes dto = new ProfileParticipationRes();
+        dto.setId(profile.getUser().getId());
+        dto.setUserId(profile.getUser().getUserId());
+        dto.setIntro(profile.getIntro());
+        dto.setRate(profile.getRate());
+        dto.setStackList(profile.getStackList());
+        dto.setAdditional(participation.getAdditional());
+        dto.setTime(participation.getTime());
+        dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
+        return dto;
+    }
 }

@@ -1,12 +1,16 @@
 package com.example.capd.User.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
+import org.springframework.http.HttpStatus;
 
-@Data
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Getter
 public class CommonResponse<T> {
-        String message;
-        int code;
+    private int code;
+    private HttpStatus httpStatus;
+    private String message;
+    private Object data;
     }
 

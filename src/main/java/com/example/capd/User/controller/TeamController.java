@@ -8,6 +8,7 @@ import com.example.capd.User.dto.TeamRequestDto;
 import com.example.capd.User.service.TeamService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,20 +23,38 @@ public class TeamController {
     @PostMapping("/team-save")
     public ResponseEntity<CommonResponse> saveTeam(@RequestBody TeamRequestDto teamRequestDto){
         teamService.createTeam(teamRequestDto);
-        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "팀 저장 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
     @PostMapping("/team-update/status/{userId}")
     public ResponseEntity<CommonResponse> updateTeamStatus(@RequestBody TeamParam teamParam, @PathVariable String userId){
         teamService.updateTeamStatus(teamParam.getTeamId(),teamParam.getStatus(), userId);
-        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "팀 확정 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
 
     @PostMapping("/team-update/members/{userId}")
     public ResponseEntity<CommonResponse> updateTeamMember(@RequestBody TeamParam teamParam, @PathVariable String userId){
         teamService.addMembersToTeam(teamParam.getTeamId(),teamParam.getMemberIds(), userId);
-        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "팀원 수정 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
 
@@ -57,6 +76,12 @@ public class TeamController {
     @DeleteMapping("/team-delete/{teamId}")
     public ResponseEntity<CommonResponse> deleteTeam(@PathVariable Long teamId){
         teamService.deleteTeam(teamId);
-        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "팀 삭제 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 }
