@@ -1,6 +1,6 @@
 package com.example.capd.User.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +33,10 @@ public class Team {
     @ManyToOne
     @JoinColumn(name = "contest_id")
     private Contest contest;
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Room room;
 
     public void setStatus(Boolean status){
         this.status = status;
