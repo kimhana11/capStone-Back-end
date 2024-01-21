@@ -8,6 +8,7 @@ import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,13 @@ public class ReviewController {
     @PostMapping("/user-review")
     public ResponseEntity<CommonResponse> saveReview(@RequestBody ReviewRequestDto reviewRequestDto){
         reviewService.saveReview(reviewRequestDto);
-        return ResponseEntity.ok(new CommonResponse("SUCCESS",200));
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "후기 저장 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
     //후기 전체 조회

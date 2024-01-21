@@ -1,5 +1,6 @@
 package com.example.capd.User.service;
 
+import com.example.capd.Exception.TeamNotConfirmedException;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.CareerParam;
 import com.example.capd.User.dto.ReviewRequestDto;
@@ -37,7 +38,7 @@ public class ReviewServiceImpl implements ReviewService{
             Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
             reviewRepository.save(review);
         } else {
-            throw new IllegalStateException("팀 현황 상태를 확인해주세요");
+            throw new TeamNotConfirmedException();
         }
     }
 
@@ -55,7 +56,7 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public double rateAverage(String userId) {
         User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with userId: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("id가 존재하지 않습니다:: " + userId));
 
         List<Review> receivedReviews = user.getReceivedReviews();
         if (!receivedReviews.isEmpty()) {
