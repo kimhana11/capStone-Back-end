@@ -9,13 +9,12 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MyHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
-
+    private final Map<String, Set<WebSocketSession>> roomSubscribers = new HashMap<>();
     private final ChatService chatService;
 
     public MyHandler(ChatService chatService) {
@@ -32,11 +31,11 @@ public class MyHandler extends TextWebSocketHandler {
         session.sendMessage(new TextMessage(welcomeMessage));
 
         // 특정 사용자 그룹에 메시지를 보낼
-        // 사용자와 연결된 teamId가 있는 경우 동일한 teamId를 가진 사용자에게 메시지를 브로드캐스트
-        Long teamId = (Long) session.getAttributes().get("teamId");
-        if (teamId != null) {
+        // 사용자와 연결된 roomId 있는 경우 동일한 roomId를 가진 사용자에게 메시지를 브로드캐스트
+        Long roomId = (Long) session.getAttributes().get("teamId");
+        if (roomId != null) {
             String groupMessage = "새로운 유저가 팀에 합류했습니다.";
-            broadcastMessageToTeam(groupMessage, teamId);
+            broadcastMessageToRoom(groupMessage, roomId);
         }
 
         // 세션 저장
@@ -53,12 +52,24 @@ public class MyHandler extends TextWebSocketHandler {
         });
     }
 
+
+    private void subscribeToRoom(WebSocketSession session, Long roomId) {
+        roomSubscribers.computeIfAbsent(String.valueOf(roomId), k -> new HashSet<>()).add(session);
+    }
     //양방향 데이터 통신할 떄 해당 메서드가 call 된다.
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        chatService.processMessage(session, message, sessions);
+        String payload = message.getPayload();
+        if (payload.startsWith("/subscribe ")) {
+            // Extract room ID from the subscription message
+            Long roomId = Long.valueOf(payload.substring("/subscribe ".length()));
+            // Subscribe the session to the room
+            subscribeToRoom(session, roomId);
+        } else {
+            // Process other messages as usual
+            chatService.processMessage(session, message, sessions);
+        }
     }
-
     //웹소켓 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -82,20 +93,19 @@ public class MyHandler extends TextWebSocketHandler {
     //통신 에러 발생 시
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-
-
     }
 
-    private void broadcastMessageToTeam(String message, Long teamId) {
-        sessions.values().forEach(s -> {
-            Long userTeamId = (Long) s.getAttributes().get("teamId");
-            if (userTeamId != null && userTeamId.equals(teamId) && s.isOpen()) {
+    private void broadcastMessageToRoom(String message, Long roomId) {
+        roomSubscribers.getOrDefault(roomId, Collections.emptySet()).forEach(s -> {
+            if (s.isOpen()) {
                 try {
-                    s.sendMessage(new TextMessage(message + " (from teamId: " + teamId + ")"));
+                    s.sendMessage(new TextMessage(message));
                 } catch (IOException e) {
+                    // Handle exception as needed
                 }
             }
         });
+
     }
 
 }

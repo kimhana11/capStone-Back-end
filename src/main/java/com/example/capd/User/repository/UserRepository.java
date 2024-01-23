@@ -21,4 +21,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findUsersByContestParticipation(@Param("contestId") Long contestId);
 
     List<User> findAllByUserIdIn(List<String> membersId);
+
 }

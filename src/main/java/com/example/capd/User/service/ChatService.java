@@ -17,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +25,11 @@ public class ChatService {
 
     private final RoomRepository roomRepository;
     private final MessageRepository messageRepository;
-    private final UserRepository userRepository;
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
 
 
     public Long createRoom(ChatRoomDto chatRoomDto) {
-        User leader = userRepository.findByUserId(chatRoomDto.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
-
         Team team = teamRepository.findById(chatRoomDto.getTeamId())
                 .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다."));
 
@@ -40,6 +38,29 @@ public class ChatService {
 
         return room.getId();
     }
+
+
+    //팀 id로 채팅방 id 조회
+    public Long getRoomId(Long teamId){
+        Room room =roomRepository.findByTeamId(teamId);
+        return room.getId();
+    }
+
+
+    //유저가 속한 채팅방 전체 조회
+//    public List<Room> getRoomList(String userId){
+//        User user = userRepository.findByUserId(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+//
+//        List<Team> teams = teamRepository.findByMembersUserId(user.getId());
+//        List<Long> teamIds = teams.stream()
+//                .map(Team::getId)
+//                .collect(Collectors.toList());
+//
+//        return roomRepository.findByTeamIdIn(teamIds);
+//    }
+
+    //채팅방 비번 확인
 
     public void processMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) throws IOException {
         String sessionId = session.getId();
@@ -62,14 +83,5 @@ public class ChatService {
             });
         }
     }
-    //두 세션이 동일한 룸에 있는지 확인
-    private boolean isSameRoom(String sessionId1, WebSocketSession session2, Long roomId) {
-        return sessionId1.equals(session2.getId()) || roomId.equals(getRoomId(session2));
-    }
 
-    //세션과 연결된 룸 ID
-    private Long getRoomId(WebSocketSession session) {
-        Object roomIdAttribute = session.getAttributes().get("roomId");
-        return roomIdAttribute instanceof Long ? (Long) roomIdAttribute : null;
-    }
 }
