@@ -19,9 +19,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
         this.chatService = chatService;
     }
 
+    //엔드포인트
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(myHandler(), "/myHandler").setAllowedOriginPatterns("*");
+        registry.addHandler(myHandler(), "/ws").setAllowedOriginPatterns("*");
     }
 
     @Bean
