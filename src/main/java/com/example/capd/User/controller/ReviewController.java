@@ -27,7 +27,7 @@ public class ReviewController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "후기 저장 성공",
+                "저장 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());

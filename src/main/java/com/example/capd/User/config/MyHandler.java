@@ -1,7 +1,7 @@
 package com.example.capd.User.config;
 
-
 import com.example.capd.User.service.ChatService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
@@ -10,6 +10,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.*;
+
 
 public class MyHandler extends TextWebSocketHandler {
 
@@ -51,22 +52,29 @@ public class MyHandler extends TextWebSocketHandler {
             }
         });
     }
-
-
+    //채팅방 구독
     private void subscribeToRoom(WebSocketSession session, Long roomId) {
         roomSubscribers.computeIfAbsent(String.valueOf(roomId), k -> new HashSet<>()).add(session);
     }
     //양방향 데이터 통신할 떄 해당 메서드가 call 된다.
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        if (payload.startsWith("/subscribe ")) {
-            // Extract room ID from the subscription message
-            Long roomId = Long.valueOf(payload.substring("/subscribe ".length()));
-            // Subscribe the session to the room
+
+        //구독 메시지 확인
+        if (payload.startsWith("/sub/chat/")) {
+            // 구독 메시지에서 roomId 추출
+            Long roomId = Long.valueOf(payload.substring("/sub/chat/".length()));
+            // 세션을 해당 방에 구독
             subscribeToRoom(session, roomId);
-        } else {
-            // Process other messages as usual
+        }
+        // 발행 메시지 확인
+        else if (payload.startsWith("/pub/chat/")) {
+            // 발행 메시지 처리
+            handlePublicationMessage(session, message, sessions);
+        }
+        // 기타 메시지는 기존 방식으로 처리
+        else {
             chatService.processMessage(session, message, sessions);
         }
     }
@@ -106,6 +114,16 @@ public class MyHandler extends TextWebSocketHandler {
             }
         });
 
+    }
+    //발행 메시지를 처리하는 메서드
+    public void handlePublicationMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) {
+        String payload = message.getPayload();
+        //발행 메시지에서 roomId 추출
+        Long roomId = Long.valueOf(payload.substring("/pub/chat/".length()));
+
+        // 메시지를 구독자에게 브로드 캐스트
+        String publicationMessage = "채팅방에 메시지를 전송했습니다. " + roomId;
+        broadcastMessageToRoom(publicationMessage, roomId);
     }
 
 }
