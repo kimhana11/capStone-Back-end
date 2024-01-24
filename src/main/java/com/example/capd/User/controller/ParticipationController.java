@@ -22,7 +22,7 @@ public class ParticipationController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "참여 신청 성공",
+                "참여 신청",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -35,7 +35,7 @@ public class ParticipationController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "참여 취소 성공",
+                "참여 취소",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());

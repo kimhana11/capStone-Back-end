@@ -1,8 +1,10 @@
 package com.example.capd.User.service;
 
 import com.example.capd.User.domain.*;
-import com.example.capd.User.dto.ChatRoomDto;
+import com.example.capd.User.dto.ChatRoomRequsetDto;
+import com.example.capd.User.dto.ChatRoomResponseDto;
 import com.example.capd.User.dto.MessageDto;
+import com.example.capd.User.dto.RoomPwDto;
 import com.example.capd.User.repository.MessageRepository;
 import com.example.capd.User.repository.RoomRepository;
 import com.example.capd.User.repository.TeamRepository;
@@ -29,7 +31,7 @@ public class ChatService {
     private final UserRepository userRepository;
 
 
-    public Long createRoom(ChatRoomDto chatRoomDto) {
+    public Long createRoom(ChatRoomRequsetDto chatRoomDto) {
         Team team = teamRepository.findById(chatRoomDto.getTeamId())
                 .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다."));
 
@@ -48,19 +50,43 @@ public class ChatService {
 
 
     //유저가 속한 채팅방 전체 조회
-//    public List<Room> getRoomList(String userId){
-//        User user = userRepository.findByUserId(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
-//
-//        List<Team> teams = teamRepository.findByMembersUserId(user.getId());
-//        List<Long> teamIds = teams.stream()
-//                .map(Team::getId)
-//                .collect(Collectors.toList());
-//
-//        return roomRepository.findByTeamIdIn(teamIds);
-//    }
+    public List<ChatRoomResponseDto> getRoomList(String userId){
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
+        List<Team> teams = teamRepository.findByMembersUserId(user.getId());
+
+        List<Long> teamIds = teams.stream()
+                .map(Team::getId)
+                .collect(Collectors.toList());
+
+        List<Room> rooms = roomRepository.findByTeamIdIn(teamIds);
+
+        // Convert Room entities to ChatRoomDto
+        List<ChatRoomResponseDto> chatRoomDtos = rooms.stream()
+                .map(room -> {
+                    return ChatRoomResponseDto.builder()
+                            .roomId(room.getId())
+                            .password(room.getPassword())
+                            .userId(userId)
+                            .name(room.getName())
+                            .teamId(room.getTeam().getId())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        return chatRoomDtos;
+    }
     //채팅방 비번 확인
+    public Boolean checkRoomPw(RoomPwDto roomPwDto){
+        Room room = roomRepository.findById(roomPwDto.getRoomId())
+                .orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));
+        if(room.getPassword().equals(roomPwDto.getPassword())){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public void processMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) throws IOException {
         String sessionId = session.getId();
@@ -83,5 +109,6 @@ public class ChatService {
             });
         }
     }
+
 
 }

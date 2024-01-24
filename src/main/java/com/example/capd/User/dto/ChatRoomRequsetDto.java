@@ -1,23 +1,22 @@
 package com.example.capd.User.dto;
 
-import com.example.capd.User.domain.Review;
 import com.example.capd.User.domain.Room;
 import com.example.capd.User.domain.Team;
-import com.example.capd.User.domain.User;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter
 @Setter
 @Builder
-public class ChatRoomDto {
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@AllArgsConstructor
+public class ChatRoomRequsetDto {
     private Long teamId;
     private String userId;
     private String name;
     private String password;
+    private Long roomId;
 
     public Room toEntity(Team team) {
         return Room.builder()

@@ -1,5 +1,6 @@
 package com.example.capd.User.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class Room {
 
     @OneToOne
     @JoinColumn(name = "team_id")
+    @JsonManagedReference
     private Team team;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
