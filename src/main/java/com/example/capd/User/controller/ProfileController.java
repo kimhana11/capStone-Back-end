@@ -26,7 +26,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 저장 성공",
+                "저장 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -45,7 +45,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 수정 성공",
+                "수정 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -58,7 +58,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 삭제 성공",
+                "삭제 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());

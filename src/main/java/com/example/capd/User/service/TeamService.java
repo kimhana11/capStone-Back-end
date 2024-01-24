@@ -21,9 +21,6 @@ public interface TeamService {
     //팀 전체 조회 (공모전 참가 팀 리스트)
     public List<TeamParam> contestTeamList(Long contestId);
 
-    //팀원 수정(팀 확정 / 팀원 수정)
-   // public void updateTeam(TeamParam teamParam);
-
     //팀 해산
     public void deleteTeam(Long teamId);
 

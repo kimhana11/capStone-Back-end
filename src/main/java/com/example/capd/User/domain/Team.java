@@ -1,6 +1,7 @@
 package com.example.capd.User.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class Team {
 
     //팀멤버 매핑
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<TeamMember> members = new ArrayList<>();
 
 //    //리뷰랑 매핑
@@ -33,6 +35,10 @@ public class Team {
     @ManyToOne
     @JoinColumn(name = "contest_id")
     private Contest contest;
+
+    @JsonManagedReference
+    @OneToOne(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Room room;
 
     public void setStatus(Boolean status){
         this.status = status;

@@ -26,7 +26,7 @@ public class TeamController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "팀 저장 성공",
+                "저장 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -38,7 +38,7 @@ public class TeamController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "팀 확정 성공",
+                "수정 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -51,7 +51,7 @@ public class TeamController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "팀원 수정 성공",
+                "수정 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -79,7 +79,7 @@ public class TeamController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "팀 삭제 성공",
+                "삭제 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
