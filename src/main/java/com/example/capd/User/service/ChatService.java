@@ -17,6 +17,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +42,15 @@ public class ChatService {
         return room.getId();
     }
 
+    public void deleteRoom(Long roomId){
+        Room room =roomRepository.findById(roomId)
+                .orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));
+
+        //메시지 -> 채팅방 -> 팀 순 삭제
+        messageRepository.deleteAll(room.getMessages());
+        roomRepository.deleteById(roomId);
+        teamRepository.deleteById(room.getTeam().getId());
+    }
 
     //팀 id로 채팅방 id 조회
     public Long getRoomId(Long teamId){
@@ -77,6 +87,7 @@ public class ChatService {
 
         return chatRoomDtos;
     }
+
     //채팅방 비번 확인
     public Boolean checkRoomPw(RoomPwDto roomPwDto){
         Room room = roomRepository.findById(roomPwDto.getRoomId())
@@ -86,6 +97,21 @@ public class ChatService {
         }else{
             return false;
         }
+    }
+
+    //이전 채팅 불러오기
+    public List<MessageDto> getMessages(Long roomId){
+         List<Message> messages = messageRepository.findByRoomIdOrderByTimeStamp(roomId);
+        List<MessageDto> messageDtoList = messages.stream()
+                .map(message -> {
+                    return MessageDto.builder()
+                            .roomId(message.getId())
+                            .senderId(message.getSenderId())
+                            .message(message.getMessage())
+                            .build();
+                })
+                .collect(Collectors.toList());
+        return messageDtoList;
     }
 
     public void processMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) throws IOException {

@@ -1,16 +1,15 @@
 package com.example.capd.User.config;
 
+import com.example.capd.User.dto.MessageDto;
 import com.example.capd.User.service.ChatService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
 import java.io.IOException;
 import java.util.*;
-
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class MyHandler extends TextWebSocketHandler {
 
@@ -33,8 +32,9 @@ public class MyHandler extends TextWebSocketHandler {
 
         // 특정 사용자 그룹에 메시지를 보낼
         // 사용자와 연결된 roomId 있는 경우 동일한 roomId를 가진 사용자에게 메시지를 브로드캐스트
-        Long roomId = (Long) session.getAttributes().get("teamId");
+        Long roomId = (Long) session.getAttributes().get("roomId");
         if (roomId != null) {
+          //  sendChatHistoryToUser(session, roomId);
             String groupMessage = "새로운 유저가 팀에 합류했습니다.";
             broadcastMessageToRoom(groupMessage, roomId);
         }
@@ -67,6 +67,7 @@ public class MyHandler extends TextWebSocketHandler {
             Long roomId = Long.valueOf(payload.substring("/sub/chat/".length()));
             // 세션을 해당 방에 구독
             subscribeToRoom(session, roomId);
+            sendChatHistoryToUser(session, roomId);
         }
         // 발행 메시지 확인
         else if (payload.startsWith("/pub/chat/")) {
@@ -126,4 +127,29 @@ public class MyHandler extends TextWebSocketHandler {
         broadcastMessageToRoom(publicationMessage, roomId);
     }
 
+    //이전 채팅 내용을 조회
+    private void sendChatHistoryToUser(WebSocketSession session, Long roomId) {
+        List<MessageDto> chatHistory = chatService.getMessages(roomId);
+
+        JSONArray chatHistoryArray = new JSONArray();
+        for (MessageDto message : chatHistory) {
+            JSONObject messageObject = new JSONObject();
+            messageObject.put("senderId", message.getSenderId());
+            messageObject.put("message", message.getMessage());
+            chatHistoryArray.add(messageObject);
+        }
+
+        JSONObject historyObject = new JSONObject();
+        historyObject.put("type", "chatHistory");
+        historyObject.put("content", chatHistoryArray);
+
+        System.out.println("Chat History Content: " + historyObject.toJSONString());
+
+        try {
+            // Send the formatted chat history to the user
+            session.sendMessage(new TextMessage(historyObject.toJSONString()));
+        } catch (IOException e) {
+            // Handle exception as needed
+        }
+    }
 }
