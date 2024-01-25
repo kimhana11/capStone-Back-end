@@ -67,4 +67,16 @@ public class RoomController {
         }
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
+    //방삭제
+    @DeleteMapping("delete-room/{roomId}")
+    public ResponseEntity<CommonResponse> deleteRoom(@PathVariable Long roomId){
+        chatService.deleteRoom(roomId);
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "삭제 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
+    }
 }
