@@ -11,7 +11,7 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
-public class ChatRoomRequsetDto {
+public class ChatRoomRequestDto {
     private Long teamId;
     private String userId;
     private String name;

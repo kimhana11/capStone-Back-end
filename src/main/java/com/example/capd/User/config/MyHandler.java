@@ -1,12 +1,17 @@
 package com.example.capd.User.config;
 
+import com.example.capd.User.dto.CheeringMessageDto;
 import com.example.capd.User.dto.MessageDto;
 import com.example.capd.User.service.ChatService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,6 +20,10 @@ public class MyHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSubscribers = new HashMap<>();
+    private final int MAX_MESSAGES = 20;
+    private final Deque<CheeringMessageDto> cheeringMessagesQueue = new ArrayDeque<>(); //응원글 저장할
+    private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
+
     private final ChatService chatService;
 
     public MyHandler(ChatService chatService) {
@@ -26,15 +35,21 @@ public class MyHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         final String sessionId = session.getId();
 
-        // 연결된 사용자에게 시작 메시지 보내기
-        String welcomeMessage = "연결이 성공적으로 되었습니다.";
-        session.sendMessage(new TextMessage(welcomeMessage));
+        Map<String, String> response = new HashMap<>();
+        response.put("type", "welcome");
+        response.put("message", "연결이 성공적으로 되었습니다.");
+
+        // Convert the response to JSON
+        String jsonResponse = new ObjectMapper().writeValueAsString(response);
+
+        // Send the JSON response
+        session.sendMessage(new TextMessage(jsonResponse));
 
         // 특정 사용자 그룹에 메시지를 보낼
         // 사용자와 연결된 roomId 있는 경우 동일한 roomId를 가진 사용자에게 메시지를 브로드캐스트
         Long roomId = (Long) session.getAttributes().get("roomId");
         if (roomId != null) {
-          //  sendChatHistoryToUser(session, roomId);
+            //  sendChatHistoryToUser(session, roomId);
             String groupMessage = "새로운 유저가 팀에 합류했습니다.";
             broadcastMessageToRoom(groupMessage, roomId);
         }
@@ -46,16 +61,19 @@ public class MyHandler extends TextWebSocketHandler {
         sessions.values().forEach((s) -> {
             try {
                 if (!s.getId().equals(sessionId) && s.isOpen()) {
-                    s.sendMessage(new TextMessage(welcomeMessage));
+                    s.sendMessage(new TextMessage(jsonResponse));
                 }
             } catch (IOException e) {
+                logger.error("Exception during connection establishment: {}", e.getMessage());
             }
         });
     }
+
     //채팅방 구독
     private void subscribeToRoom(WebSocketSession session, Long roomId) {
         roomSubscribers.computeIfAbsent(String.valueOf(roomId), k -> new HashSet<>()).add(session);
     }
+
     //양방향 데이터 통신할 떄 해당 메서드가 call 된다.
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
@@ -74,11 +92,26 @@ public class MyHandler extends TextWebSocketHandler {
             // 발행 메시지 처리
             handlePublicationMessage(session, message, sessions);
         }
-        // 기타 메시지는 기존 방식으로 처리
+        //실시간 응원글
+        else if (payload.startsWith("/cheer")) {
+            try {
+                CheeringMessageDto cheeringMessage = objectMapper.readValue(payload, CheeringMessageDto.class);
+                handleCheeringMessage(session, cheeringMessage);
+            } catch (IOException e) {
+                // Log the received payload for debugging
+                logger.error("Received payload for /cheer: {}", payload);
+
+                // Handle JSON parsing exception
+                logger.error("Error parsing cheering message JSON: {}", e.getMessage());
+            }
+        }
+
+    // 기타 메시지는 기존 방식으로 처리
         else {
             chatService.processMessage(session, message, sessions);
         }
-    }
+
+}
     //웹소켓 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -151,5 +184,42 @@ public class MyHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             // Handle exception as needed
         }
+    }
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    //중복검사용
+    private final Set<String> processedCheeringMessages = new HashSet<>();
+
+    //실시간 응원글 구현
+    public void handleCheeringMessage(WebSocketSession session, CheeringMessageDto cheeringMessageDto) {
+        // 응원글 메시지의 고유 식별자 생성
+        String messageId = cheeringMessageDto.getSenderId() + cheeringMessageDto.getMessage();
+
+        if (!processedCheeringMessages.contains(cheeringMessageDto)) {
+            // 응원글을 큐에 저장
+            saveCheeringMessage(cheeringMessageDto);
+
+            // 소켓에 연결된 모든 사용자에게 메시지 브로드캐스팅
+            sessions.values().forEach(s -> {
+                try {
+                    if (s.isOpen()) {
+                        // 메시지를 전송할 때 형식을 JSON으로 변환하여 전송
+                        s.sendMessage(new TextMessage(objectMapper.writeValueAsString(cheeringMessageDto)));
+                    }
+                } catch (IOException e) {
+                    // Handle exception as needed
+                }
+            });
+
+            // Add the message to processedCheeringMessages set to avoid duplicates
+            processedCheeringMessages.add(String.valueOf(cheeringMessageDto));
+        }
+    }
+
+    private synchronized void saveCheeringMessage(CheeringMessageDto cheeringMessageDto) {
+        if (cheeringMessagesQueue.size() >= MAX_MESSAGES) {
+            cheeringMessagesQueue.poll();
+        }
+        cheeringMessagesQueue.offer(cheeringMessageDto);
     }
 }

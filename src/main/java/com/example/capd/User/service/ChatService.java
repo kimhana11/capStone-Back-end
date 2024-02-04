@@ -1,14 +1,11 @@
 package com.example.capd.User.service;
 
 import com.example.capd.User.domain.*;
-import com.example.capd.User.dto.ChatRoomRequsetDto;
+import com.example.capd.User.dto.ChatRoomRequestDto;;
 import com.example.capd.User.dto.ChatRoomResponseDto;
 import com.example.capd.User.dto.MessageDto;
 import com.example.capd.User.dto.RoomPwDto;
-import com.example.capd.User.repository.MessageRepository;
-import com.example.capd.User.repository.RoomRepository;
-import com.example.capd.User.repository.TeamRepository;
-import com.example.capd.User.repository.UserRepository;
+import com.example.capd.User.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +14,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,10 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
+    private final ContestRepository contestRepository;
 
 
-    public Long createRoom(ChatRoomRequsetDto chatRoomDto) {
+    public Long createRoom(ChatRoomRequestDto chatRoomDto) {
         Team team = teamRepository.findById(chatRoomDto.getTeamId())
                 .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다."));
 
@@ -55,9 +55,28 @@ public class ChatService {
     //팀 id로 채팅방 id 조회
     public Long getRoomId(Long teamId){
         Room room =roomRepository.findByTeamId(teamId);
+        Contest contest = contestRepository.findByTeams_Id(teamId);
+
+        if (isReceptionPeriodEnded(contest.getReceptionPeriod())) {
+            messageRepository.deleteAll(room.getMessages());
+            //채팅방 삭제
+            roomRepository.delete(room);
+            teamRepository.deleteById(room.getTeam().getId());
+            return null;
+        }
         return room.getId();
     }
 
+    private boolean isReceptionPeriodEnded(String receptionPeriod) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd'T'HH:mm:ss");
+        String[] period = receptionPeriod.split("~");
+
+        LocalDateTime startDate = LocalDateTime.parse(period[0] + "T00:00:00", formatter);
+        LocalDateTime endDate = LocalDateTime.parse(period[1] + "T23:59:59", formatter);
+        LocalDateTime currentTime = LocalDateTime.now();
+
+        return currentTime.isEqual(endDate) || currentTime.isAfter(endDate);
+    }
 
     //유저가 속한 채팅방 전체 조회
     public List<ChatRoomResponseDto> getRoomList(String userId){
@@ -72,7 +91,7 @@ public class ChatService {
 
         List<Room> rooms = roomRepository.findByTeamIdIn(teamIds);
 
-        // Convert Room entities to ChatRoomDto
+        //ChatRoomDto 형태로 엔티티를 변환
         List<ChatRoomResponseDto> chatRoomDtos = rooms.stream()
                 .map(room -> {
                     return ChatRoomResponseDto.builder()
