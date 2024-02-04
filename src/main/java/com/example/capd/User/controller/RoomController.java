@@ -1,8 +1,7 @@
 package com.example.capd.User.controller;
 
 import com.example.capd.User.config.CommonResponse;
-import com.example.capd.User.domain.Room;
-import com.example.capd.User.dto.ChatRoomRequsetDto;
+import com.example.capd.User.dto.ChatRoomRequestDto;
 import com.example.capd.User.dto.ChatRoomResponseDto;
 import com.example.capd.User.dto.RoomPwDto;
 import com.example.capd.User.service.ChatService;
@@ -23,7 +22,7 @@ public class RoomController {
 
     //방 저장
     @PostMapping("/chat-room")
-    public ResponseEntity<CommonResponse> saveChatRoom(@RequestBody ChatRoomRequsetDto chatRoomDto) {
+    public ResponseEntity<CommonResponse> saveChatRoom(@RequestBody ChatRoomRequestDto chatRoomDto) {
         chatService.createRoom(chatRoomDto);
         CommonResponse res = new CommonResponse(
                 200,
@@ -36,9 +35,27 @@ public class RoomController {
 
 
     @GetMapping("/chat-room/{teamId}")
-    public Long RoomId(@PathVariable Long teamId) {
-       return chatService.getRoomId(teamId);
-    }
+    public ResponseEntity<CommonResponse> RoomId(@PathVariable Long teamId) {
+        CommonResponse res;
+        Long roomId =  chatService.getRoomId(teamId);
+        if(roomId!=null){
+            res = new CommonResponse(
+                    200,
+                    HttpStatus.OK,
+                    "조회 성공",
+                    roomId
+            );
+        }else {
+            res = new CommonResponse(
+                    400,
+                    HttpStatus.NOT_FOUND,
+                    "공모 기간이 끝나 삭제된 채팅방입니다.",
+                    null
+            );
+        }
+        return new ResponseEntity<>(res, res.getHttpStatus());
+        }
+
 
     @GetMapping("/room-list/{userId}")
     public List<ChatRoomResponseDto> RoomList(@PathVariable String userId) {
