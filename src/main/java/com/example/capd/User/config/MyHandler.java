@@ -13,6 +13,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -20,7 +21,6 @@ public class MyHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSubscribers = new HashMap<>();
-    private final int MAX_MESSAGES = 20;
     private final Deque<CheeringMessageDto> cheeringMessagesQueue = new ArrayDeque<>(); //응원글 저장할
     private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
 
@@ -93,19 +93,9 @@ public class MyHandler extends TextWebSocketHandler {
             handlePublicationMessage(session, message, sessions);
         }
         //실시간 응원글
-        else if (payload.startsWith("/cheer")) {
-            try {
-                CheeringMessageDto cheeringMessage = objectMapper.readValue(payload, CheeringMessageDto.class);
-                handleCheeringMessage(session, cheeringMessage);
-            } catch (IOException e) {
-                // Log the received payload for debugging
-                logger.error("Received payload for /cheer: {}", payload);
-
-                // Handle JSON parsing exception
-                logger.error("Error parsing cheering message JSON: {}", e.getMessage());
-            }
+        else if (payload.equals("/cheer")) {
+            sendCheeringMessagesToAll();
         }
-
     // 기타 메시지는 기존 방식으로 처리
         else {
             chatService.processMessage(session, message, sessions);
@@ -186,40 +176,30 @@ public class MyHandler extends TextWebSocketHandler {
         }
     }
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    //중복검사용
-    private final Set<String> processedCheeringMessages = new HashSet<>();
 
-    //실시간 응원글 구현
-    public void handleCheeringMessage(WebSocketSession session, CheeringMessageDto cheeringMessageDto) {
-        // 응원글 메시지의 고유 식별자 생성
-        String messageId = cheeringMessageDto.getSenderId() + cheeringMessageDto.getMessage();
-
-        if (!processedCheeringMessages.contains(cheeringMessageDto)) {
-            // 응원글을 큐에 저장
-            saveCheeringMessage(cheeringMessageDto);
-
-            // 소켓에 연결된 모든 사용자에게 메시지 브로드캐스팅
-            sessions.values().forEach(s -> {
+    // 모든 클라이언트에게 응원 메시지 전송 메서드
+    private void sendCheeringMessagesToAll() {
+        String jsonMessages = convertCheeringMessagesToJson();
+        sessions.values().forEach((session) -> {
+            if (session.isOpen()) {
                 try {
-                    if (s.isOpen()) {
-                        // 메시지를 전송할 때 형식을 JSON으로 변환하여 전송
-                        s.sendMessage(new TextMessage(objectMapper.writeValueAsString(cheeringMessageDto)));
-                    }
+                    session.sendMessage(new TextMessage(jsonMessages));
                 } catch (IOException e) {
-                    // Handle exception as needed
+                    logger.error("Error sending cheering messages to all: {}", e.getMessage());
                 }
-            });
-
-            // Add the message to processedCheeringMessages set to avoid duplicates
-            processedCheeringMessages.add(String.valueOf(cheeringMessageDto));
-        }
+            }
+        });
     }
 
-    private synchronized void saveCheeringMessage(CheeringMessageDto cheeringMessageDto) {
-        if (cheeringMessagesQueue.size() >= MAX_MESSAGES) {
-            cheeringMessagesQueue.poll();
-        }
-        cheeringMessagesQueue.offer(cheeringMessageDto);
+    private List<CheeringMessageDto> cheeringMessages = new ArrayList<>();
+
+    // 응원 메시지를 JSON 형식으로 변환하는 메서드
+    private String convertCheeringMessagesToJson() {
+        cheeringMessages = chatService.getCheeringMessage();
+        // List를 JSON 형식의 문자열로 변환하여 반환
+        String jsonMessages = cheeringMessages.stream()
+                .map(message -> "{ \"senderId\": \"" + message.getSenderId() + "\", \"message\": \"" + message.getMessage() + "\" }")
+                .collect(Collectors.joining(",", "[", "]"));
+        return jsonMessages;
     }
 }
