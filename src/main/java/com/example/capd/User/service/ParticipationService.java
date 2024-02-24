@@ -1,19 +1,16 @@
 package com.example.capd.User.service;
 
 import com.example.capd.Exception.AlreadyAppliedException;
-import com.example.capd.User.domain.Contest;
 import com.example.capd.User.domain.Participation;
 import com.example.capd.User.domain.User;
 import com.example.capd.User.dto.ParticipationParam;
-import com.example.capd.User.repository.ContestRepository;
+import com.example.capd.contest.repository.ContestRepository;
 import com.example.capd.User.repository.ParticipationRepository;
 import com.example.capd.User.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-
+import com.example.capd.contest.domain.Contest;
 @Service
 @RequiredArgsConstructor
 public class ParticipationService {

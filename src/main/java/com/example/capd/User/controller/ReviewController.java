@@ -1,9 +1,6 @@
 package com.example.capd.User.controller;
 
 import com.example.capd.User.config.CommonResponse;
-import com.example.capd.User.domain.Review;
-import com.example.capd.User.dto.ProfileRequestDto;
-import com.example.capd.User.dto.ProfileResponseDto;
 import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;

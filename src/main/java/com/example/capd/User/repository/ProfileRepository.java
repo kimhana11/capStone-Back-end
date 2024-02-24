@@ -1,6 +1,5 @@
 package com.example.capd.User.repository;
 
-import com.example.capd.User.domain.Career;
 import com.example.capd.User.domain.Profile;
 import com.example.capd.User.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
