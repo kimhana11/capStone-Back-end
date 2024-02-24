@@ -4,7 +4,6 @@ import com.example.capd.User.config.CommonResponse;
 import com.example.capd.User.dto.ProfileParticipationRes;
 import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
-import com.example.capd.User.dto.StackParam;
 import com.example.capd.User.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 저장 성공",
+                "저장 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -45,7 +44,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 수정 성공",
+                "수정 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -58,7 +57,7 @@ public class ProfileController {
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
-                "프로필 삭제 성공",
+                "삭제 성공",
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
@@ -68,6 +67,5 @@ public class ProfileController {
     public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
        return profileService.stackRecommendUsers(contestId, userId);
     }
-
 
 }

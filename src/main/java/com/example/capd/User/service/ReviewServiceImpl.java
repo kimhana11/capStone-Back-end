@@ -1,11 +1,11 @@
 package com.example.capd.User.service;
 
 import com.example.capd.Exception.TeamNotConfirmedException;
+import com.example.capd.team.domain.Team;
 import com.example.capd.User.domain.*;
-import com.example.capd.User.dto.CareerParam;
 import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.repository.ReviewRepository;
-import com.example.capd.User.repository.TeamRepository;
+import com.example.capd.team.repository.TeamRepository;
 import com.example.capd.User.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

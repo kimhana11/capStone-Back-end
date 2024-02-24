@@ -1,10 +1,8 @@
 package com.example.capd.User.dto;
 
-import com.example.capd.User.domain.Profile;
 import lombok.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
