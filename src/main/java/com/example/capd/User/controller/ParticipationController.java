@@ -2,7 +2,6 @@ package com.example.capd.User.controller;
 
 import com.example.capd.User.config.CommonResponse;
 import com.example.capd.User.dto.ParticipationParam;
-import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

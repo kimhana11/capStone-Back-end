@@ -1,6 +1,5 @@
 package com.example.capd.User.service;
 
-import com.example.capd.User.domain.Review;
 import com.example.capd.User.dto.ReviewRequestDto;
 import org.springframework.stereotype.Service;
 

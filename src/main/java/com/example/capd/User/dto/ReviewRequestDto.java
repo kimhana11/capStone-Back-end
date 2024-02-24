@@ -1,7 +1,7 @@
 package com.example.capd.User.dto;
 
 import com.example.capd.User.domain.Review;
-import com.example.capd.User.domain.Team;
+import com.example.capd.team.domain.Team;
 import com.example.capd.User.domain.User;
 import lombok.AccessLevel;
 import lombok.Getter;

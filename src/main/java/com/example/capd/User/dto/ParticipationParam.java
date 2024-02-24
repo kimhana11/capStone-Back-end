@@ -1,14 +1,11 @@
 package com.example.capd.User.dto;
 
-import com.example.capd.User.domain.Contest;
 import com.example.capd.User.domain.Participation;
 import com.example.capd.User.domain.User;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.ElementCollection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
+import com.example.capd.contest.domain.Contest;
 import java.util.List;
 
 @Getter

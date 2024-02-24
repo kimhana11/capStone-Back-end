@@ -1,5 +1,6 @@
 package com.example.capd.User.service;
 
+import com.example.capd.Exception.UserWithDesiredStackNotFoundException;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.*;
 import com.example.capd.User.repository.*;
@@ -68,9 +69,8 @@ public class ProfileServiceImpl implements ProfileService {
                         !user.getUserId().equals(userId) &&
                                 user.getProfile() != null &&
                                 user.getProfile().getStackList().stream().anyMatch(stackList::contains) &&
-                                (user.getTeamMembers() == null || user.getTeamMembers().isEmpty()
+                                !hasTeamForContest(user, contestId)
                                 )
-                )
                 .sorted((user1, user2) ->
                         (int) user2.getProfile().getStackList().stream().filter(stackList::contains).count() -
                                 (int) user1.getProfile().getStackList().stream().filter(stackList::contains).count())
@@ -83,9 +83,15 @@ public class ProfileServiceImpl implements ProfileService {
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
+        if (resultProfiles.isEmpty()) {
+            throw new UserWithDesiredStackNotFoundException();
+        }
         return resultProfiles;
     }
-
+    // 해당 공모전에 팀이 없는지 확인하는 메서드
+    private boolean hasTeamForContest(User user, Long contestId) {
+        return user.getTeamMembers().stream().anyMatch(teamMember -> teamMember.getTeam().getContest().getId().equals(contestId));
+    }
     @Override
     public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId) {
        //******ai 추천 유저 리스트 필요*************8

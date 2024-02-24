@@ -1,6 +1,6 @@
 package com.example.capd.User.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.example.capd.team.domain.TeamMember;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,9 +46,5 @@ public class User {
     @JsonManagedReference
     private List<Review> receivedReviews = new ArrayList<>();
 
-    //공모전 매핑
-//    @JsonManagedReference
-//    @OneToMany(mappedBy = "user", orphanRemoval = true)
-//    private List<Contest> contests  = new ArrayList<>();
 
 }
