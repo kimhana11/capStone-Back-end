@@ -1,5 +1,6 @@
 package com.example.capd.User.domain;
 
+import com.example.capd.team.domain.Team;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;

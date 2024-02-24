@@ -1,10 +1,9 @@
 package com.example.capd.User.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
+import com.example.capd.contest.domain.Contest;
 import java.util.List;
 
 @Entity

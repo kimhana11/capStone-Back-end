@@ -4,7 +4,6 @@ import com.example.capd.User.config.CommonResponse;
 import com.example.capd.User.dto.ProfileParticipationRes;
 import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
-import com.example.capd.User.dto.StackParam;
 import com.example.capd.User.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -68,6 +67,5 @@ public class ProfileController {
     public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
        return profileService.stackRecommendUsers(contestId, userId);
     }
-
 
 }
