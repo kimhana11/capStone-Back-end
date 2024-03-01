@@ -4,6 +4,7 @@ import com.example.capd.User.dto.UserDTO;
 import com.example.capd.User.dto.UserSignInDto;
 import com.example.capd.User.dto.UserSignInResponseDto;
 import com.example.capd.User.domain.User;
+import com.example.capd.User.repository.UserRepository;
 import com.example.capd.User.service.UserService;
 import com.example.capd.User.config.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse> join(@RequestBody UserDTO userDTO){
@@ -42,21 +44,23 @@ public class UserController {
 
     @PostMapping("/idCheck")
     public ResponseEntity<CommonResponse> checkUserId(@RequestBody String id) {
-        //여기에 중복검사 코드 추가
-        CommonResponse res = new CommonResponse(
-                200,
-                HttpStatus.OK,
-                " 성공",
-                null
-        );
-        return new ResponseEntity<>(res, res.getHttpStatus());
-       // return userService.useridOverlap(id);
+        boolean isIdExists = userRepository.existsById(Long.parseLong(id));
+
+        CommonResponse res;
+
+        if (isIdExists) {
+            res = new CommonResponse(400, HttpStatus.BAD_REQUEST, "아이디가 이미 존재합니다.", null);
+            return new ResponseEntity<>(res, res.getHttpStatus());
+        } else {
+            res = new CommonResponse(200, HttpStatus.OK, "사용 가능한 아이디입니다.", null);
+            return new ResponseEntity<>(res, res.getHttpStatus());
+        }
     }
 
-    @GetMapping("/usernameCheck")
-    public HashMap<String, Object> checkUsername(@PathVariable String username) {
-        return userService.nicknameOverlap(username);
-    }
+//    @GetMapping("/usernameCheck")
+//    public HashMap<String, Object> checkUsername(@PathVariable String username) {
+//        return userService.nicknameOverlap(username);
+//    }
 
     //로그인 하면 토큰과 함께, id, username 프론트에 전달
     @PostMapping("/login")
