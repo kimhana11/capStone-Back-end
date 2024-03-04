@@ -1,6 +1,7 @@
 package com.example.capd.User.controller;
 
 import com.example.capd.User.dto.UserDTO;
+import com.example.capd.User.dto.UserIdRequest;
 import com.example.capd.User.dto.UserSignInDto;
 import com.example.capd.User.dto.UserSignInResponseDto;
 import com.example.capd.User.domain.User;
@@ -29,6 +30,9 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+
+
+
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse> join(@RequestBody UserDTO userDTO){
         userService.save(userDTO);
@@ -43,11 +47,10 @@ public class UserController {
     }
 
     @PostMapping("/idCheck")
-    public ResponseEntity<CommonResponse> checkUserId(@RequestBody String id) {
+    public ResponseEntity<CommonResponse> checkUserId(@RequestBody UserIdRequest request) {
+        String id = request.getId();
         boolean isIdExists = userRepository.existsById(Long.parseLong(id));
-
         CommonResponse res;
-
         if (isIdExists) {
             res = new CommonResponse(400, HttpStatus.BAD_REQUEST, "아이디가 이미 존재합니다.", null);
             return new ResponseEntity<>(res, res.getHttpStatus());
@@ -56,11 +59,6 @@ public class UserController {
             return new ResponseEntity<>(res, res.getHttpStatus());
         }
     }
-
-//    @GetMapping("/usernameCheck")
-//    public HashMap<String, Object> checkUsername(@PathVariable String username) {
-//        return userService.nicknameOverlap(username);
-//    }
 
     //로그인 하면 토큰과 함께, id, username 프론트에 전달
     @PostMapping("/login")

@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .cors(withDefaults()) // CORS 활성화
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/user/idCheck","/user/**","/login", "/signup", "/user/signup", "/user/signup/**").permitAll()
+                        .requestMatchers("/user/idCheck","/user/**","/signup", "/user/signup", "/user/signup/**").permitAll()
                         .anyRequest().permitAll()
                 );
         return http.build();
