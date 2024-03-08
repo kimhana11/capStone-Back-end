@@ -19,7 +19,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,10 +48,10 @@ public class UserController {
 
     @PostMapping("/idCheck")
     public ResponseEntity<CommonResponse> checkUserId(@RequestBody UserIdRequest request) {
-        String id = request.getId();
-        boolean isIdExists = userRepository.existsById(Long.parseLong(id));
+        String userId = request.getUserId();
+        Optional<User> userOptional = userRepository.findFirstByUserId(userId);
         CommonResponse res;
-        if (isIdExists) {
+        if (userOptional.isPresent()) {
             res = new CommonResponse(400, HttpStatus.BAD_REQUEST, "아이디가 이미 존재합니다.", null);
             return new ResponseEntity<>(res, res.getHttpStatus());
         } else {
@@ -59,6 +59,8 @@ public class UserController {
             return new ResponseEntity<>(res, res.getHttpStatus());
         }
     }
+
+
 
     //로그인 하면 토큰과 함께, id, username 프론트에 전달
     @PostMapping("/login")
