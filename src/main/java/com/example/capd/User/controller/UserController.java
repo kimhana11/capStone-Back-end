@@ -1,9 +1,6 @@
 package com.example.capd.User.controller;
 
-import com.example.capd.User.dto.UserDTO;
-import com.example.capd.User.dto.UserIdRequest;
-import com.example.capd.User.dto.UserSignInDto;
-import com.example.capd.User.dto.UserSignInResponseDto;
+import com.example.capd.User.dto.*;
 import com.example.capd.User.domain.User;
 import com.example.capd.User.repository.UserRepository;
 import com.example.capd.User.service.UserService;
@@ -64,9 +61,13 @@ public class UserController {
 
     //로그인 하면 토큰과 함께, id, username 프론트에 전달
     @PostMapping("/login")
-    public UserSignInResponseDto signup(@RequestBody UserSignInDto request){
-        UserSignInResponseDto userSignInResponseDto = userService.login(request);
-        return userSignInResponseDto;
+    public ResponseEntity<SignResponse> login(@RequestBody SignRequest request) throws Exception {
+        return new ResponseEntity<>(userService.login(request), HttpStatus.OK);
+    }
+
+    @GetMapping("/get")
+    public ResponseEntity<SignResponse> getUser(@RequestParam String userId) throws Exception {
+        return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
     }
 
     @GetMapping("/logout")

@@ -1,7 +1,6 @@
 package com.example.capd.User.JWT;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,40 +8,52 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
-@Component
-@DependsOn("tokenProvider")
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenProvider tokenProvider;
-    private final static String HEADER_AUTHORIZATION = "Authorization";
-    private final static String TOKEN_PREFIX = "Bearer";
+
+    public TokenAuthenticationFilter(TokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
+
+//
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 요청 헤더의 키값 조회
-        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+            String token = tokenProvider.resolveToken(request);
 
-        // 가져온 값에서 접두사 제거
-        String token = getAccessToken(authorizationHeader);
+            if (token != null && tokenProvider.validateToken(token)) {
+                // check access token
+                token = token.split(" ")[1].trim();
+                Authentication auth = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
 
-        // 가져온 토큰이 유효한지 확인, 인증 정보 설정
-        if (tokenProvider.validToken(token)) {
-            Authentication authentication = tokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
         }
 
-        filterChain.doFilter(request, response);
-    }
-
-    private String getAccessToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
-            return authorizationHeader.substring(TOKEN_PREFIX.length());
-        }
-        return null;
-    }
 }
+
+//    private String getAccessToken(String authorizationHeader) {
+//        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
+//            return authorizationHeader.substring(TOKEN_PREFIX.length());
+//        }
+//        return null;
+//    }
+
+// Request Header 에서 토큰 정보를 꺼내오기 위한 메소드
+//    private String resolveToken(HttpServletRequest request) {
+//        String bearerToken = request.getHeader(HEADER_AUTHORIZATION);
+//
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//
+//        return null;
+//    }

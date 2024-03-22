@@ -3,13 +3,11 @@ package com.example.capd.User.dto;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
 @Setter
 @Builder
 @AllArgsConstructor
-public class UserSignInResponseDto {
+@NoArgsConstructor
+public class TokenDto {
 
-    private Long id;
-    private String username;
     private String token;
 }

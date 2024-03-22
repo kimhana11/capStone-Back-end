@@ -1,82 +1,86 @@
 package com.example.capd.User.JWT;
 
+import com.example.capd.User.domain.Authority;
 import com.example.capd.User.domain.User;
+import com.example.capd.User.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.time.Duration;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class TokenProvider {
 
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final String secretKey;
+    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
+    private  Key secretKey;
 
-    public TokenProvider(@Value("${security.jwt.token.secret-key}") String secretKey) {
-        this.secretKey = secretKey;
+    @Value("${security.jwt.token.secret-key}")
+    private String salt;
+    private final long exp = 1000L * 60 * 60;
+
+    private final CustomUserDetailsService userDetailsService;
+
+    @PostConstruct
+    protected void init() {
+        secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(User user, Duration expiredAt) {
-        logger.info("[TokenProvider] 토큰 생성 시작");
+
+
+    // 토큰 생성
+    public String createToken(String userId, List<Authority> roles) {
+        Claims claims = Jwts.claims().setSubject(userId);
+        claims.put("roles", roles);
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + expiredAt.toMillis());
-
-        Claims claims = Jwts.claims().setSubject(user.getUsername());
-        claims.put("id", user.getId()); // 사용자 ID를 클레임에 추가
-
         return Jwts.builder()
                 .setClaims(claims)
-                .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .setExpiration(new Date(now.getTime() + exp))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean validToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(secretKey)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+
+    // 권한정보 획득
+    // Spring Security 인증과정에서 권한확인을 위한 기능
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserId(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = getClaims(token);
-        Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
 
-        return new UsernamePasswordAuthenticationToken(new org.springframework.security.core.userdetails.User(
-                claims.getSubject(), "", authorities), token, authorities);
-
+    public String getUserId(String token) {
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().getSubject();
     }
 
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
-    public Long getUserId(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("id", Long.class);
-    }
+
     //토큰에서 값 추출
     public String getUsername(@RequestBody String token) {
         logger.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
@@ -88,36 +92,20 @@ public class TokenProvider {
         return info;
 
     }
-    private Claims getClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
 
-    //유효한 토큰인지 확인
-    public boolean validateToken(@RequestBody String jwtToken) {
-        logger.info("[validateToken] 토큰 유효 체크 시작");
+    //검증
+    public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            // Bearer 검증
+            if (!token.substring(0, "BEARER ".length()).equalsIgnoreCase("BEARER ")) {
+                return false;
+            } else {
+                token = token.split(" ")[1].trim();
+            }
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            // 만료되었을 시 false
             return !claims.getBody().getExpiration().before(new Date());
-
-        } catch (SecurityException | MalformedJwtException e) {
-            logger.info("SecurityException | MalformedJwtException");
-            return false;
-        } catch (ExpiredJwtException e) {
-            logger.info("ExpiredJwtException");
-            return false;
-        } catch (UnsupportedJwtException e) {
-            logger.info("UnsupportedJwtException");
-            return false;
-        } catch (IllegalArgumentException e) {
-            logger.info("IllegalArgumentException");
-            return false;
         } catch (Exception e) {
-            logger.info("{}");
-            logger.info("[validateToken] 토큰 유효 체크 예외 발생");
             return false;
         }
     }

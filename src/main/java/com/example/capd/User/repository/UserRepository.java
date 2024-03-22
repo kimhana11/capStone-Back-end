@@ -15,14 +15,14 @@ import com.example.capd.User.domain.Review;
 public interface UserRepository extends JpaRepository<User, Long> {
    User findByUsername(String username);
 
-   boolean existsByUsername(String username);
-
    Optional<User> findByUserId(String userId);
 
    List<Review> findReceivedReviewsByUserId(String userId);
 
    Optional<User> findFirstByUserId(String userId);
 
+   @Query("SELECT u FROM User u WHERE u.username = :username")
+   Optional<User> findOneWithAuthoritiesByUsername(String username);
 
    @Query("SELECT u FROM User u JOIN Participation part ON u.id = part.user.id WHERE part.contest.id = :contestId")
    List<User> findUsersByContestParticipation(@Param("contestId") Long contestId);

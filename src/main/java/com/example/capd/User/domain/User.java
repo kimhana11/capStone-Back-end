@@ -17,13 +17,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String userId;
     private String username;
     private String password;
@@ -32,6 +31,16 @@ public class User implements UserDetails {
     private String address;
     private String Tendency;
     private String Phone;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Authority> roles = new ArrayList<>();
+
+    public void setRoles(List<Authority> role) {
+        this.roles = role;
+        role.forEach(o -> o.setUser(this));
+    }
+
 
     //프로필과 일대일 매핑
     @JsonManagedReference
@@ -50,42 +59,5 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Review> receivedReviews = new ArrayList<>();
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
-        return List.of(new SimpleGrantedAuthority("USER"));
-    }
-
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
 
 }

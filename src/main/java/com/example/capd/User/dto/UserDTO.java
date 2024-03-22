@@ -1,9 +1,7 @@
 package com.example.capd.User.dto;
 
 import com.example.capd.User.domain.User;
-import com.example.capd.User.config.PasswordEncoderConfig;
 import lombok.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Getter
 @Setter
@@ -11,10 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @AllArgsConstructor
 public class UserDTO {
 
-
-    //private Long id;
     private String userId;
-    private String name;
+    private String username;
     private String password;
     private String Email;
     private char gender;
@@ -22,18 +18,22 @@ public class UserDTO {
     private String Tendency;
     private String Phone;
 
+
+    // UserDTO 클래스에서의 toEntity() 메서드
     @Builder
     public User toEntity() {
 
-            return User.builder()
-                    .username(userId)
-                    .password(password)
-                    .Email(Email)
-                    .gender(gender)
-                    .address(address)
-                    .Tendency(Tendency)
-                    .Phone(Phone)
-                    .build();
-        }
+        return User.builder()
+                .userId(userId)
+                .username(username)
+                .password(password)
+                .Email(Email)
+                .gender(gender)
+                .address(address)
+                .Tendency(Tendency)
+                .Phone(Phone)
+                .build();
+    }
+
 
 }
