@@ -62,7 +62,7 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/user/**","/signup", "/", "/login").permitAll()
+                        .requestMatchers("/user/**","/signup", "/", "/user/login").permitAll()
                         .anyRequest().permitAll())
                 // 폼 로그인은 현재 사용하지 않음
 //            .formLogin(formLogin -> formLogin
@@ -79,9 +79,10 @@ public class SecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFil
         return http.build();
     }
 
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder();
     }
 }
 

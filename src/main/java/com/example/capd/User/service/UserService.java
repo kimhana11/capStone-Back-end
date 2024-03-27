@@ -25,7 +25,7 @@ public class UserService {
 
     //회원가입
     public Long save(UserDTO dto) {
-        if (userRepository.findOneWithAuthoritiesByUsername(dto.getUsername()).orElse(null) != null) {
+        if (userRepository.findOneWithAuthoritiesByUsername(dto.getUserId()).orElse(null) != null) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
 
@@ -55,7 +55,6 @@ public class UserService {
         }
 
         return  SignResponse.builder()
-                .id(user.getId())
                 .userId(user.getUserId())
                 .username(user.getUsername())
                 .Email(user.getEmail())
@@ -69,14 +68,14 @@ public class UserService {
     }
 
     //정보수정
-    public void updateUserInformation(String username, String newEmail, String newPassword) {
-        User user = userRepository.findByUsername(username);
+    public void updateUserInformation(String userId, String newEmail, String newPassword) {
+        User user = userRepository.findByUsername(userId);
         if (user != null) {
             user.setEmail(newEmail);
             user.setPassword(passwordEncoder.encode(newPassword)); // 패스워드를 저장할 때는 암호화 필요
             userRepository.save(user);
         } else {
-            throw new UsernameNotFoundException("User not found with username: " + username);
+            throw new UsernameNotFoundException("User not found with username: " + userId);
         }
     }
 

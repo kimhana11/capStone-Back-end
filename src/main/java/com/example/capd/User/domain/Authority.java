@@ -14,15 +14,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Authority {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    private Long id;
+    private Long AuthorityId;
 
     private String name;
 
-    @JoinColumn(name = "user")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JoinColumn(name = "user_id")
     private User user;
 
     public void setUser(User user) {
