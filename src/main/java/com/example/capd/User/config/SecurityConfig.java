@@ -31,8 +31,8 @@ public class SecurityConfig  {
     private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     private static final String[] AUTH_WHITELIST = {
-            "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**"
+            "http://localhost:3000/user/signup", "/user/**", "/", "/user/login",
+            "/v3/api-docs/**", "http://localhost:3000/user/login", "/user/signup", "http://localhost:3000/**/**"
     };
 
     @Bean
@@ -61,9 +61,7 @@ public class SecurityConfig  {
         // 권한 규칙 작성
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AUTH_WHITELIST).permitAll()
-                        //@PreAuthrization을 사용할 것이기 때문에 모든 경로에 대한 인증처리는 Pass
                         .anyRequest().permitAll()
-//                        .anyRequest().authenticated()
         );
 
         return http.build();

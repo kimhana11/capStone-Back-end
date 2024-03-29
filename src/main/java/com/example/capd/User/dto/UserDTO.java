@@ -21,7 +21,6 @@ public class UserDTO {
     private String address;
     private String Tendency;
     private String Phone;
-    private List<Authority> roles;
 
 
 
@@ -38,7 +37,6 @@ public class UserDTO {
                 .address(address)
                 .Tendency(Tendency)
                 .Phone(Phone)
-                .roles(roles)
                 .build();
     }
 
