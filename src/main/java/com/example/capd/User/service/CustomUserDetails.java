@@ -1,40 +1,44 @@
 package com.example.capd.User.service;
 
 import com.example.capd.User.domain.User;
+import com.example.capd.User.dto.CustomUserInfoDto;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
-
+@Getter
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final User user;
-
-    public CustomUserDetails(User user) {
-        this.user = user;
-    }
-
-    public final User getUser() {
-        return user;
-    }
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities(){
-        return user.getRoles().stream().map(o -> new SimpleGrantedAuthority(
-                o.getName()
-        )).collect(Collectors.toList());
-    }
-
+    private final CustomUserInfoDto user;
 
     @Override
-    public String getUsername() {
-        return user.getUserId() ;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<String> roles = new ArrayList<>();
+        roles.add("ROLE_" + user.getRoles().toString());
+
+
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
+
     @Override
     public String getPassword() {
         return user.getPassword();
     }
+
+    @Override
+    public String getUsername() {
+        return user.getId().toString();
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -55,4 +59,7 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
+
 }

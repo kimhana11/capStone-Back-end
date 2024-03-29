@@ -4,7 +4,6 @@ import com.example.capd.User.dto.SignRequest;
 import com.example.capd.User.dto.SignResponse;
 import com.example.capd.User.dto.UserDTO;
 import com.example.capd.User.domain.User;
-import com.example.capd.User.JWT.TokenProvider;
 import com.example.capd.User.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,7 +20,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    //private final TokenProvider tokenProvider;
 
     //회원가입
     public Long save(UserDTO dto) {
@@ -44,28 +43,28 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
-    //로그인
-    public SignResponse login(SignRequest userSignInDto) {
-
-        User user = userRepository.findByUserId(userSignInDto.getUserId()).orElseThrow(() ->
-                new BadCredentialsException("잘못된 계정정보입니다."));
-
-        if (!passwordEncoder.matches(userSignInDto.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("잘못된 계정정보입니다.");
-        }
-
-        return  SignResponse.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .Email(user.getEmail())
-                .Phone(user.getPhone())
-                .gender(user.getGender())
-                .address(user.getAddress())
-                .Tendency(user.getTendency())
-                .roles(user.getRoles())
-                .token(tokenProvider.createToken(user.getUserId(), user.getRoles()))
-                .build();
-    }
+//    //로그인
+//    public SignResponse login(SignRequest userSignInDto) {
+//
+//        User user = userRepository.findByUserId(userSignInDto.getUserId()).orElseThrow(() ->
+//                new BadCredentialsException("잘못된 계정정보입니다."));
+//
+//        if (!passwordEncoder.matches(userSignInDto.getPassword(), user.getPassword())) {
+//            throw new BadCredentialsException("잘못된 계정정보입니다.");
+//        }
+//
+//        return  SignResponse.builder()
+//                .userId(user.getUserId())
+//                .username(user.getUsername())
+//                .Email(user.getEmail())
+//                .Phone(user.getPhone())
+//                .gender(user.getGender())
+//                .address(user.getAddress())
+//                .Tendency(user.getTendency())
+//                .roles(user.getRoles())
+//                .token(tokenProvider.createToken(user.getUserId(), user.getRoles()))
+//                .build();
+//    }
 
     //정보수정
     public void updateUserInformation(String userId, String newEmail, String newPassword) {

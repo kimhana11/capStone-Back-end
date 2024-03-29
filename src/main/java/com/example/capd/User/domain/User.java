@@ -30,6 +30,7 @@ public class User {
     private String Tendency;
     private String Phone;
 
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 

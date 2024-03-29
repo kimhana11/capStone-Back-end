@@ -3,6 +3,7 @@ package com.example.capd.User.controller;
 import com.example.capd.User.dto.*;
 import com.example.capd.User.domain.User;
 import com.example.capd.User.repository.UserRepository;
+import com.example.capd.User.service.AuthService;
 import com.example.capd.User.service.UserService;
 import com.example.capd.User.config.CommonResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -27,6 +29,21 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
+    private final AuthService authService;
+
+    @PostMapping("/login")
+    public ResponseEntity<String> getMemberProfile(
+            @Validated @RequestBody LoginRequestDto request
+    ) {
+        String token = this.authService.login(request);
+        return ResponseEntity.status(HttpStatus.OK).body(token);
+    }
+
+//    //로그인 하면 토큰과 함께, id, username 프론트에 전달
+//    @PostMapping("/login")
+//    public ResponseEntity<SignResponse> login(@RequestBody SignRequest request) throws Exception {
+//        return new ResponseEntity<>(userService.login(request),     HttpStatus.OK);
+//    }
 
 
 
@@ -59,11 +76,7 @@ public class UserController {
 
 
 
-    //로그인 하면 토큰과 함께, id, username 프론트에 전달
-    @PostMapping("/login")
-    public ResponseEntity<SignResponse> login(@RequestBody SignRequest request) throws Exception {
-        return new ResponseEntity<>(userService.login(request), HttpStatus.OK);
-    }
+
 
     @GetMapping("/get")
     public ResponseEntity<SignResponse> getUser(@RequestParam String userId) throws Exception {

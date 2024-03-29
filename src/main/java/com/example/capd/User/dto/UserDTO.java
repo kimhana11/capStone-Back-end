@@ -1,7 +1,11 @@
 package com.example.capd.User.dto;
 
+import com.example.capd.User.domain.Authority;
 import com.example.capd.User.domain.User;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +21,8 @@ public class UserDTO {
     private String address;
     private String Tendency;
     private String Phone;
+    private List<Authority> roles;
+
 
 
     // UserDTO 클래스에서의 toEntity() 메서드
@@ -32,6 +38,7 @@ public class UserDTO {
                 .address(address)
                 .Tendency(Tendency)
                 .Phone(Phone)
+                .roles(roles)
                 .build();
     }
 
