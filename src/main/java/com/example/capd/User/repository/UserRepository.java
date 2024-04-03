@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
    Optional<User> findFirstByUserId(String userId);
 
    @Query("SELECT u FROM User u WHERE u.username = :username")
-   Optional<User> findOneWithAuthoritiesByUsername(String username);
+   Optional<User> findOneWithAuthoritiesByUsername(@Param("username") String username);
 
    @Query("SELECT u FROM User u JOIN Participation part ON u.id = part.user.id WHERE part.contest.id = :contestId")
    List<User> findUsersByContestParticipation(@Param("contestId") Long contestId);

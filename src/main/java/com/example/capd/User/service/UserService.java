@@ -5,6 +5,7 @@ import com.example.capd.User.dto.SignResponse;
 
 import com.example.capd.User.domain.User;
 import com.example.capd.User.dto.UserDTO;
+import com.example.capd.User.dto.UserUpdateRequest;
 import com.example.capd.User.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,38 +45,20 @@ public class UserService {
         return userRepository.save(user).getId();
     }
 
-//    //로그인
-//    public SignResponse login(SignRequest userSignInDto) {
-//
-//        User user = userRepository.findByUserId(userSignInDto.getUserId()).orElseThrow(() ->
-//                new BadCredentialsException("잘못된 계정정보입니다."));
-//
-//        if (!passwordEncoder.matches(userSignInDto.getPassword(), user.getPassword())) {
-//            throw new BadCredentialsException("잘못된 계정정보입니다.");
-//        }
-//
-//        return  SignResponse.builder()
-//                .userId(user.getUserId())
-//                .username(user.getUsername())
-//                .Email(user.getEmail())
-//                .Phone(user.getPhone())
-//                .gender(user.getGender())
-//                .address(user.getAddress())
-//                .Tendency(user.getTendency())
-//                .roles(user.getRoles())
-//                .token(tokenProvider.createToken(user.getUserId(), user.getRoles()))
-//                .build();
-//    }
-
     //정보수정
-    public void updateUserInformation(String userId, String newEmail, String newPassword) {
-        User user = userRepository.findByUsername(userId);
+    public void updateUserInformation(UserUpdateRequest request) {
+        User user = userRepository.findUserByUserId(request.getUserId());
         if (user != null) {
-            user.setEmail(newEmail);
-            user.setPassword(passwordEncoder.encode(newPassword)); // 패스워드를 저장할 때는 암호화 필요
+            user.setEmail(request.getNewEmail());
+            user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            user.setUsername(request.getNewUsername());
+            user.setGender(request.getNewGender());
+            user.setAddress(request.getNewAddress());
+            user.setTendency(request.getNewTendency());
+            user.setPhone(request.getNewPhone());
             userRepository.save(user);
         } else {
-            throw new UsernameNotFoundException("User not found with username: " + userId);
+            throw new UsernameNotFoundException("User not found with userId: " + request.getUserId());
         }
     }
 
@@ -86,12 +69,12 @@ public class UserService {
     }
 
     //회원 탈퇴
-    public void deleteUser(String username) {
-        User user = userRepository.findByUsername(username);
+    public void deleteUser(String userId) {
+        User user = userRepository.findUserByUserId(userId);
         if (user != null) {
             userRepository.delete(user);
         } else {
-            throw new UsernameNotFoundException("유저를 찾을 수 없습니다: " + username);
+            throw new UsernameNotFoundException("유저를 찾을 수 없습니다: " + userId);
         }
     }
 

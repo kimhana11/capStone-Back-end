@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDTO {
 
     private String userId;

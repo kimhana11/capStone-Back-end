@@ -13,11 +13,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,20 +35,16 @@ public class UserController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> getMemberProfile(
+    public ResponseEntity<Map> getMemberProfile(
             @Validated @RequestBody LoginRequestDto request
     ) {
         String token = this.authService.login(request);
-        return ResponseEntity.status(HttpStatus.OK).body(token);
+        String userId = request.getUserId(); // 클라이언트에게 전달할 사용자 아이디
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        response.put("userId", userId);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
-
-//    //로그인 하면 토큰과 함께, id, username 프론트에 전달
-//    @PostMapping("/login")
-//    public ResponseEntity<SignResponse> login(@RequestBody SignRequest request) throws Exception {
-//        return new ResponseEntity<>(userService.login(request),     HttpStatus.OK);
-//    }
-
-
 
     @PostMapping("/signup")
     public ResponseEntity<CommonResponse> join(@RequestBody UserDTO userDTO){
@@ -74,10 +73,6 @@ public class UserController {
         }
     }
 
-
-
-
-
     @GetMapping("/get")
     public ResponseEntity<SignResponse> getUser(@RequestParam String userId) throws Exception {
         return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
@@ -90,31 +85,19 @@ public class UserController {
         return "redirect:/login";
     }
 
-    @GetMapping("/profile-update")
-    public String showEditForm(Model model, Authentication authentication) {
-        UserService currentUser = (UserService) authentication.getPrincipal();
-        model.addAttribute("currentUser", currentUser);
-        return "profile-update";
+    @PutMapping("/update")
+    public ResponseEntity<String> updateUserInformation(@RequestBody UserUpdateRequest request) {
+        userService.updateUserInformation(request);
+        return ResponseEntity.status(HttpStatus.OK).body("User information updated successfully.");
     }
 
-    @PostMapping("/profile-update")
-    public String editUserInformation(@ModelAttribute("currentUser") User currentUser,
-                                      @RequestParam("newEmail") String newEmail,
-                                      @RequestParam("newPassword") String newPassword) {
-        userService.updateUserInformation(currentUser.getUsername(), newEmail, newPassword);
-        return "redirect:/user/profile-update?success";
-    }
-
-    @GetMapping("/delete")
-    public String showDeleteForm(Model model, Authentication authentication) {
-        UserService currentUser = (UserService) authentication.getPrincipal();
-        model.addAttribute("currentUser", currentUser);
-        return "deleteUserForm";
-    }
-
-    @PostMapping("/delete")
-    public String deleteUser(@ModelAttribute("currentUser") User currentUser) {
-        userService.deleteUser(currentUser.getUsername());
-        return "redirect:/logout";
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable String userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found: " + userId);
+        }
     }
 }
