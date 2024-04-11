@@ -20,7 +20,7 @@ public class CrawlingScriptService {
     public void executeCrawlingScript() {
         try {
             // 파이썬 스크립트 경로
-            String pythonScriptPath = "C:\\IntelliJ\\capD\\src\\main\\java\\com\\example\\capd\\python\\Crawling_START.py";
+            String pythonScriptPath = "C:/Users/jwj/Desktop/Back-end/src/main/java/com/example/capd/python/Crawling_START.py";
 
             System.out.println("파이썬 실행");
             // 외부 프로세스로 파이썬 스크립트 실행
