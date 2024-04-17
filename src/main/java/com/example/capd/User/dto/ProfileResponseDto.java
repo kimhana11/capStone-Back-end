@@ -17,4 +17,8 @@ public class ProfileResponseDto {
     private List<String> stackList; //스택
     private List<CareerParam> careers; //조회할때 경력도 한번에 넘겨주기 위함
 
+    private int myTime;
+    private int desiredTime;
+    private int collaborationCount;
+
 }

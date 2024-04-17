@@ -26,7 +26,9 @@ public class ProfileServiceImpl implements ProfileService {
         //유저 존재 유무 확인
         Optional<User> userOptional = userRepository.findByUserId(profileRequestDto.getUserId());
 
-        User user = userRepository.findByUserId(profileRequestDto.getUserId()).get();
+        User user = userRepository.findByUserId(profileRequestDto.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("해당하는 유저를 찾을 수 없습니다. userId=" + profileRequestDto.getUserId()));
+
         if (user.getProfile() != null) {
             throw new IllegalArgumentException("프로필이 이미 존재합니다. id=" + profileRequestDto.getUserId());
         }
@@ -36,9 +38,12 @@ public class ProfileServiceImpl implements ProfileService {
         profile.setRate(rate);
         profileRepository.save(profile);
 
-        List<Career> careers = profileRequestDto.getCareers().stream()
-                .map(careerParam -> careerParam.toEntity(profile))
-                .collect(Collectors.toList());
+        List<Career> careers = profileRequestDto.getCareers() != null ?
+                profileRequestDto.getCareers().stream()
+                        .map(careerParam -> careerParam.toEntity(profile))
+                        .collect(Collectors.toList()) :
+                Collections.emptyList();
+
 
         careers.forEach(careerRepository::save);
 
@@ -115,6 +120,9 @@ public class ProfileServiceImpl implements ProfileService {
                 .intro(profileRequestDto.getIntro())
                 .stackList(profileRequestDto.getStackList())
                 .rate(profile.getRate())    //기존의 프로필 별점을 그대로 적용 (안하면 0.0됨)
+                .myTime(profileRequestDto.getMyTime())
+                .desiredTime(profileRequestDto.getDesiredTime())
+                .collaborationCount(profileRequestDto.getCollaborationCount())
                 .user(user)
                 .careers(profileRequestDto.getCareers().stream()
                         .map(careerParam -> {
@@ -165,6 +173,9 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
+        dto.setMyTime(profile.getMyTime());
+        dto.setDesiredTime(profile.getDesiredTime());
+        dto.setCollaborationCount(profile.getCollaborationCount());
         return dto;
     }
 
@@ -186,7 +197,7 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());
         dto.setAdditional(participation.getAdditional());
-        dto.setTime(participation.getTime());
+        dto.setTime(profile.getMyTime());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
         return dto;
     }

@@ -21,7 +21,7 @@ public class TeamMember {
     private Team team;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @Builder

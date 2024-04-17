@@ -50,6 +50,7 @@ def extract_contest_info(browser):
 chrome_options = Options()
 chrome_options.add_experimental_option("detach", True)
 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+chrome_options.add_argument("headless")
 browser = webdriver.Chrome(options=chrome_options)
 
 # 웹 페이지 열기

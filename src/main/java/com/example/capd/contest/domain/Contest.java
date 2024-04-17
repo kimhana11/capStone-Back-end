@@ -52,7 +52,7 @@ public class Contest {
     @Column(length = 400)
     private String image;
 
-    @Column(length = 2000)
+    @Column(length = 10000)
     private String detailText;
 
     //참여할게요 매핑

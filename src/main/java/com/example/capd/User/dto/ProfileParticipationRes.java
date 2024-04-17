@@ -14,10 +14,10 @@ public class ProfileParticipationRes {
     private String userId;
     private String intro; //한줄 소개
     private double rate;
-    private List<String> stackList; //스택
+    private List<String> stackList; //스택(본인)
     private List<CareerParam> careers; //조회할때 경력도 한번에 넘겨주기 위함
-    private String additional;
-    private String time;
+    private String additional;  //원하는 주제나 프로젝트
+    private int time;
 
 
 
