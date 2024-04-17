@@ -19,6 +19,10 @@ public class Profile {
     private String intro; //한줄 소개
     private double rate; //평점, 기본 평점 3.5
 
+    private int myTime; // 내가 가능한 투자 가능 시간
+    private int desiredTime; // 상대에게 바라는 투자 가능 시간
+    private int collaborationCount; // 상대 협업 경험 횟수
+
     //기술 스택
     @ElementCollection
     @JsonManagedReference
@@ -39,12 +43,16 @@ public class Profile {
     }
 
     @Builder
-    public Profile(Long id, String intro, List<String> stackList, User user, List<Career> careers, double rate){
+    public Profile(Long id, String intro, List<String> stackList, User user, List<Career> careers, double rate,
+                   int myTime, int desiredTime, int collaborationCount ){
         this.id=id;
         this.intro=intro;
         this.stackList=stackList;
         this.user=user;
         this.careers=careers;
         this.rate=rate;
+        this.myTime = myTime;
+        this.desiredTime = desiredTime;
+        this.collaborationCount = collaborationCount;
     }
 }

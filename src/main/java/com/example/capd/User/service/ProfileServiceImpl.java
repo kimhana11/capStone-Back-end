@@ -120,6 +120,9 @@ public class ProfileServiceImpl implements ProfileService {
                 .intro(profileRequestDto.getIntro())
                 .stackList(profileRequestDto.getStackList())
                 .rate(profile.getRate())    //기존의 프로필 별점을 그대로 적용 (안하면 0.0됨)
+                .myTime(profileRequestDto.getMyTime())
+                .desiredTime(profileRequestDto.getDesiredTime())
+                .collaborationCount(profileRequestDto.getCollaborationCount())
                 .user(user)
                 .careers(profileRequestDto.getCareers().stream()
                         .map(careerParam -> {
@@ -170,6 +173,9 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
+        dto.setMyTime(profile.getMyTime());
+        dto.setDesiredTime(profile.getDesiredTime());
+        dto.setCollaborationCount(profile.getCollaborationCount());
         return dto;
     }
 
@@ -191,7 +197,7 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());
         dto.setAdditional(participation.getAdditional());
-        dto.setTime(participation.getTime());
+        dto.setTime(profile.getMyTime());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
         return dto;
     }

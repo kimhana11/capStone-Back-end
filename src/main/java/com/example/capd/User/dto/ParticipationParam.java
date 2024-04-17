@@ -16,13 +16,11 @@ public class ParticipationParam {
     private String userId;
     private Long contestId;
     private String additional;
-    private String time;
     private List<String> stackList;
 
     public Participation toEntity(User user, Contest contest){
         return Participation.builder()
                 .additional(additional)
-                .time(time)
                 .stackList(stackList)
                 .contest(contest)
                 .user(user).build();
