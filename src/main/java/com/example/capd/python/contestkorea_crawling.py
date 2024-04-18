@@ -26,7 +26,7 @@ def extract_contest_info(browser):
             participation_fee = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.view_top_area.clfx > div.clfx > div.txt_area > table > tbody > tr:nth-child(10) > td").text
         else :
             participation_fee = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.view_top_area.clfx > div.clfx > div.txt_area > table > tbody > tr:nth-child(9) > td").text
-        #상세 정보 가져오기
+
     detail_text_elements = browser.find_elements(By.CSS_SELECTOR, ".view_detail_area h2, .view_detail_area p")
     detail_text = ""
     for element in detail_text_elements:
