@@ -18,8 +18,8 @@ public class ContestInfoService {
         return contestRepository.fetchDataFromDatabase();
     }
     // Contest 정보를 출력
-    public List<Map<String, Object>> getAllContests() {
-        return contestRepository.fetchDataFromDatabase();
+    public List<Contest> getAllContests() {
+        return contestRepository.findAll();
     }
 
     // 공모전 id 리스트 전체 출력

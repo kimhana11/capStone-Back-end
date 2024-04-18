@@ -32,8 +32,7 @@ public class SecurityConfig  {
 
     private static final String[] AUTH_WHITELIST = {
             "http://localhost:3000/user/signup", "/user/**", "/", "/user/login",
-            "/v3/api-docs/**", "http://localhost:3000/user/login", "/user/signup", "http://localhost:3000/**/**",
-            "/contestData","http://localhost:8080/contestData"
+            "/v3/api-docs/**", "http://localhost:3000/user/login", "/user/signup", "http://localhost:3000/**/**"
     };
 
     @Bean

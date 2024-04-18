@@ -25,9 +25,9 @@ public class ContestInfoController {
         return "showDataPage";
     }
 
-    @GetMapping("/contestData") // 주소창에 입력하면 contest 정보 다 보여줌
-    public ResponseEntity<List<Map<String, Object>>> contestData() {
-        return ResponseEntity.ok(contestInfoService.getAllContests());
+    @GetMapping("/contestData")
+    public List<Contest> contestData() {
+        return contestInfoService.getAllContests();
     }
 
     //공모전 id 리스트
