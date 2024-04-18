@@ -98,8 +98,9 @@ public class ProfileServiceImpl implements ProfileService {
         return user.getTeamMembers().stream().anyMatch(teamMember -> teamMember.getTeam().getContest().getId().equals(contestId));
     }
     @Override
-    public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId) {
+    public List<ProfileResponseDto> aiRecommendUsers() {
        //******ai 추천 유저 리스트 필요*************8
+        //공모전 id값과 user_id 리스트 필요
         return null;
     }
 

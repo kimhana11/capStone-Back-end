@@ -2,6 +2,7 @@ package com.example.capd.contest.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.capd.contest.domain.Contest;
 import java.util.List;
@@ -18,4 +19,7 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
 
     @Query(value = "SELECT c.id FROM Contest c", nativeQuery = true)
     List<Long> findAllIds();
+
+    @Query(value = "select c from contest c where c.id = :id")
+    Contest findByIdWithQuery(@Param("id") Long id);
 }

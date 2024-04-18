@@ -18,12 +18,22 @@ public class ContestInfoService {
         return contestRepository.fetchDataFromDatabase();
     }
     // Contest 정보를 출력
-    public List<Contest> getAllContests() {
-        return contestRepository.findAll();
+    public List<Map<String, Object>> getAllContests() {
+        return contestRepository.fetchDataFromDatabase();
     }
 
     // 공모전 id 리스트 전체 출력
     public List<Long> getContestId(){
         return contestRepository.findAllIds();
+    }
+
+    // 공모전 id로 해당 공모전 정보 반환
+    public Contest findContestDetailById(Long id) {
+        return contestRepository.findByIdWithQuery(id);
+    }
+
+    // 업데이트된 공모전 정보 저장 (예: 조회수증가)
+    public Contest saveContest(Contest contest) {
+        return contestRepository.save(contest);
     }
 }

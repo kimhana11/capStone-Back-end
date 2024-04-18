@@ -3,11 +3,10 @@ package com.example.capd.contest.controller;
 import com.example.capd.contest.domain.Contest;
 import com.example.capd.contest.service.ContestInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class ContestInfoController {
     }
 
     @GetMapping("/contestData") // 주소창에 입력하면 contest 정보 다 보여줌
-    public ResponseEntity<List<Contest>> contestData() {
+    public ResponseEntity<List<Map<String, Object>>> contestData() {
         return ResponseEntity.ok(contestInfoService.getAllContests());
     }
 
@@ -36,4 +35,31 @@ public class ContestInfoController {
     public ResponseEntity<List<Long>> contestIdList(){
         return ResponseEntity.ok(contestInfoService.getContestId());
     }
+
+    @GetMapping("/contestdetail")
+    public ResponseEntity<Contest> getContestDetail(@RequestParam Long id) {
+        Contest contest = contestInfoService.findContestDetailById(id);
+        if(contest == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        else {
+            return new ResponseEntity<>(contest, HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/viewPlus")
+    public ResponseEntity<String> increaseViewCount(@RequestBody Map<String, Long> viewsIncreaseRequest) {
+        Long contestId = viewsIncreaseRequest.get("contestId");
+        Long addedViews = viewsIncreaseRequest.get("addedViews");
+
+        Contest contest = contestInfoService.findContestDetailById(contestId);
+        if (contest == null) {
+            return new ResponseEntity<>("Contest not found", HttpStatus.NOT_FOUND);
+        } else {
+            contest.setViews(addedViews);
+            contestInfoService.saveContest(contest);
+            return new ResponseEntity<>("View count increased successfully", HttpStatus.OK);
+        }
+    }
 }
+

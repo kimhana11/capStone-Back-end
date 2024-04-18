@@ -26,7 +26,17 @@ def extract_contest_info(browser):
             participation_fee = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.view_top_area.clfx > div.clfx > div.txt_area > table > tbody > tr:nth-child(10) > td").text
         else :
             participation_fee = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.view_top_area.clfx > div.clfx > div.txt_area > table > tbody > tr:nth-child(9) > td").text
-    detail_text = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.tab_cont > div > div").text
+        #상세 정보 가져오기
+    detail_text_elements = browser.find_elements(By.CSS_SELECTOR, ".view_detail_area h2, .view_detail_area p")
+    detail_text = ""
+    for element in detail_text_elements:
+        if element.tag_name == "h2":
+            # h2 태그인 경우 '■' 추가
+            detail_text += f"■ {element.text}\n"
+        else:
+            # p 태그인 경우 텍스트만 추가
+            detail_text += f"{element.text}\n"
+
     image = browser.find_element(By.CSS_SELECTOR, "#wrap > div.container.list_wrap > div.left_cont > div.view_cont_area > div.view_top_area.clfx > div.clfx > div.img_area > div > img")
     image_link = image.get_attribute('src')
 

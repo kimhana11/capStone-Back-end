@@ -22,7 +22,7 @@ public interface ProfileService {
     public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId);
 
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
-    public List<ProfileResponseDto> aiRecommendUsers(String userId, Long contestId);
+    public List<ProfileResponseDto> aiRecommendUsers();
 
     //프로필 수정
     public void editProfile(ProfileRequestDto profileRequestDto);
