@@ -22,12 +22,13 @@ public interface ProfileService {
     public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId);
 
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
-    public List<ProfileResponseDto> aiRecommendUsers();
+    public List<ProfileResponseDto> aiRecommendUsers(Long contestId, String userId);
 
     //프로필 수정
     public void editProfile(ProfileRequestDto profileRequestDto);
     //프로필 삭제(user 매핑 때문에, user 삭제되어야 프로필 삭제됨, user 탈퇴시 사용)
     public void deleteProfile(String userId);
 
+    public void aiStart(Long contestId, Long userId);
 
 }

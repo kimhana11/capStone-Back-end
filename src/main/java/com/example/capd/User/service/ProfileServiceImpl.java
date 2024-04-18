@@ -4,10 +4,13 @@ import com.example.capd.Exception.UserWithDesiredStackNotFoundException;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.*;
 import com.example.capd.User.repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -97,12 +100,51 @@ public class ProfileServiceImpl implements ProfileService {
     private boolean hasTeamForContest(User user, Long contestId) {
         return user.getTeamMembers().stream().anyMatch(teamMember -> teamMember.getTeam().getContest().getId().equals(contestId));
     }
+
     @Override
-    public List<ProfileResponseDto> aiRecommendUsers() {
+    public List<ProfileResponseDto> aiRecommendUsers(Long contestId, String userId) {
        //******ai 추천 유저 리스트 필요*************8
-        //공모전 id값과 user_id 리스트 필요
+        // JSON 파일에 저장할 데이터 생성
         return null;
     }
+
+    @Override
+    public void aiStart(Long contestId, Long userId) {
+        // JSON 파일에 저장할 데이터 생성
+        Map<String, Object> jsonData = new HashMap<>();
+        jsonData.put("contestId", contestId);
+        jsonData.put("userId", userId);
+
+        // JSON 파일 생성 및 저장
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.writeValue(new File("data.json"), jsonData);
+            System.out.println("JSON 파일이 성공적으로 생성되었습니다.");
+        } catch (IOException e) {
+            System.out.println("JSON 파일 생성 중 오류가 발생했습니다.");
+            e.printStackTrace();
+            return; // JSON 파일 생성 실패 시 메소드 종료
+        }
+
+        // 파이썬 스크립트 실행
+        String pythonScriptPath = "C:/IntelliJ/Back-end/src/main/java/com/example/capd/ai/data.py";
+        System.out.println("파이썬 스크립트를 실행합니다.");
+
+        try {
+            // 외부 프로세스로 파이썬 스크립트 실행
+            ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath);
+            processBuilder.redirectErrorStream(true); // 에러 스트림을 표준 출력으로 리다이렉션
+            Process process = processBuilder.start();
+
+            // 파이썬 스크립트 실행이 완료될 때까지 대기
+            int exitCode = process.waitFor();
+            System.out.println("파이썬 스크립트 실행이 완료되었습니다. 종료 코드: " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            System.out.println("파이썬 스크립트 실행 중 오류가 발생했습니다.");
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void editProfile(ProfileRequestDto profileRequestDto) {

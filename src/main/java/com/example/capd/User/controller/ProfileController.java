@@ -63,9 +63,15 @@ public class ProfileController {
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
+    //스택만으로 추천
     @GetMapping("profile-stack/{contestId}/{userId}")
     public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
        return profileService.stackRecommendUsers(contestId, userId);
     }
 
+    // 테스트
+    @GetMapping("profile-ai/{contestId}/{userId}")
+    public void aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
+        profileService.aiStart(contestId, userId);
+    }
 }
