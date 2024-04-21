@@ -1,0 +1,16 @@
+@font-face {
+  font-family: 'SOGANGUNIVERSITYTTF';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2312-1@1.1/SOGANGUNIVERSITYTTF.woff2') format('woff2');
+}
+
+body {
+  margin: 0;
+  font-family: 'SOGANGUNIVERSITYTTF';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+}
