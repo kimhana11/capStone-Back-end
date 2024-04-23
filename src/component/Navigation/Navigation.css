@@ -40,6 +40,10 @@
     color: black;
 }
 
+.navigation_main_bar_logo_competition>a:hover{
+    color: #0085FF;
+}
+
 .navigation_main_bar_user_mate {
     width: 13%;
     display: flex;

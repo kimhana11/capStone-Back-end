@@ -119,9 +119,10 @@
 }
 
 .slider_box{
+    background-image: url('../../img/Rectangle\ 674.png');
+    background-position: 10%;
     width: 1332px;
     height: 495px;
-    border: solid 1px;
     border-radius: 2rem;
     margin-left: 235px;
 }

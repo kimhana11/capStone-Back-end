@@ -1,6 +1,3 @@
-
-
-
 .main_who {
     width: 70%;
     margin-left: 15%;
@@ -81,12 +78,19 @@
     width: 300px;
     height: 350px;
     border-radius: 2rem;
+    transition: 0.3s;
+}
+
+.main_component_img:hover,
+.main_component_best_box_img:hover {
+    opacity: 0.8;
 }
 
 .main_component_best_box_img {
     width: 500px;
     height: 350px;
     border-radius: 2rem;
+    transition: 0.3s;
 }
 
 .main_component_best_box_best_p_box {
@@ -110,7 +114,7 @@
     color: #A8A8A8;
 }
 
-.main_component_best_box_best_host{
+.main_component_best_box_best_host {
     width: 100%;
     font-size: medium;
     color: #A8A8A8;
@@ -124,7 +128,7 @@
     margin: 0;
 }
 
-.main_component_best_box_best_title{
+.main_component_best_box_best_title {
     width: 600px;
     height: 36px;
     font-size: x-large;

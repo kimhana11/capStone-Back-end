@@ -32,8 +32,18 @@ export default function CompetitionDetail() {
 
 
     return (
-        <div>
-            
+        <div className='competition_detail'>
+            <div className='competition_detail_background'></div>
+            <img src={contest.image} className='competition_detail_img'/>
+            <div className='competition_detail_big_box'></div>
+            <div>
+                <div className='competition_detail_content_nav'>
+                    <p>상세정보</p>
+                    <p>매칭중인 팀</p>
+                    <p>문의사항</p>
+                </div>
+                <p>{contest.detailText}</p>
+            </div>
         </div>
     )
 }

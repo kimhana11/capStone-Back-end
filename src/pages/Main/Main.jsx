@@ -7,6 +7,7 @@ import SimpleSlider from '../../component/SimpleSlider/SimpleSlider';
 
 const Main = () => {
     const [competitionData, setCompetitionData] = useState([]);
+    const [bestCompetitionData, setBestCompetitionData] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const competitionsPerPage = 4;
     const bestcompetitionsPerPage = 5;
@@ -26,7 +27,8 @@ const Main = () => {
         }).then(result => {
             console.log(result);
             const sortedData = result.data.sort((a, b) => b.views - a.views);
-            setCompetitionData(sortedData);
+            setCompetitionData(result.data);
+            setBestCompetitionData(sortedData);
         })
     }, [])
 
@@ -38,7 +40,6 @@ const Main = () => {
         const today = new Date(currentDate);
         const oneWeekBeforeEnd = new Date(end);
         oneWeekBeforeEnd.setDate(oneWeekBeforeEnd.getDate() - 7); // 마감 1주일 전 날짜 계산
-        const daysRemaining = Math.ceil((end - today) / (1000 * 60 * 60 * 24)); // 현재 날짜부터 마감일까지의 남은 일 수 계산
 
         if (today > end) {
             // 현재 날짜가 마감 날짜를 지난 경우

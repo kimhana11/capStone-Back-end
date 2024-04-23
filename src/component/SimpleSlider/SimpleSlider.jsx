@@ -33,7 +33,6 @@ const SimpleSlider = () => {
                         <div
                             className='slider_box'
                             key={index}>
-                            {value.content}
                         </div>
                     </div>
                 ))}

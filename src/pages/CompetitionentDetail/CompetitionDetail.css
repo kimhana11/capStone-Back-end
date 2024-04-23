@@ -1,0 +1,44 @@
+.competition_detail{
+}
+
+.competition_detail_background{
+    width: 1900px;
+    height: 560px;
+    background-color: #393C4B;
+    z-index: 0;
+}
+
+.competition_detail_img{
+    width: 529px;
+    height: 718px;
+    position: relative;
+    border-radius: 1rem;
+    margin-left: 13%;
+    bottom: 450px;
+}
+
+.competition_detail_big_box{
+    width: 655px;
+    height: 650px;
+    border: solid 1px;
+    border-radius: 1rem;
+    z-index: 1;
+    background-color: white;
+    position: fixed;
+    bottom: 50px;
+    left: 1100px;
+    -webkit-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
+    -ms-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
+    -o-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
+}
+
+.competition_detail_content_nav{
+    width: 40%;
+    margin-left: 13%;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: solid 1px rgba(168, 168, 168, 0.36);
+    position: relative;
+}
