@@ -1,0 +1,66 @@
+.navaigation_sign_bar {
+    width: 13%;
+    padding: 20px;
+    margin-left: 71%;
+    display: flex;
+    justify-content: space-between;
+    font-size: medium;
+    color: #D8D8D8;
+    cursor: default;
+}
+
+.navaigation_sign_bar>a {
+    text-decoration: none;
+    color: black;
+}
+
+#navaigation_sign_bar_frist{
+    color: #0085FF;
+}
+
+.navigation_main_bar {
+    width: 70%;
+    margin-left: 15%;
+    margin-bottom: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navigation_main_bar_logo_competition {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 130%;
+}
+
+.navigation_main_bar_logo_competition>a {
+    text-decoration: none;
+    color: black;
+}
+
+.navigation_main_bar_user_mate {
+    width: 13%;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
+
+.navigation_main_bar_user_mate>a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+.navigation_main_bar_user_mate>a>img {
+    width: 40%;
+    height: 100%;
+}
+
+.navigation_main_bar_user_mate>a>p {
+    margin: 3px;
+    font-size: medium;
+}
