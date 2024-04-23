@@ -43,6 +43,7 @@ public class ReviewServiceImpl implements ReviewService{
 
         //심사기간에 ~ 없는 경우 있음 ->  db에 딱 한개 있긴함
 
+
         if(contest.getDecisionPeriod() != null) {//심사기간
             String[] decisionPeriod = contest.getDecisionPeriod().split("~");
             String endDateString = decisionPeriod[1].trim();
