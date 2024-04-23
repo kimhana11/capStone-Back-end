@@ -18,6 +18,7 @@ public class ReviewRequestDto {
     private String reviewerId; //리뷰 쓰는
     private String reviewedUserId; //리뷰 받는
     private Long teamId;
+    private Long contestId;
 
     public Review toEntity(User reviewerId,User reviewedUserId, Team team) {
         return Review.builder()

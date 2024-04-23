@@ -1,6 +1,8 @@
 package com.example.capd.User.service;
 
-import com.example.capd.Exception.TeamNotConfirmedException;
+import com.example.capd.Exception.ReviewSubmissionPeriodNotEndedException;
+import com.example.capd.contest.domain.Contest;
+import com.example.capd.contest.repository.ContestRepository;
 import com.example.capd.team.domain.Team;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.ReviewRequestDto;
@@ -11,6 +13,8 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +25,7 @@ public class ReviewServiceImpl implements ReviewService{
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final TeamRepository teamRepository;
+    private final ContestRepository contestRepository;
 
     @Override
     public void saveReview(ReviewRequestDto reviewRequestDto) {
@@ -33,13 +38,40 @@ public class ReviewServiceImpl implements ReviewService{
         User reviewedUser = userRepository.findByUserId(reviewRequestDto.getReviewedUserId())
                 .orElseThrow(() -> new EntityNotFoundException("리뷰 받는 사람 id가 존재하지 않습니다: " + reviewRequestDto.getReviewedUserId()));
 
-        //팀 현황이 확정일 경우에만 리뷰 작성 가능
-        if (Boolean.TRUE.equals(team.getStatus())) {
-            Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
-            reviewRepository.save(review);
-        } else {
-            throw new TeamNotConfirmedException();
+        Contest contest = contestRepository.findById(reviewRequestDto.getContestId())
+                .orElseThrow(() -> new EntityNotFoundException(" 존재하지 않는 공모전 id: " + reviewRequestDto.getReviewedUserId()));
+
+        //심사기간에 ~ 없는 경우 있음 ->  db에 딱 한개 있긴함
+
+        if(contest.getDecisionPeriod() != null) {//심사기간
+            String[] decisionPeriod = contest.getDecisionPeriod().split("~");
+            String endDateString = decisionPeriod[1].trim();
+
+            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+            LocalDate currentDate = LocalDate.now();
+
+            //팀 현황이 확정일 경우에만 리뷰 작성 가능 -> 심사 기간 마감일 경우에만 리뷰 작성
+            if (currentDate.isAfter(endDate)) {
+                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
+                reviewRepository.save(review);
+            } else {
+                //에러 이름 수정하기
+                throw new ReviewSubmissionPeriodNotEndedException();
+            }
+        } else{//접수 기간
+            String[] receptionPeriod = contest.getReceptionPeriod().split("~");
+            String endDateString = receptionPeriod[1].trim();
+            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+            LocalDate currentDate = LocalDate.now();
+
+            if(currentDate.isAfter(endDate)) {
+                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
+                reviewRepository.save(review);
+            }else{
+                throw new ReviewSubmissionPeriodNotEndedException(0);
+            }
         }
+
     }
 
     @Override
