@@ -18,7 +18,7 @@ const Main = () => {
     const indexOfLastCompetition = currentPage * competitionsPerPage;
     const indexOfFirstCompetition = indexOfLastCompetition - competitionsPerPage;
     const currentCompetitions = competitionData.slice(indexOfFirstCompetition, indexOfLastCompetition);
-    const bestCurrentCompetitions = competitionData.slice(bestIndexOfFirstCompetition, bestIndexOfLastCompetition);
+    const bestCurrentCompetitions = bestCompetitionData.slice(bestIndexOfFirstCompetition, bestIndexOfLastCompetition);
 
     useEffect(() => {
         axios({
@@ -32,12 +32,12 @@ const Main = () => {
         })
     }, [])
 
-    const categorizeDate = (receptionPeriod, currentDate) => {
+    const categorizeDate = (receptionPeriod) => {
         const [start, end] = receptionPeriod.split(' ~ ').map(dateStr => {
             const [year, month, day] = dateStr.split(/[-.]/);
             return new Date(year, month - 1, day);
         });
-        const today = new Date(currentDate);
+        const today = new Date();
         const oneWeekBeforeEnd = new Date(end);
         oneWeekBeforeEnd.setDate(oneWeekBeforeEnd.getDate() - 7); // 마감 1주일 전 날짜 계산
 
@@ -58,7 +58,7 @@ const Main = () => {
 
     return (
         <div>
-            <SimpleSlider/>
+            <SimpleSlider />
             <div className='main_who'>
                 <div>
                     <Link><img src='' /></Link>
@@ -97,7 +97,7 @@ const Main = () => {
                 <p>마감 임박 공모전</p>
                 <div>
                     {currentCompetitions.map(competition => (
-                        categorizeDate(competition.receptionPeriod, currentDate) === '마감' ? (
+                        categorizeDate(competition.receptionPeriod) === '마감 임박' ? (
                             <Link to={'/competitionDetail'} state={{ id: competition.id }}>
                                 <div>
                                     <img className='main_component_img' src={competition.image} />
@@ -120,7 +120,7 @@ const Main = () => {
                     <div>
                         {bestCurrentCompetitions.slice(0, 1).map(competition => {
                             const end = new Date(competition.receptionPeriod.split(' ~ ')[1]);
-                            const daysRemaining = categorizeDate(competition.receptionPeriod, currentDate) === '마감' ? 0 : Math.ceil((end - currentDate) / (1000 * 60 * 60 * 24));
+                            const daysRemaining = categorizeDate(competition.receptionPeriod) === '마감' ? 0 : Math.ceil((end - currentDate) / (1000 * 60 * 60 * 24));
                             return (
                                 <div className='main_component_best_box_best' key={competition.id}>
                                     <Link to={'/competitionDetail'} state={{ id: competition.id }}>
@@ -159,7 +159,7 @@ const Main = () => {
                 <p>접수 예정 공모전</p>
                 <div>
                     {currentCompetitions.map(competition => (
-                        categorizeDate(competition.receptionPeriod, currentDate) === '접수 예정' ? (
+                        categorizeDate(competition.receptionPeriod) === '접수 예정' ? (
                             <Link to={'/competitionDetail'} state={{ id: competition.id }}>
                                 <div>
                                     <img className='main_component_img' src={competition.image} />
