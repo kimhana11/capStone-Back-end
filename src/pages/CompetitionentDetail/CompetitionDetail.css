@@ -15,15 +15,15 @@
 }
 
 .competition_detail_big_box {
-    width: 555px;
-    height: 540px;
+    width: 450px;
+    height: 500px;
     border-radius: 1rem;
     z-index: 1;
     background-color: white;
     position: fixed;
     padding: 30px;
-    bottom: 80px;
-    left: 1100px;
+    bottom: 100px;
+    left: 1200px;
     -webkit-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
     -moz-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
     -ms-box-shadow: 0 19px 38px rgba(0, 0, 0, 0.20), 0 15px 12px rgba(0, 0, 0, 0.12);
@@ -34,6 +34,7 @@
 .competition_detail_big_box_content {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
 }
 
@@ -42,7 +43,7 @@
     padding: 4px 6px 4px 6px;
     border-radius: 0.3rem;
     color: white;
-    margin-right: 10px;
+    margin: 0px 10px 0px 0px;
 }
 
 .competition_detail_big_box_content_deadline {
@@ -62,11 +63,68 @@
 .competition_detail_big_box_content_host {
     width: 100%;
     color: #9D9D9D;
-    margin-bottom: 100px;
+    margin-bottom: 70px;
 }
 
 .competition_detail_big_box_content_sub_title {
     color: #9D9D9D;
+}
+
+.competition_detail_big_box_content_sub_fee{
+    margin-top: 0;
+    padding-bottom: 15px;
+    font-size: large;
+    font-weight: 600;
+    color: #0085FF;
+    border-bottom: solid 1px rgba(138, 138, 138, 0.1);
+}
+
+.competition_detail_sub_box_content{
+    display: flex;
+}
+
+.competition_detail_sub_box_content_div{
+    margin-left: 5%;
+}
+
+.competition_detail_sub_p{
+    color: #0085FF;
+}
+
+.competition_detail_button{
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    font-size: large;
+}
+
+.competition_detail_button_p_box{
+    width: 48%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: solid 1px #EAEAEA;
+    color: #A7A7A7;
+    border-radius: 0.5rem;
+}
+
+.competition_detail_button_p_box>img{
+    width: 15px;
+    margin-right: 1%;
+    opacity: 0.3;
+}
+
+.competition_detail_button_p{
+    width: 48%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background-color: #0085FF;
+    border-radius: 0.5rem;
 }
 
 .competition_detail_content_nav {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './CompetitionDetail.css';
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
-import Share from '../../img/Vectors-Add-Anchor--Streamline-Ultimate.png'
+import Share from '../../img/Share--Streamline-Nova.png'
 
 export default function CompetitionDetail() {
     const [contestId, setContestId] = useState('');
@@ -66,28 +66,31 @@ export default function CompetitionDetail() {
                 <p className='competition_detail_big_box_content_host'>{contest.host}</p>
                 <div>
                     <p className='competition_detail_big_box_content_sub_title'>접수비용</p>
-                    <p>{contest.fee}</p>
+                    <p className='competition_detail_big_box_content_sub_fee'>{contest.fee}</p>
                 </div>
-                <div>
+                <div className='competition_detail_sub_box_content'>
                     <div>
                         <p className='competition_detail_big_box_content_sub_title'>모집기간</p>
-                        <p>{contest.receptionPeriod}</p>
+                        <p>  {
+                            contest.receptionPeriod &&
+                            <span className='competition_detail_sub_p'>~24.{contest.receptionPeriod.split('.')[3]}.{contest.receptionPeriod.split('.')[4]}</span>
+                        }</p>
                     </div>
-                    <div>
+                    <div className='competition_detail_sub_box_content_div'>
                         <p className='competition_detail_big_box_content_sub_title'>접수방법</p>
-                        <p>{contest.howToApply}</p>
+                        <p className='competition_detail_sub_p'>{contest.howToApply}</p>
                     </div>
-                    <div>
+                    <div className='competition_detail_sub_box_content_div'>
                         <p className='competition_detail_big_box_content_sub_title'>매칭신청</p>
-                        <p></p>
+                        <p className='competition_detail_sub_p'></p>
                     </div>
                 </div>
-                <div>
-                    <p>
-                        <img src={Share} />
+                <div className='competition_detail_button'>
+                    <p className='competition_detail_button_p_box'>
+                        <img src={Share}/>
                         공유하기
                     </p>
-                    <p>참여하기</p>
+                    <p className='competition_detail_button_p'>참여하기</p>
                 </div>
             </div>
             <div>
