@@ -3,14 +3,21 @@ import Logo from '../../img/Logo.png';
 import User from '../../img/User-Circle-Single--Streamline-Core.png';
 import Mate from '../../img/Align-Two-Top-Square--Streamline-Core.png';
 import './Navigation.css'
+import MateModal from '../MateModal/MateModal';
+import { useState } from 'react';
 
 const Navigation = () => {
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setModalOpen(!modalOpen);
+    };
     return (
         <div>
-            <div>
+            <div className='navaigation_bar'>
                 <div className='navaigation_sign_bar'>
-                    <Link id='navaigation_sign_bar_frist'>회원가입</Link>|
-                    <Link>로그인</Link>|
+                    <Link id='navaigation_sign_bar_frist' to={'/signui'}>회원가입</Link>|
+                    <Link to={'/signui'}>로그인</Link>|
                     <Link>고객센터</Link>
                 </div>
                 <div className='navigation_main_bar'>
@@ -26,10 +33,11 @@ const Navigation = () => {
                             <img src={User}/>
                             <p>마이페이지</p>
                         </Link>
-                        <Link>
+                        <Link onClick={toggleModal} className='navigation_main_bar_mate'>
                             <img src={Mate}/>
                             <p>추천 메이트</p>
                         </Link>
+                        {modalOpen && <MateModal />}
                     </div>
                 </div>
             </div>

@@ -1,0 +1,112 @@
+.modal_mate_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal_mate_top>p {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    border-bottom: solid 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.03);
+    padding: 20px;
+}
+
+.modal_mate_main{
+    height: 89%;
+    padding-left: 7%;
+}
+
+.modal_mate_competition {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.modal_mate_competition>p {
+    background-color: #00B2FF;
+    border-radius: 2rem;
+    padding: 5px 19px 5px 12px;
+    color: white;
+    margin-right: 2%;
+}
+
+.modal_mate{
+    height: 70%;
+    overflow-y: auto
+}
+
+.modal_mate_user {
+    width: 87%;
+    height: 27%;
+    display: flex;
+    align-items: center;
+    border: solid 2px #0085FF;
+    border-radius: 1rem;
+    margin-bottom: 3%;
+    padding: 0% 2% 0% 2%;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.modal_mate_user>div {
+    width: 100%;
+    margin-left: 3%;
+}
+
+.modal_mate_user>img {
+    width: 75px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal_mate_user>div>p {
+    margin: 0;
+}
+
+.modal_mate_user_name {
+    padding: 3% 0% 2% 0%;
+    font-weight: 600;
+}
+
+.modal_mate_user_content{
+    font-size: small;
+}
+
+.modal_mate_user_stack {
+    width: 100%;
+    display: flex;
+}
+
+.modal_mate_user_stack>p{
+    background-color: #00B2FF;
+    color: white;
+    border-radius: 2rem;
+    padding: 3px 10px 3px 10px;
+    margin: 3% 2% 0% 0%;
+}
+
+.modal_mate_group_button{
+    width: 92%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    background-color: #0085FF;
+    border-radius: 0.6rem;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+.modal_mate_group_button>img{
+    width: 7%;
+    height: 10%;
+    border: solid 1px white;
+    border-radius: 100%;
+}
+
+.modal_mate_group_button>p{
+    margin: 5% 0% 5% 2%;
+}

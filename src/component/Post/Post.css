@@ -1,0 +1,52 @@
+.zip__input {
+    width: 110px;
+    height: 25px;
+    margin-right: 22px;
+    margin-bottom: 6px;
+    cursor: default;
+}
+
+.road__input {
+    width: 227px;
+    height: 25px;
+    margin-bottom: 6px;
+    cursor: default;
+}
+
+.detail__input {
+    width: 227px;
+    height: 25px;
+}
+
+div>input {
+    outline: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #23004d;
+}
+
+.zip__box {
+    cursor: pointer;
+    background-color: #0085FF;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 5px;
+    transform: 0.3s;
+}
+
+.outbutton {
+    cursor: pointer;
+    margin-left: 45%;
+    margin-top: 5%;
+    background-color: #0085FF;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 10px;
+    transform: 0.3s;
+}
+
+.zip__box:hover, .outbutton:hover{
+    background-color: #12B3FB;
+}
