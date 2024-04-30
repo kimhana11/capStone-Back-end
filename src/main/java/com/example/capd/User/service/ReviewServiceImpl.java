@@ -41,22 +41,19 @@ public class ReviewServiceImpl implements ReviewService{
         Contest contest = contestRepository.findById(reviewRequestDto.getContestId())
                 .orElseThrow(() -> new EntityNotFoundException(" 존재하지 않는 공모전 id: " + reviewRequestDto.getReviewedUserId()));
 
-        //심사기간에 ~ 없는 경우 있음 ->  db에 딱 한개 있긴함
-
-
-        if(contest.getDecisionPeriod() != null) {//심사기간
+        //심사 기간에 ~ 없는 경우도 접수 기간으로 -> 딱 한개 있긴함
+        if(contest.getDecisionPeriod() != null && contest.getDecisionPeriod().contains("~")) {//심사기간
             String[] decisionPeriod = contest.getDecisionPeriod().split("~");
             String endDateString = decisionPeriod[1].trim();
 
             LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
             LocalDate currentDate = LocalDate.now();
 
-            //팀 현황이 확정일 경우에만 리뷰 작성 가능 -> 심사 기간 마감일 경우에만 리뷰 작성
+            //심사 기간 마감일 경우에만 리뷰 작성
             if (currentDate.isAfter(endDate)) {
                 Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
                 reviewRepository.save(review);
             } else {
-                //에러 이름 수정하기
                 throw new ReviewSubmissionPeriodNotEndedException();
             }
         } else{//접수 기간

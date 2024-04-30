@@ -35,7 +35,7 @@ public class CustomExceptionManager {
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
     @ExceptionHandler(ReviewSubmissionPeriodNotEndedException.class)
-    public ResponseEntity<CommonResponse> TeamNotException(ReviewSubmissionPeriodNotEndedException e) {
+    public ResponseEntity<CommonResponse> ReviewNotException(ReviewSubmissionPeriodNotEndedException e) {
         CommonResponse res = CommonResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .httpStatus(HttpStatus.NOT_FOUND)

@@ -156,7 +156,7 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new EntityNotFoundException("프로필이 존재하지 않습니다: " + userId));
 
         User user = userRepository.findByUserId(profileRequestDto.getUserId()).get();
-
+        profileRepository.deleteById(profile.getId());
 
         Profile updatedProfile = Profile.builder()
                 .id(profile.getId())
