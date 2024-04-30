@@ -41,8 +41,8 @@ public class ReviewServiceImpl implements ReviewService{
         Contest contest = contestRepository.findById(reviewRequestDto.getContestId())
                 .orElseThrow(() -> new EntityNotFoundException(" 존재하지 않는 공모전 id: " + reviewRequestDto.getReviewedUserId()));
 
-        //심사 기간에 ~ 없는 경우도 접수 기간으로 -> 딱 한개 있긴함
-        if(contest.getDecisionPeriod() != null && contest.getDecisionPeriod().contains("~")) {//심사기간
+        //심사 기간에 ~ 없는 경우도 접수 기간으로
+        if(contest.getDecisionPeriod() != null || !contest.getDecisionPeriod().contains("~")) {//심사기간
             String[] decisionPeriod = contest.getDecisionPeriod().split("~");
             String endDateString = decisionPeriod[1].trim();
 
