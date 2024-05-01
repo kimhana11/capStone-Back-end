@@ -6,7 +6,10 @@ import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
 import com.example.capd.User.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,7 +74,22 @@ public class ProfileController {
 
     // 테스트
     @GetMapping("profile-ai/{contestId}/{userId}")
-    public void aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
+    public ResponseEntity<FileSystemResource> aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
         profileService.aiStart(contestId, userId);
+
+        String filename = contestId + "_" + userId + ".json";
+
+        FileSystemResource fileResource = new FileSystemResource(filename);
+        if (fileResource.exists()) {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(fileResource);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 }

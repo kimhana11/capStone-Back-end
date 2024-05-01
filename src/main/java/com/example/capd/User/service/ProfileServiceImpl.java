@@ -9,8 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -110,41 +109,36 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void aiStart(Long contestId, Long userId) {
-        // JSON 파일에 저장할 데이터 생성
-        Map<String, Object> jsonData = new HashMap<>();
-        jsonData.put("contestId", contestId);
-        jsonData.put("userId", userId);
-
-        // JSON 파일 생성 및 저장
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(new File("data.json"), jsonData);
-            System.out.println("JSON 파일이 성공적으로 생성되었습니다.");
-        } catch (IOException e) {
-            System.out.println("JSON 파일 생성 중 오류가 발생했습니다.");
-            e.printStackTrace();
-            return; // JSON 파일 생성 실패 시 메소드 종료
-        }
-
         // 파이썬 스크립트 실행
-        String pythonScriptPath = "C:/IntelliJ/Back-end/src/main/java/com/example/capd/ai/data.py";
-        System.out.println("파이썬 스크립트를 실행합니다.");
+        String pythonScriptPath = "C:/IntelliJ/Back-end/src/main/java/com/example/capd/python/ai.py";
+        System.out.println("파이썬 스크립트 실행.");
 
         try {
             // 외부 프로세스로 파이썬 스크립트 실행
-            ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath);
+            ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath,
+                    String.valueOf(contestId),
+                    String.valueOf(userId));
             processBuilder.redirectErrorStream(true); // 에러 스트림을 표준 출력으로 리다이렉션
             Process process = processBuilder.start();
 
             // 파이썬 스크립트 실행이 완료될 때까지 대기
             int exitCode = process.waitFor();
             System.out.println("파이썬 스크립트 실행이 완료되었습니다. 종료 코드: " + exitCode);
+
+            // 파이썬 스크립트의 실행 결과 읽기
+            InputStream inputStream = process.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 실행 결과 처리
+                System.out.println(line);
+            }
         } catch (IOException | InterruptedException e) {
             System.out.println("파이썬 스크립트 실행 중 오류가 발생했습니다.");
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void editProfile(ProfileRequestDto profileRequestDto) {
