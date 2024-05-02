@@ -18,7 +18,6 @@ public class Participation {
     private Long id;
 
     private String additional;
-   // private String time;
 
     //원하는 스택
     @ElementCollection

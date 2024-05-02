@@ -24,16 +24,17 @@ public class ParticipationService {
         String userId = participationParam.getUserId();
         Long contestId = participationParam.getContestId();
 
-        Participation participationExists = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다. id=" + userId));
+        Contest contest = contestRepository.findById(contestId)
+                .orElseThrow(() -> new EntityNotFoundException("공모전을 찾을 수 없습니다. id=" + contestId));
+
+        Participation participationExists = participationRepository.findParticipationByContestIdAndUserId(contestId, user.getId());
 
         if (participationExists !=null) {
             throw new AlreadyAppliedException();
         }
 
-        User user = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다. id=" + userId));
-        Contest contest = contestRepository.findById(contestId)
-                .orElseThrow(() -> new EntityNotFoundException("공모전을 찾을 수 없습니다. id=" + contestId));
 
 
         Participation participation = participationParam.toEntity(user, contest);
@@ -46,7 +47,7 @@ public class ParticipationService {
         Contest contest = contestRepository.findById(contestId)
                 .orElseThrow(()-> new EntityNotFoundException("해당 공모전을 찾을 수 없습니다. 현황을 확인하세요="+contestId));
 
-        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
+        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, user.getId());
 
         participationRepository.deleteById(participation.getId());
     }

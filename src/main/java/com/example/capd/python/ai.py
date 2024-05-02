@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import sys
 import json
+import matplotlib.pyplot as plt
 
 connection = pymysql.connect(host='localhost',
                              user='root',
@@ -182,96 +183,98 @@ for i in range(1, len(other_people_formatted)+1) : # 0번째는 내가 원하는
 # ----------------- 1. 각각 막대그래프 따로 그리기 (순위변화 보기 용이함) ------------------------
 # matplotlib의 barh() 가로막대그래프
 # X축 : 코사인 유사도
-# plt.figure(figsize=(12, 6))
-# plt.subplot(1, 2, 1)
-# xData = cosine_similarities[0][1:]
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+xData = cosine_similarities[0][1:]
 # # Y축 : 각 userId
-# yData = [str(other_person[0]) for other_person in other_people_formatted]
-#
-# plt.barh(yData, xData, label='Cosine Similarity', color='r')
-#
-# plt.ylabel('userId') # y축 이름
-# plt.xlabel('Cosine Similarity') # x축 이름
-# plt.title('Cosine Similarity by userId Horizental bar graph\n Before applying weight') # 그래프 제목
-# plt.grid()
+yData = [str(other_person[0]) for other_person in other_people_formatted]
+
+plt.barh(yData, xData, label='Cosine Similarity', color='r')
+
+plt.ylabel('userId') # y축 이름
+plt.xlabel('Cosine Similarity') # x축 이름
+plt.title('Cosine Similarity by userId Horizental bar graph\n Before applying weight') # 그래프 제목
+plt.grid()
 # # 각 유사도 값 그래프 바 옆에 표시하기
-# for index, value in enumerate(xData) :
-#     if value != 0.0 : # ha속성은 바 끝으로부터 어느쪽으로 텍스트를 보여줄건지 결정
-#         plt.text(value, index, str(value), ha='right')
-#     else : # 값이 0.0일때 왼쪽으로 표시하면 왼쪽에 userId가 겹쳐서 잘 안보임..
-#         plt.text(value, index, str(value), ha='left')
-#
+for index, value in enumerate(xData) :
+    if value != 0.0 : # ha속성은 바 끝으로부터 어느쪽으로 텍스트를 보여줄건지 결정
+        plt.text(value, index, str(value), ha='right')
+    else : # 값이 0.0일때 왼쪽으로 표시하면 왼쪽에 userId가 겹쳐서 잘 안보임..
+        plt.text(value, index, str(value), ha='left')
+
 # # 가중치 적용 이후 코사인 유사도 가로 바 그래프
-# xData = weighted_similarities
-# plt.subplot(1, 2, 2)  # 1행 2열의 두 번째 그래프
-# plt.barh(yData, xData, color='skyblue', label='Weighted Cosine Similarity')
-# plt.ylabel('user Id')
-# plt.xlabel('Weighted Cosine Similarity')
-# plt.title('Cosine Similarity by userId Horizental bar graph\nAfter applying weight')
-# plt.grid()
-# for index, value in enumerate(xData):
-#     if value != 0.0:
-#         plt.text(value, index, str(value), ha='right')
-#     else:
-#         plt.text(value, index, str(value), ha='left')
-# plt.show()
-#
+xData = weighted_similarities
+plt.subplot(1, 2, 2)  # 1행 2열의 두 번째 그래프
+plt.barh(yData, xData, color='skyblue', label='Weighted Cosine Similarity')
+plt.ylabel('user Id')
+plt.xlabel('Weighted Cosine Similarity')
+plt.title('Cosine Similarity by userId Horizental bar graph\nAfter applying weight')
+plt.grid()
+for index, value in enumerate(xData):
+    if value != 0.0:
+        plt.text(value, index, str(value), ha='right')
+    else:
+        plt.text(value, index, str(value), ha='left')
+plt.show()
+
 # # ----------------- 2. 한번에 그리기 (가중치 적용 전후 얼마나 변화했는지 보기 용이함) ------------------------
-# xData = cosine_similarities[0][1:]  # 적용 전 코사인 유사도
-# xData_weighted = weighted_similarities  # 적용 후 코사인 유사도
-# yData = [str(other_person[0]) for other_person in other_people_formatted]  # userId 혹은 다른 식별자
-#
+xData = cosine_similarities[0][1:]  # 적용 전 코사인 유사도
+xData_weighted = weighted_similarities  # 적용 후 코사인 유사도
+yData = [str(other_person[0]) for other_person in other_people_formatted]  # userId 혹은 다른 식별자
+
 # # 그래프 그리기
-# plt.figure(figsize=(10, 6))  # 그래프 사이즈 설정
-#
+plt.figure(figsize=(10, 6))  # 그래프 사이즈 설정
+
 # # 가로 막대 그래프 그리기 (적용 전)
-# plt.barh(np.arange(len(yData)), xData, color='skyblue', label='Before Weighted', height=0.4)
-#
+plt.barh(np.arange(len(yData)), xData, color='skyblue', label='Before Weighted', height=0.4)
+
 # # 가로 막대 그래프 그리기 (적용 후)
-# plt.barh(np.arange(len(yData)) + 0.4, xData_weighted, color='orange', label='After Weighted', height=0.4)
-#
+plt.barh(np.arange(len(yData)) + 0.4, xData_weighted, color='orange', label='After Weighted', height=0.4)
+
 # # 그래프에 텍스트 표시
-# for i, value in enumerate(xData):
-#     if value != 0.0:
-#         plt.text(value, i, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 전 막대 오른쪽에 텍스트 표시
-#     else:
-#         plt.text(value, i, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
-# for i, value in enumerate(xData_weighted):
-#     if value != 0.0:
-#         plt.text(value, i + 0.4, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 후 막대 오른쪽에 텍스트 표시
-#     else:
-#         plt.text(value, i + 0.4, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
-#
+for i, value in enumerate(xData):
+    if value != 0.0:
+        plt.text(value, i, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 전 막대 오른쪽에 텍스트 표시
+    else:
+        plt.text(value, i, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
+for i, value in enumerate(xData_weighted):
+    if value != 0.0:
+        plt.text(value, i + 0.4, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 후 막대 오른쪽에 텍스트 표시
+    else:
+        plt.text(value, i + 0.4, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
+
 # # 그래프 제목, 축 이름 설정
-# plt.title('Cosine Similarity Before and After Weighted')
-# plt.xlabel('Cosine Similarity')
-# plt.ylabel('User Id')
-# plt.yticks(np.arange(len(yData)) + 0.2, yData)  # y 축에 userId 표시
-# plt.grid(axis='x')  # x 축에만 그리드 표시
-# plt.legend()  # 범례 표시
-# plt.tight_layout()  # 그래프 간격 조정
-# plt.show()
-
-# print(weighted_similarities)
-# 상위 3명의 id 추출
-top3_indices = np.argsort(weighted_similarities)[::-1][:3]
-print('최종 순위 3명')
-# 결과 출력
-print("\nOther Users Profiles:")
-other_users_profile_df = pd.DataFrame(other_users_profiles)
-print(other_users_profile_df)
+plt.title('Cosine Similarity Before and After Weighted')
+plt.xlabel('Cosine Similarity')
+plt.ylabel('User Id')
+plt.yticks(np.arange(len(yData)) + 0.2, yData)  # y 축에 userId 표시
+plt.grid(axis='x')  # x 축에만 그리드 표시
+plt.legend()  # 범례 표시
+plt.tight_layout()  # 그래프 간격 조정
+plt.show()
 
 
-top3_user_ids = [other_people_formatted[i][0] for i in top3_indices]
 
-top3_users_json = [{"rank": i+1, "user_id": user_id} for i, user_id in enumerate(top3_user_ids)]
+# 상위 10명의 id 추출. 10명이 안될 경우 정렬만 수행
+top10_indices = []
+if len(weighted_similarities) > 10 :
+    top10_indices = np.argsort(weighted_similarities)[::-1][:10]
+else :
+    top10_indices = np.argsort(weighted_similarities)[::-1][:len(weighted_similarities)]
+# 상위n명의 정보 출력
+
+json_list = []
+
+for idx in top10_indices:
+    other_user_id  = other_people_formatted[idx][0]
+    print("상대방 id:", other_user_id , ', 최종 유사도:', weighted_similarities[idx])
+    if weighted_similarities[idx] != 0:
+        json_list.append({"user_id": other_user_id })
 
 # JSON 파일명 생성
 json_filename = f"{contest_id}_{user_id}.json"
-# 상위 3명의 id를 JSON 파일로 저장
-with open(json_filename, 'w') as json_file:
-    json.dump(top3_users_json, json_file)
+json_data = [{"rank": rank, "user_id": user_info["user_id"]} for rank, user_info in enumerate(json_list[:10], start=1)]
 
-# 상위 3명의 정보 출력
-for idx in top3_indices :
-    print("상대방 id : ", other_people_formatted[idx][0], ', 최종 유사도 : ', weighted_similarities[idx])
+# 상위 10명의 id를 JSON 파일로 저장
+with open(json_filename, 'w') as json_file:
+    json.dump(json_data, json_file)

@@ -68,28 +68,14 @@ public class ProfileController {
 
     //스택만으로 추천
     @GetMapping("profile-stack/{contestId}/{userId}")
-    public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
+    public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable Long userId){
        return profileService.stackRecommendUsers(contestId, userId);
     }
 
-    // 테스트
+    // ai 추천
     @GetMapping("profile-ai/{contestId}/{userId}")
-    public ResponseEntity<FileSystemResource> aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
+    public List<ProfileParticipationRes> aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
         profileService.aiStart(contestId, userId);
-
-        String filename = contestId + "_" + userId + ".json";
-
-        FileSystemResource fileResource = new FileSystemResource(filename);
-        if (fileResource.exists()) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(fileResource);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        return profileService.aiRecommendUsers(contestId, userId);
     }
 }

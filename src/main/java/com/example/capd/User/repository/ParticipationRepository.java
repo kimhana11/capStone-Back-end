@@ -12,12 +12,11 @@ public interface ParticipationRepository extends JpaRepository<Participation, Lo
     @Query("SELECT p FROM Participation p " +
             "JOIN p.user u " +
             "JOIN p.contest c " +
-            "WHERE c.id = :contestId AND u.userId = :userId")
+            "WHERE c.id = :contestId AND u.id = :userId")
     Participation findParticipationByContestIdAndUserId(
             @Param("contestId") Long contestId,
-            @Param("userId") String userId
+            @Param("userId") Long userId
     );
-
 }
 
 
