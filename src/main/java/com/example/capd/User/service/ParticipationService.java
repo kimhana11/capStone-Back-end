@@ -3,6 +3,7 @@ package com.example.capd.User.service;
 import com.example.capd.Exception.AlreadyAppliedException;
 import com.example.capd.User.domain.Participation;
 import com.example.capd.User.domain.User;
+import com.example.capd.User.dto.ContestDto;
 import com.example.capd.User.dto.ParticipationParam;
 import com.example.capd.contest.repository.ContestRepository;
 import com.example.capd.User.repository.ParticipationRepository;
@@ -11,6 +12,10 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.example.capd.contest.domain.Contest;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ParticipationService {
@@ -50,5 +55,18 @@ public class ParticipationService {
         Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, user.getId());
 
         participationRepository.deleteById(participation.getId());
+    }
+
+    public List<ContestDto> myContestList(Long userId){
+        List<Participation> participations = participationRepository.findParticipationsByUserId(userId);
+
+        return participations.stream()
+                .map(participation -> {
+                    Contest contest = participation.getContest();
+                    ContestDto contestDto = ContestDto.builder().
+                            contestId(contest.getId()).title(contest.getTitle()).build();
+                    return contestDto;
+                })
+                .collect(Collectors.toList());
     }
 }
