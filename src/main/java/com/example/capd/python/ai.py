@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='db12',
+                             password='1234',
                              database='capd',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)

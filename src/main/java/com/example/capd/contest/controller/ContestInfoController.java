@@ -56,6 +56,9 @@ public class ContestInfoController {
             return new ResponseEntity<>("Contest not found", HttpStatus.NOT_FOUND);
         } else {
             Long currentViews = contest.getViews();
+            if (currentViews == null) {
+                currentViews = 0L; // currentViews가 null이면 0으로 초기화
+            }
             Long updatedViews = currentViews + 1;
             contest.setViews(updatedViews);
             contestInfoService.saveContest(contest);
