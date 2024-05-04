@@ -3,15 +3,19 @@ import './CompetitionDetail.css';
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
 import Share from '../../img/Share--Streamline-Nova.png'
+import Swal from 'sweetalert2';
 
 export default function CompetitionDetail() {
     const [contestId, setContestId] = useState('');
     const [contest, setContest] = useState('');
+    const [userId, setUserId] = useState('');
     const [daysRemaining, setDaysRemaining] = useState(0);
     const location = useLocation();
 
     useEffect(() => {
         const id = window.localStorage.getItem('contestId');
+        const userId = window.localStorage.getItem('userId');
+        setUserId(userId);
 
         setContestId(location.state.id);
         window.localStorage.setItem('contestId', location.state.id);
@@ -38,7 +42,15 @@ export default function CompetitionDetail() {
             url: '/viewPlus',
             data: { id: id }
         })
+        // axios({
+        //     method: 'get',
+        //     url: `/participation/${userId}`
+        // }).then(result => {
+        //     console.log(result)
+        // })
     }, [])
+
+
 
     const preprocessData = (data) => {
         // 데이터 전처리하여 <br>로 줄 바꿈 처리
@@ -50,6 +62,54 @@ export default function CompetitionDetail() {
         }
         return processedData;
     };
+
+    function Matching() {
+        Swal.fire({
+            title: "팀원 매칭 시 필요한 정보",
+            html: `
+                <p id="stack_p">팀원에게 원하는 기술 스택</p>
+                <input id="stack" class="swal2-input" placeholder="ex) 자바, 스프링">
+        
+                <p id="additional_p">기타(하고싶은 말)</p>
+                <input id="additional" class="swal2-input" placeholder="어떤 아이디어가 있다 등등">
+            `,
+            showCancelButton: true,
+            confirmButtonText: "팀원찾기",
+            cancelButtonText: "취소"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const stackInput  = document.querySelector('#stack').value;
+                const additional = document.querySelector('#additional').value;
+
+                const stackList = stackInput.split(',').map(item => item.trim());
+
+                const participationParam = {
+                    userId: userId,
+                    contestId: contestId,
+                    stackList: stackList,
+                    additional: additional
+                };
+
+                try {
+                    axios({
+                        method: 'post',
+                        url: 'participation',
+                        data: participationParam
+                    }).then(result => {
+                        if (result.status === 200) {
+                            Swal.fire({
+                                title: "매칭열에 추가됐습니다"
+                            })
+                        }
+                        window.location.reload();
+                    })
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+
+    }
 
     return (
         <div>
@@ -87,10 +147,10 @@ export default function CompetitionDetail() {
                 </div>
                 <div className='competition_detail_button'>
                     <p className='competition_detail_button_p_box'>
-                        <img src={Share}/>
+                        <img src={Share} />
                         공유하기
                     </p>
-                    <p className='competition_detail_button_p'>참여하기</p>
+                    <p className='competition_detail_button_p' onClick={Matching}>참여하기</p>
                 </div>
             </div>
             <div>

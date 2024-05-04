@@ -118,11 +118,9 @@
     display: none;
 }
 
-.slider_box{
-    background-image: url('../../img/Rectangle\ 674.png');
-    background-position: 10%;
+.slider_box>img{
     width: 1332px;
     height: 495px;
-    border-radius: 2rem;
+    border-radius: 1rem;
     margin-left: 235px;
 }

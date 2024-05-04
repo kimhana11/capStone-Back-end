@@ -1,0 +1,22 @@
+.myPage_main {
+    height: 230px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #00B2FF;
+}
+
+.myPage_main>a{
+    text-decoration: none;
+}
+
+.myPage_main_font,
+.myPage_main_font_p {
+    color: white;
+    font-size: large;
+    font-weight: bold;
+}
+
+.myPage_main_font_p {
+    cursor: pointer;
+}

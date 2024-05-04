@@ -2,17 +2,20 @@ import React from 'react';
 import Slider from "react-slick";
 import './slick.css';
 import './slick-theme.css';
+import img01 from '../../img/001.png';
+import img02 from '../../img/002.png';
+import img03 from '../../img/003.png';
 
 const SimpleSlider = () => {
     const list = [
         {
-            content: 1
+            content: <img src={img01} />
         },
         {
-            content: 2
+            content: <img src={img02} />
         },
         {
-            content: 3
+            content: <img src={img03} />
         }
     ]
 
@@ -27,12 +30,11 @@ const SimpleSlider = () => {
 
     return (
         <div className='slider_main_box'>
-            <Slider {...settings}> {/* settings 객체를 전달할 때는 {...settings} 형태로 전달해야 합니다. */}
-                {list.map((value, index) => (
-                    <div>
-                        <div
-                            className='slider_box'
-                            key={index}>
+            <Slider {...settings}>
+                {list.map((slide, index) => (
+                    <div key={index}>
+                        <div className='slider_box'>
+                            {slide.content}
                         </div>
                     </div>
                 ))}

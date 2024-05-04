@@ -1,0 +1,151 @@
+.UserModify_Main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+
+.UserModify_Form {
+    width: 600px;
+    height: 1000px;
+    display: flex;
+    padding: 30px 0px 30px 0px;
+    border: solid 1px #0085FF;
+    margin-top: 50px;
+    font-size: large;
+    color: #747474;
+    font-weight: 500;
+}
+
+.UserModify_Form_dbox_icon {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.UserModify_Form_dbox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: start;
+}
+
+.UserModify_Form_Main {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-left: 10%;
+}
+
+.UserModify_Form_Main>div {
+    margin-left: 10px;
+}
+
+.UserModify_Form_dbox>div>input {
+    font-size: large;
+    width: 200px;
+    padding-left: 5px;
+}
+
+.UserModify_Form_dbox>input {
+    font-size: large;
+    width: 230px;
+    padding-left: 5px;
+}
+
+.UserModify_Form_dbox>div>span {
+    font-size: small;
+}
+
+.UserModify_Form_id {
+    cursor: default;
+    background-color: #eeeeee;
+    border: none;
+    margin-top: 4%;
+}
+
+.UserModify_Form_dbox_box {
+    height: 6%;
+}
+
+.UserModify_Form_dbox_mailbox {
+    display: flex;
+    align-items: center;
+    margin-top: 7%;
+}
+
+.UserModify_Form_pw {
+    margin-top: 9%;
+}
+
+#UserModify_Form_email_id {
+    width: 30%;
+    height: 45%;
+    margin-right: 3%;
+}
+
+.mail_box {
+    margin-left: 5%;
+    width: 50%;
+}
+
+.UserModify_Form_name {
+    margin-top: 10%;
+}
+
+.UserModify_Form_phone {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin-top: 2%;
+}
+
+#phone_second,
+#phone_third {
+    width: 100px;
+}
+
+.UserModify_Form_list {
+    width: 30%;
+    margin-bottom: 3%;
+}
+
+.UserModify_Form_dbox_gender_box {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8%;
+}
+
+.userModify_button_box {
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.userModify_button_box_next {
+    display: block;
+
+}
+
+.userModify_button_box_span {
+    display: none;
+}
+
+.userModify_button_box>span {
+    width: 200px;
+    background-color: #00B2FF;
+    color: white;
+    border: none;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    cursor: pointer;
+    text-align: center;
+}

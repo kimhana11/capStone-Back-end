@@ -29,7 +29,7 @@ const Navigation = () => {
                         <Link>접수 예정</Link>
                     </div>
                     <div className='navigation_main_bar_user_mate'>
-                        <Link>
+                        <Link to={'/mypage'}>
                             <img src={User}/>
                             <p>마이페이지</p>
                         </Link>
