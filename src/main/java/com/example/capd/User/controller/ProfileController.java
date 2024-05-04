@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/", allowedHeaders = "*")
 public class ProfileController {
 
     private final ProfileService profileService;
