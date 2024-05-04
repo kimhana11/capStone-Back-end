@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='1234',
+                             password='db12',
                              database='capd',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
@@ -56,13 +56,15 @@ try:
 
             # 다른 유저들의 프로필 정보 가져오기 (id, 본인 스택, 경력횟수, 투자가능시간 ,별점)
             other_users_profile_sql = f"""
-                                       SELECT p.id, GROUP_CONCAT(DISTINCT psl.stack_list) AS stack_list, COUNT(DISTINCT c.id) AS collaboration_count, p.my_time, p.rate
-                                       FROM profile p
-                                       JOIN profile_stack_list psl ON p.id = psl.profile_id
-                                       LEFT JOIN career c ON p.id = c.profile_id
-                                       WHERE p.id != '{user_id}'
-                                       GROUP BY p.id, p.my_time, p.rate;
-                                    """
+                SELECT p.id, GROUP_CONCAT(DISTINCT psl.stack_list) AS stack_list, COUNT(DISTINCT c.id) AS collaboration_count, p.my_time, p.rate
+                FROM profile p
+                JOIN profile_stack_list psl ON p.id = psl.profile_id
+                LEFT JOIN career c ON p.id = c.profile_id
+                JOIN participation par ON par.user_id = p.id
+                JOIN contest cont ON par.contest_id = cont.id
+                WHERE cont.id = '{contest_id}' AND p.id != '{user_id}'
+                GROUP BY p.id, p.my_time, p.rate;
+            """
             cursor.execute(other_users_profile_sql)
             other_users_profile_rows = cursor.fetchall()
 
