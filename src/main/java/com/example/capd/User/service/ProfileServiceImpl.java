@@ -136,7 +136,7 @@ public class ProfileServiceImpl implements ProfileService {
     public void aiStart(Long contestId, String userId) {
         User user = userRepository.findUserByUserId(userId);
         // 파이썬 스크립트 실행
-        String pythonScriptPath = "C:/IntelliJ/Back-end/src/main/java/com/example/capd/python/ai.py";
+        String pythonScriptPath = "C:/Users/jwj/Desktop/Back-end/src/main/java/com/example/capd/python/ai.py";
         System.out.println("파이썬 스크립트 실행.");
 
         try {
