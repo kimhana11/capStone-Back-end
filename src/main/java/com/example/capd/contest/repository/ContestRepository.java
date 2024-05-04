@@ -20,6 +20,6 @@ public interface ContestRepository extends JpaRepository<Contest, Long> {
     @Query(value = "SELECT c.id FROM Contest c", nativeQuery = true)
     List<Long> findAllIds();
 
-    @Query(value = "select c from contest c where c.id = :id")
-    Contest findByIdWithQuery(@Param("id") Long id);
+    @Query(value = "SELECT c FROM Contest c WHERE c.id = :id")
+    Contest findByIdWithoutParticipations(@Param("id") Long id);
 }

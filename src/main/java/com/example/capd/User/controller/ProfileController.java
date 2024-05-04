@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/", allowedHeaders = "*")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -68,13 +69,13 @@ public class ProfileController {
 
     //스택만으로 추천
     @GetMapping("profile-stack/{contestId}/{userId}")
-    public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable Long userId){
-       return profileService.stackRecommendUsers(contestId, userId);
+    public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
+        return profileService.stackRecommendUsers(contestId, userId);
     }
 
     // ai 추천
     @GetMapping("profile-ai/{contestId}/{userId}")
-    public List<ProfileParticipationRes> aiProfileList(@PathVariable Long contestId, @PathVariable Long userId){
+    public List<ProfileParticipationRes> aiProfileList(@PathVariable Long contestId, @PathVariable String userId){
         profileService.aiStart(contestId, userId);
         return profileService.aiRecommendUsers(contestId, userId);
     }

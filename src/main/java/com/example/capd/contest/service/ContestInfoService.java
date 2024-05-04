@@ -29,7 +29,7 @@ public class ContestInfoService {
 
     // 공모전 id로 해당 공모전 정보 반환
     public Contest findContestDetailById(Long id) {
-        return contestRepository.findByIdWithQuery(id);
+        return contestRepository.findByIdWithoutParticipations(id);
     }
 
     // 업데이트된 공모전 정보 저장 (예: 조회수증가)

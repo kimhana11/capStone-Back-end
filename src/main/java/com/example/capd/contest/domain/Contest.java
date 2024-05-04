@@ -2,6 +2,7 @@ package com.example.capd.contest.domain;
 
 import com.example.capd.User.domain.Participation;
 import com.example.capd.team.domain.Team;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,10 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity(name = "contest")
+@Entity
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 @AllArgsConstructor
 public class Contest {
@@ -56,11 +57,14 @@ public class Contest {
     private String detailText;
     @Column
     private Long views;
+
     //참여할게요 매핑
     @OneToMany(mappedBy = "contest")
+    @JsonIgnore
     private List<Participation> participations = new ArrayList<>();
 
     // 팀 매핑
     @OneToMany(mappedBy = "contest")
     private List<Team> teams = new ArrayList<>();
+
 }

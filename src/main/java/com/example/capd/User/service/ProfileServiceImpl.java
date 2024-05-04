@@ -65,9 +65,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, Long userId) {
+    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId) {
 
-        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, userId);
+        User uuser = userRepository.findUserByUserId(userId);
+        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, uuser.getId());
         List<String> stackList = (participation != null) ? participation.getStackList() : Collections.emptyList();
 
         List<User> matchingUsers;
@@ -77,7 +78,7 @@ public class ProfileServiceImpl implements ProfileService {
         //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬,팀 있는 유저 제외
         List<ProfileParticipationRes> resultProfiles = matchingUsers.stream()
                 .filter(user ->
-                        !user.getId().equals(userId) &&
+                        !user.getUserId().equals(userId) &&
                                 user.getProfile() != null &&
                                 user.getProfile().getStackList().stream().anyMatch(stackList::contains) &&
                                 !hasTeamForContest(user, contestId)
@@ -105,9 +106,10 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileParticipationRes> aiRecommendUsers(Long contestId, Long userId) {
+    public List<ProfileParticipationRes> aiRecommendUsers(Long contestId, String userId) {
         // AI가 추천한 유저 리스트 불러오기
-        String filename = contestId + "_" + userId + ".json";
+        User user = userRepository.findUserByUserId(userId);
+        String filename = contestId + "_" + user.getId() + ".json";
         List<Long> recommendedUserIds = loadRecommendedUserIds(filename);
 
         // 추천된 유저들의 프로필 조회 및 반환
@@ -131,7 +133,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void aiStart(Long contestId, Long userId) {
+    public void aiStart(Long contestId, String userId) {
+        User user = userRepository.findUserByUserId(userId);
         // 파이썬 스크립트 실행
         String pythonScriptPath = "C:/IntelliJ/Back-end/src/main/java/com/example/capd/python/ai.py";
         System.out.println("파이썬 스크립트 실행.");
@@ -140,7 +143,7 @@ public class ProfileServiceImpl implements ProfileService {
             // 외부 프로세스로 파이썬 스크립트 실행
             ProcessBuilder processBuilder = new ProcessBuilder("python", pythonScriptPath,
                     String.valueOf(contestId),
-                    String.valueOf(userId));
+                    String.valueOf(user.getId()));
             processBuilder.redirectErrorStream(true); // 에러 스트림을 표준 출력으로 리다이렉션
             Process process = processBuilder.start();
 

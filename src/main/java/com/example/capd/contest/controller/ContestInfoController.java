@@ -36,8 +36,8 @@ public class ContestInfoController {
         return ResponseEntity.ok(contestInfoService.getContestId());
     }
 
-    @GetMapping("/contestdetail")
-    public ResponseEntity<Contest> getContestDetail(@RequestParam Long id) {
+    @GetMapping("/contestdetail/{id}")
+    public ResponseEntity<Contest> getContestDetail(@PathVariable Long id) {
         Contest contest = contestInfoService.findContestDetailById(id);
         if(contest == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,17 +49,20 @@ public class ContestInfoController {
 
     @PostMapping("/viewPlus")
     public ResponseEntity<String> increaseViewCount(@RequestBody Map<String, Long> viewsIncreaseRequest) {
-        Long contestId = viewsIncreaseRequest.get("contestId");
-        Long addedViews = viewsIncreaseRequest.get("addedViews");
+        Long contestId = viewsIncreaseRequest.get("id");
 
         Contest contest = contestInfoService.findContestDetailById(contestId);
         if (contest == null) {
             return new ResponseEntity<>("Contest not found", HttpStatus.NOT_FOUND);
         } else {
-            contest.setViews(addedViews);
+            Long currentViews = contest.getViews();
+            if (currentViews == null) {
+                currentViews = 0L; // currentViews가 null이면 0으로 초기화
+            }
+            Long updatedViews = currentViews + 1;
+            contest.setViews(updatedViews);
             contestInfoService.saveContest(contest);
             return new ResponseEntity<>("View count increased successfully", HttpStatus.OK);
         }
     }
 }
-

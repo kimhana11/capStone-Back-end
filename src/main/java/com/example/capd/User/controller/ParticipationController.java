@@ -46,7 +46,7 @@ public class ParticipationController {
 
     //참여 신청한 공모전 리스트
     @GetMapping("/participation/{userId}")
-    public List<ContestDto> myContestList(@PathVariable Long userId){
+    public List<ContestDto> myContestList(@PathVariable String userId){
         return participationService.myContestList(userId);
     }
 }

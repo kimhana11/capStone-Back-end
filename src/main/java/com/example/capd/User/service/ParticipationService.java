@@ -35,12 +35,9 @@ public class ParticipationService {
                 .orElseThrow(() -> new EntityNotFoundException("공모전을 찾을 수 없습니다. id=" + contestId));
 
         Participation participationExists = participationRepository.findParticipationByContestIdAndUserId(contestId, user.getId());
-
         if (participationExists !=null) {
             throw new AlreadyAppliedException();
         }
-
-
 
         Participation participation = participationParam.toEntity(user, contest);
         participationRepository.save(participation);
@@ -57,8 +54,9 @@ public class ParticipationService {
         participationRepository.deleteById(participation.getId());
     }
 
-    public List<ContestDto> myContestList(Long userId){
-        List<Participation> participations = participationRepository.findParticipationsByUserId(userId);
+    public List<ContestDto> myContestList(String userId){
+        User user = userRepository.findUserByUserId(userId);
+        List<Participation> participations = participationRepository.findParticipationsByUserId(user.getId());
 
         return participations.stream()
                 .map(participation -> {
