@@ -42,12 +42,13 @@ export default function CompetitionDetail() {
             url: '/viewPlus',
             data: { id: id }
         })
-        // axios({
-        //     method: 'get',
-        //     url: `/participation/${userId}`
-        // }).then(result => {
-        //     console.log(result)
-        // })
+        axios({
+            method: 'get',
+            url: `/participation/${userId}`
+        }).then(result => {
+            console.log(result.data)
+            console.log(id)
+        })
     }, [])
 
 
@@ -71,14 +72,14 @@ export default function CompetitionDetail() {
                 <input id="stack" class="swal2-input" placeholder="ex) 자바, 스프링">
         
                 <p id="additional_p">기타(하고싶은 말)</p>
-                <input id="additional" class="swal2-input" placeholder="어떤 아이디어가 있다 등등">
+                <input id="additional" maxLength=20 class="swal2-input" placeholder="어떤 아이디어가 있다 등등">
             `,
             showCancelButton: true,
             confirmButtonText: "팀원찾기",
             cancelButtonText: "취소"
         }).then((result) => {
             if (result.isConfirmed) {
-                const stackInput  = document.querySelector('#stack').value;
+                const stackInput = document.querySelector('#stack').value;
                 const additional = document.querySelector('#additional').value;
 
                 const stackList = stackInput.split(',').map(item => item.trim());
@@ -101,14 +102,38 @@ export default function CompetitionDetail() {
                                 title: "매칭열에 추가됐습니다"
                             })
                         }
-                        window.location.reload();
+                    }).catch(error => {
+                        if (error.response && error.response.status === 400) {
+                            Swal.fire({
+                                title: "이미 대기열에 있습니다<br/>대기열에서 취소하시겠습니까?",
+                                showCancelButton: true,
+                                confirmButtonText: "확인",
+                                cancelButtonText: "취소"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    try {
+                                        axios({
+                                            method: 'delete',
+                                            url: `/participation/${contestId}/${userId}`
+                                        }).then(result => {
+                                            if (result.status === 200) {
+                                                Swal.fire({
+                                                    title: "매칭열에서 제외되셨습니다"
+                                                })
+                                            }
+                                        })
+                                    } catch (err) {
+                                        console.error(err);
+                                    }
+                                }
+                            });
+                        }
                     })
                 } catch (err) {
                     console.error(err);
                 }
             }
         });
-
     }
 
     return (
@@ -163,6 +188,6 @@ export default function CompetitionDetail() {
                     <p className='competition_detail_content_text' dangerouslySetInnerHTML={{ __html: contest.detailText }}></p>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
