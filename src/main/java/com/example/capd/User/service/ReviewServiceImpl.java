@@ -3,12 +3,12 @@ package com.example.capd.User.service;
 import com.example.capd.Exception.ReviewSubmissionPeriodNotEndedException;
 import com.example.capd.contest.domain.Contest;
 import com.example.capd.contest.repository.ContestRepository;
-import com.example.capd.team.domain.Team;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.repository.ReviewRepository;
-import com.example.capd.team.repository.TeamRepository;
 import com.example.capd.User.repository.UserRepository;
+import com.example.capd.team.domain.Room;
+import com.example.capd.team.repository.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,13 +24,13 @@ public class ReviewServiceImpl implements ReviewService{
 
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
-    private final TeamRepository teamRepository;
+    private final RoomRepository roomRepository;
     private final ContestRepository contestRepository;
 
     @Override
     public void saveReview(ReviewRequestDto reviewRequestDto) {
-        Team team = teamRepository.findById(reviewRequestDto.getTeamId())
-                .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다: " + reviewRequestDto.getTeamId()));
+        Room room = roomRepository.findById(reviewRequestDto.getRoomId())
+                .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다: " + reviewRequestDto.getRoomId()));
 
         User reviewer = userRepository.findByUserId(reviewRequestDto.getReviewerId())
                 .orElseThrow(() -> new EntityNotFoundException("작성자 id가 존재하지 않습니다: " + reviewRequestDto.getReviewerId()));
@@ -51,7 +51,7 @@ public class ReviewServiceImpl implements ReviewService{
 
             //심사 기간 마감일 경우에만 리뷰 작성
             if (currentDate.isAfter(endDate)) {
-                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
+                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
                 reviewRepository.save(review);
             } else {
                 throw new ReviewSubmissionPeriodNotEndedException();
@@ -63,7 +63,7 @@ public class ReviewServiceImpl implements ReviewService{
             LocalDate currentDate = LocalDate.now();
 
             if(currentDate.isAfter(endDate)) {
-                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
+                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
                 reviewRepository.save(review);
             }else{
                 throw new ReviewSubmissionPeriodNotEndedException(0);
@@ -105,7 +105,7 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRequestDto.setRate(review.getRate());
         reviewRequestDto.setReviewerId(review.getReviewer().getUserId());
         reviewRequestDto.setReviewedUserId(review.getReviewedUser().getUserId());
-        reviewRequestDto.setTeamId(review.getTeam().getId());
+        reviewRequestDto.setRoomId(review.getRoom().getId());
 
         return reviewRequestDto;
     }

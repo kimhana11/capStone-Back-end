@@ -2,8 +2,9 @@ package com.example.capd.team.controller;
 
 import com.example.capd.User.config.CommonResponse;
 import com.example.capd.team.dto.ChatRoomDto;
-import com.example.capd.team.dto.RoomPwDto;
 import com.example.capd.socket.service.ChatService;
+import com.example.capd.team.dto.RoomParam;
+import com.example.capd.team.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,12 +18,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomController {
 
-    private final ChatService chatService;
+    private final RoomService roomService;
 
     //방 저장
-    @PostMapping("/chat-room")
+    @PostMapping("/room")
     public ResponseEntity<CommonResponse> saveChatRoom(@RequestBody ChatRoomDto chatRoomDto) {
-        chatService.createRoom(chatRoomDto);
+        roomService.createRoom(chatRoomDto);
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,
@@ -32,61 +33,52 @@ public class RoomController {
        return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
+    //단일 조회
+    @GetMapping("/room/{roomId}")
+    public ChatRoomDto RoomId(@PathVariable Long roomId) {
+        return roomService.getRoom(roomId);
 
-    @GetMapping("/chat-room/{teamId}")
-    public ResponseEntity<CommonResponse> RoomId(@PathVariable Long teamId) {
-        CommonResponse res;
-        Long roomId =  chatService.getRoomId(teamId);
-        if(roomId!=null){
-            res = new CommonResponse(
-                    200,
-                    HttpStatus.OK,
-                    "조회 성공",
-                    roomId
-            );
-        }else {
-            res = new CommonResponse(
-                    400,
-                    HttpStatus.NOT_FOUND,
-                    "공모 기간이 끝나 삭제된 채팅방입니다.",
-                    null
-            );
-        }
-        return new ResponseEntity<>(res, res.getHttpStatus());
-        }
+    }
 
-
-    @GetMapping("/room-list/{userId}")
+    //userId가 속한 채팅방 전체 조회
+    @GetMapping("/rooms/{userId}")
     public List<ChatRoomDto> RoomList(@PathVariable String userId) {
-       return chatService.getRoomList(userId);
+       return roomService.getRoomList(userId);
     }
 
-    @PostMapping("/chat-room/password")
-    public ResponseEntity<CommonResponse> checkRoomPw(@RequestBody RoomPwDto roomPwDto){
-        Boolean checkPw = chatService.checkRoomPw(roomPwDto);
+    @GetMapping("/rooms-contest/{contestId}")
+    public List<ChatRoomDto> getContestRoomList(@PathVariable Long contestId){
+        return roomService.contestRoomList(contestId);
+    }
 
-        CommonResponse res;
-        if(checkPw){
-            res = new CommonResponse(
-                    200,
-                    HttpStatus.OK,
-                    "비밀번호 인증 성공",
-                    null
-            );
-        }else{
-            res = new CommonResponse(
-                    400,
-                    HttpStatus.NOT_FOUND,
-                    "비밀번호 인증 실패",
-                    null
-            );
-        }
+    @PostMapping("/room-update/status")
+    public ResponseEntity<CommonResponse> updateStatus(@RequestBody RoomParam roomParam){
+        roomService.updateRoomStatus(roomParam.getRoomId(),roomParam.getStatus(), roomParam.getUserId());
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "수정 성공",
+                null
+        );
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
+
+    @PostMapping("/room-update/members")
+    public ResponseEntity<CommonResponse> updateTeamMember(@RequestBody RoomParam roomParam){
+        roomService.addMembersToTeam(roomParam.getRoomId(),roomParam.getMemberIds(), roomParam.getUserId());
+        CommonResponse res = new CommonResponse(
+                200,
+                HttpStatus.OK,
+                "수정 성공",
+                null
+        );
+        return new ResponseEntity<>(res, res.getHttpStatus());
+    }
+
     //방삭제
     @DeleteMapping("delete-room/{roomId}")
     public ResponseEntity<CommonResponse> deleteRoom(@PathVariable Long roomId){
-        chatService.deleteRoom(roomId);
+        roomService.deleteRoom(roomId);
         CommonResponse res = new CommonResponse(
                 200,
                 HttpStatus.OK,

@@ -1,10 +1,12 @@
 package com.example.capd.team.dto;
 
+import com.example.capd.contest.domain.Contest;
 import com.example.capd.team.domain.Room;
-import com.example.capd.team.domain.Team;
 import lombok.*;
 
+import java.awt.*;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,18 +14,21 @@ import java.util.Date;
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @AllArgsConstructor
 public class ChatRoomDto {
-    private Long teamId;
-    private String userId;
+
+    private Boolean status;
     private String name;
-    private String password;
+    private String leaderId;
+
+    private List<String> memberIds;
+    private Long contestId;
     private Long roomId;
 
-    public Room toEntity(Team team) {
+    public Room toEntity(Contest contest) {
         return Room.builder()
                 .timeStamp(new Date())
-                .password(password)
                 .name(name)
-                .team(team)
+                .leaderId(leaderId)
+                .contest(contest)
                 .build();
     }
 }

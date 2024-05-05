@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Repository
 public interface ContestRepository extends JpaRepository<Contest, Long> {
-    Contest findByTeams_Id(Long teamId);
+    Contest findByRooms_Id(Long roomId);
 
     @Query(value = "select * from Contest", nativeQuery = true)
     List<Map<String, Object>> fetchDataFromDatabase();

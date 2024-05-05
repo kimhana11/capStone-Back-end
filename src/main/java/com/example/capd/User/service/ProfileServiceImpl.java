@@ -102,7 +102,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
     // 해당 공모전에 팀이 없는지 확인하는 메서드
     private boolean hasTeamForContest(User user, Long contestId) {
-        return user.getTeamMembers().stream().anyMatch(teamMember -> teamMember.getTeam().getContest().getId().equals(contestId));
+        return user.getTeamMembers().stream().anyMatch(teamMember -> teamMember.getRoom().getContest().getId().equals(contestId));
     }
 
     @Override

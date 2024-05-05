@@ -1,6 +1,6 @@
 package com.example.capd.User.domain;
 
-import com.example.capd.team.domain.Team;
+import com.example.capd.team.domain.Room;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
@@ -38,9 +38,9 @@ public class Review {
     @JoinColumn(name = "reviewer_id")
     private User reviewer;
 
-//    //팀이랑 매핑
+//   room이랑 매핑
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
 }

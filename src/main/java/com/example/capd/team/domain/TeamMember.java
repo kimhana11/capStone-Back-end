@@ -17,21 +17,21 @@ public class TeamMember {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JoinColumn(name = "room_id")
+    private Room room;
 
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
     @Builder
-    public TeamMember(User user, Team team) {
+    public TeamMember(User user, Room room) {
        this.user=user;
-       this.team=team;
+       this.room=room;
     }
 
-    public static TeamMember fromUserAndTeam(User user, Team team) {
-        return new TeamMember(user, team);
+    public static TeamMember fromUserAndTeam(User user, Room room) {
+        return new TeamMember(user, room);
     }
 
 }

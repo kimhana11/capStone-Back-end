@@ -1,7 +1,7 @@
 package com.example.capd.contest.domain;
 
 import com.example.capd.User.domain.Participation;
-import com.example.capd.team.domain.Team;
+import com.example.capd.team.domain.Room;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -65,6 +65,7 @@ public class Contest {
 
     // 팀 매핑
     @OneToMany(mappedBy = "contest")
-    private List<Team> teams = new ArrayList<>();
+    @JsonIgnore
+    private List<Room> rooms = new ArrayList<>();
 
 }

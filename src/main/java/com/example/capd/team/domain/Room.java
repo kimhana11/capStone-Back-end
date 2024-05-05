@@ -1,8 +1,9 @@
 package com.example.capd.team.domain;
 
+import com.example.capd.User.domain.Review;
+import com.example.capd.contest.domain.Contest;
 import com.example.capd.socket.domain.Message;
-import com.example.capd.team.domain.Team;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,16 +25,32 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Boolean status;
+    private String leaderId;
     private String name;
     private Date timeStamp;
-    private String password;
 
-    @OneToOne
-    @JoinColumn(name = "team_id")
-    @JsonManagedReference
-    private Team team;
+    //팀멤버 매핑
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<TeamMember> members = new ArrayList<>();
+
+    //리뷰랑 매핑
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Review> roomReviews = new ArrayList<>();
+
+    //공모전 매핑
+    @ManyToOne
+    @JoinColumn(name = "contest_id")
+    private Contest contest;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Message> messages = new ArrayList<>();
+
+    public void setStatus(Boolean status){
+        this.status = status;
+    }
 
 }
