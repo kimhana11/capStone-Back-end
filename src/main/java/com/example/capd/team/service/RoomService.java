@@ -189,6 +189,13 @@ public class RoomService {
                 .collect(Collectors.toList());
         chatRoomDto.setMemberIds(stringMemberIds);
 
+        Message lastMessage = room.getLastMessage();
+        if (lastMessage != null) {
+            chatRoomDto.setLastMessage(lastMessage.getMessage());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String formattedTimestamp = lastMessage.getTimeStamp().format(formatter);
+            chatRoomDto.setLastMessageTimeStamp(formattedTimestamp);
+        }
         return chatRoomDto;
     }
 }

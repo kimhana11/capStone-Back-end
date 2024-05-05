@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -53,4 +54,13 @@ public class Room {
         this.status = status;
     }
 
+    //가장 최신 메시지 반환
+    public Message getLastMessage() {
+        if (messages.isEmpty()) {
+            return null;
+        }
+        return messages.stream()
+                .max(Comparator.comparing(Message::getId))
+                .orElse(null);
+    }
 }

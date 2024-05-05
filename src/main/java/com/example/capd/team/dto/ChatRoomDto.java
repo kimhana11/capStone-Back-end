@@ -5,6 +5,8 @@ import com.example.capd.team.domain.Room;
 import lombok.*;
 
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class ChatRoomDto {
     private List<String> memberIds;
     private Long contestId;
     private Long roomId;
+    private String lastMessage;
+    private String LastMessageTimeStamp;
 
     public Room toEntity(Contest contest) {
         return Room.builder()
