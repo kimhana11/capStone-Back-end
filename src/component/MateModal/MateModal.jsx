@@ -19,6 +19,10 @@ const MateModal = () => {
             url: `/participation/${userId}`
         }).then(result => {
             setContestData(result.data)
+        }).catch(err => {
+            if (err.response && err.response.status === 500) {
+                setContestData([]);
+            }
         })
     }, [])
 
@@ -30,6 +34,10 @@ const MateModal = () => {
                 url: `/profile-stack/${selectedContestId}/${userId}`
             }).then(result => {
                 setUserData(result.data)
+            }).catch(err => {
+                if (err.response && err.response.status === 500) {
+                    setUserData([]);
+                }
             })
         }
     }, [selectedContestId])
@@ -48,7 +56,7 @@ const MateModal = () => {
             zIndex: 150,
             position: "absolute",
             top: "47%",
-            left: "72%",
+            left: "73%",
             transform: "translate(-50%, -50%)",
             borderRadius: "1rem",
             boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.25)",
@@ -115,32 +123,50 @@ const MateModal = () => {
                     <p>AI 매칭 메이트</p>
                 </div>
                 <div className='modal_mate_main'>
-                    <div className='modal_mate_competition'>
-                        {contestData.map(contest => (
-                            <p key={contest.contestId} id={contest.contestId} onClick={() => scrollToCenter(contest.contestId)}>{contest.title}</p>
-                        ))}
-                    </div>
-                    <div className='modal_mate'>
-                        {userData.map(user => (
-                            <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
-                                <img src={image} />
-                                <div>
-                                    <p className='modal_mate_user_name'>{user.userId}</p>
-                                    <p className='modal_mate_user_content'>{user.intro}</p>
-                                    <div className='modal_mate_user_stack'>
-                                        {user.stackList.map((stack, index) => (
-                                            <p key={index}>{stack}</p>
+                    {!(contestData.length === 0) && (
+                        <>
+                            <div className='modal_mate_competition'>
+                                {contestData.map(contest => (
+                                    <p key={contest.contestId} id={contest.contestId} onClick={() => scrollToCenter(contest.contestId)}>{contest.title}</p>
+                                ))}
+                            </div>
+                            {!(userData.length === 0) && (
+                                <>
+                                    <div className='modal_mate'>
+                                        {userData.map(user => (
+                                            <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
+                                                <img src={image} />
+                                                <div>
+                                                    <p className='modal_mate_user_name'>{user.userId}</p>
+                                                    <p className='modal_mate_user_content'>{user.intro}</p>
+                                                    <div className='modal_mate_user_stack'>
+                                                        {user.stackList.map((stack, index) => (
+                                                            <p key={index}>{stack}</p>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         ))}
                                     </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                    <div className='modal_mate_group_button' onClick={createChat}>
-                        <img src={image} />
-                        <img src={image} />
-                        <p>그룹 방 만들기</p>
-                    </div>
+                                    <div className='modal_mate_group_button' onClick={createChat}>
+                                        <img src={image} />
+                                        <img src={image} />
+                                        <p>그룹 방 만들기</p>
+                                    </div>
+                                </>
+                            )}
+                            {userData.length === 0 && (
+                                <>
+                                    <p className='modal_mate_content'>매칭 대기열에 등록된 유저가 없습니다</p>
+                                </>
+                            )}
+                        </>
+                    )}
+                    {contestData.length === 0 && (
+                        <>
+                            <p className='modal_mate_competition_p'>매칭 대기열에 등록된 공모전이 없습니다.</p>
+                        </>
+                    )}
                 </div>
             </Modal>
         </div>

@@ -25,10 +25,11 @@ export default function UserProfile() {
             console.log(result.data)
             setProfileData(result.data);
         }).catch(err => {
-            if (err.response && err.response.status === 404) {
+            if (err.response && err.response.status === 500) {
                 Swal.fire({
                     title: "프로필을 작성해주세요"
                 })
+                console.log(profileData)
             }
         })
     }, [])
@@ -118,9 +119,6 @@ export default function UserProfile() {
                 cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
                 confirmButtonText: '확인', // confirm 버튼 텍스트 지정
                 cancelButtonText: '취소', // cancel 버튼 텍스트 지정
-
-                reverseButtons: true, // 버튼 순서 거꾸로
-
             }).then(result => {
                 // 만약 Promise리턴을 받으면,
                 if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
@@ -134,9 +132,6 @@ export default function UserProfile() {
                             cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
                             confirmButtonText: '확인', // confirm 버튼 텍스트 지정
                             cancelButtonText: '취소', // cancel 버튼 텍스트 지정
-
-                            reverseButtons: true, // 버튼 순서 거꾸로
-
                         }).then(result => {
                             // 만약 Promise리턴을 받으면,
                             if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
@@ -158,9 +153,6 @@ export default function UserProfile() {
                 cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
                 confirmButtonText: '확인', // confirm 버튼 텍스트 지정
                 cancelButtonText: '취소', // cancel 버튼 텍스트 지정
-
-                reverseButtons: true, // 버튼 순서 거꾸로
-
             }).then(result => {
                 // 만약 Promise리턴을 받으면,
                 if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
@@ -196,7 +188,7 @@ export default function UserProfile() {
                 Swal.fire({
                     title: "프로필이 저장되었습니다"
                 }).then(() => {
-                    navigate('/MyPage');
+                    navigate('/mypage');
                 });
             })
         } catch (err) {
@@ -221,7 +213,7 @@ export default function UserProfile() {
     return (
         <div>
             <MypageNav />
-            {!profileData && (
+            {profileData.length === 0 && (
                 <form className="user_file_form_box">
                     <span>프로필에 입력된 정보들은 AI 추천 매칭 시 도움이 됩니다!</span>
                     <div className="user_intro_form_box">
@@ -330,7 +322,7 @@ export default function UserProfile() {
                     </div>
                 </form>
             )}
-            {profileData && isUpdate === false && (
+            {!(profileData.length === 0) && isUpdate === false && (
                 <form className="user_file_form_box">
                     <span>프로필에 입력된 정보들은 AI 추천 매칭 시 도움이 됩니다!</span>
                     <div className="user_intro_form_box">
@@ -384,7 +376,7 @@ export default function UserProfile() {
                         </div>
                     </div>
                     <div className="user_profileData_button_box">
-                        <button type="button" onClick={updateUserProflie}>수정</button>
+                        <button type="button" onClick={updateUserProflie}>프로필 수정</button>
                     </div>
                 </form>
             )}

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './CompetitionDetail.css';
 import axios from "axios";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Share from '../../img/Share--Streamline-Nova.png'
 import Swal from 'sweetalert2';
 
 export default function CompetitionDetail() {
     const [contestId, setContestId] = useState('');
     const [contest, setContest] = useState('');
-    const [userId, setUserId] = useState('');
+    const [userId, setUserId] = useState("");
+    const [userProfile, setUserProfile] = useState([]);
     const [daysRemaining, setDaysRemaining] = useState(0);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const id = window.localStorage.getItem('contestId');
         const userId = window.localStorage.getItem('userId');
         setUserId(userId);
+        console.log(userId)
 
         setContestId(location.state.id);
         window.localStorage.setItem('contestId', location.state.id);
@@ -44,10 +47,14 @@ export default function CompetitionDetail() {
         })
         axios({
             method: 'get',
-            url: `/participation/${userId}`
+            url: `/user-profile/${userId}`
         }).then(result => {
             console.log(result.data)
-            console.log(id)
+            setUserProfile(result.data)
+        }).catch(err => {
+            if (err.response && err.response.status === 500) {
+                setUserProfile([]);
+            }
         })
     }, [])
 
@@ -65,75 +72,99 @@ export default function CompetitionDetail() {
     };
 
     function Matching() {
-        Swal.fire({
-            title: "팀원 매칭 시 필요한 정보",
-            html: `
-                <p id="stack_p">팀원에게 원하는 기술 스택</p>
-                <input id="stack" class="swal2-input" placeholder="ex) 자바, 스프링">
-        
-                <p id="additional_p">기타(하고싶은 말)</p>
-                <input id="additional" maxLength=20 class="swal2-input" placeholder="어떤 아이디어가 있다 등등">
-            `,
-            showCancelButton: true,
-            confirmButtonText: "팀원찾기",
-            cancelButtonText: "취소"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const stackInput = document.querySelector('#stack').value;
-                const additional = document.querySelector('#additional').value;
+        if (!(userId === null) && !(userProfile.length === 0)) {
+            Swal.fire({
+                title: "팀원 매칭 시 필요한 정보",
+                html: `
+                    <p id="stack_p">팀원에게 원하는 기술 스택</p>
+                    <input id="stack" class="swal2-input" placeholder="ex) 자바, 스프링">
+            
+                    <p id="additional_p">기타(하고싶은 말)</p>
+                    <input id="additional" maxLength=20 class="swal2-input" placeholder="어떤 아이디어가 있다 등등">
+                `,
+                showCancelButton: true,
+                confirmButtonText: "팀원찾기",
+                cancelButtonText: "취소"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const stackInput = document.querySelector('#stack').value;
+                    const additional = document.querySelector('#additional').value;
 
-                const stackList = stackInput.split(',').map(item => item.trim());
+                    const stackList = stackInput.split(',').map(item => item.trim());
 
-                const participationParam = {
-                    userId: userId,
-                    contestId: contestId,
-                    stackList: stackList,
-                    additional: additional
-                };
+                    const participationParam = {
+                        userId: userId,
+                        contestId: contestId,
+                        stackList: stackList,
+                        additional: additional
+                    };
 
-                try {
-                    axios({
-                        method: 'post',
-                        url: 'participation',
-                        data: participationParam
-                    }).then(result => {
-                        if (result.status === 200) {
-                            Swal.fire({
-                                title: "매칭열에 추가됐습니다"
-                            })
-                        }
-                    }).catch(error => {
-                        if (error.response && error.response.status === 400) {
-                            Swal.fire({
-                                title: "이미 대기열에 있습니다<br/>대기열에서 취소하시겠습니까?",
-                                showCancelButton: true,
-                                confirmButtonText: "확인",
-                                cancelButtonText: "취소"
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    try {
-                                        axios({
-                                            method: 'delete',
-                                            url: `/participation/${contestId}/${userId}`
-                                        }).then(result => {
-                                            if (result.status === 200) {
-                                                Swal.fire({
-                                                    title: "매칭열에서 제외되셨습니다"
-                                                })
-                                            }
-                                        })
-                                    } catch (err) {
-                                        console.error(err);
+                    try {
+                        axios({
+                            method: 'post',
+                            url: 'participation',
+                            data: participationParam
+                        }).then(result => {
+                            if (result.status === 200) {
+                                Swal.fire({
+                                    title: "매칭열에 추가됐습니다"
+                                })
+                            }
+                        }).catch(error => {
+                            if (error.response && error.response.status === 400) {
+                                Swal.fire({
+                                    title: "이미 대기열에 있습니다<br/>대기열에서 취소하시겠습니까?",
+                                    showCancelButton: true,
+                                    confirmButtonText: "확인",
+                                    cancelButtonText: "취소"
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        try {
+                                            axios({
+                                                method: 'delete',
+                                                url: `/participation/${contestId}/${userId}`
+                                            }).then(result => {
+                                                if (result.status === 200) {
+                                                    Swal.fire({
+                                                        title: "매칭열에서 제외되셨습니다"
+                                                    })
+                                                }
+                                            })
+                                        } catch (err) {
+                                            console.error(err);
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    })
-                } catch (err) {
-                    console.error(err);
+                                });
+                            }
+                        })
+                    } catch (err) {
+                        console.error(err);
+                    }
                 }
-            }
-        });
+            });
+        } else if (!(userId === null) && (userProfile.length === 0)) {
+            Swal.fire({
+                title: "매칭을 사용하려면<br/>유저 프로필을 설정해주세요",
+                showCancelButton: true,
+                confirmButtonText: "네",
+                cancelButtonText: "아뇨, 구경만 할게요"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    navigate('/userProfile')
+                }
+            })
+        } else {
+            Swal.fire({
+                title: "매칭을 사용하려면<br/>로그인을 해주세요",
+                showCancelButton: true,
+                confirmButtonText: "네",
+                cancelButtonText: "아뇨, 구경만 할게요"
+            }).then(result => {
+                if (result.isConfirmed) {
+                    navigate('/signui')
+                }
+            })
+        }
     }
 
     return (

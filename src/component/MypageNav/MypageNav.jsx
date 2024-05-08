@@ -7,17 +7,21 @@ import Swal from 'sweetalert2';
 export default function NavigationUser() {
     const navigate = useNavigate();
     const [userId, setUserId] = useState('');
+    const [userRate, setUserRate] = useState('');
 
     useEffect(() => {
+        const userid = window.localStorage.getItem('userId');
+        axios({
+            method: 'get',
+            url: `/user-rate/${userid}`
+        }).then((result) => {
+            if (result.status == 200) {
+                setUserRate(result.data);
+            }
+        })
         setUserId(window.localStorage.getItem('userId'));
     })
 
-    const logoutbtn = e => {
-        e.preventDefault();
-        window.localStorage.removeItem('token');
-        navigate('/');
-    }
-    
     const userDelete = e => {
         e.preventDefault();
         Swal.fire({
@@ -34,7 +38,7 @@ export default function NavigationUser() {
                     if (result.status == 200) {
                         Swal.fire({
                             title: "회원탈퇴가 완료되었습니다"
-                        }).then(()=> {
+                        }).then(() => {
                             window.localStorage.removeItem('token');
                             navigate('/');
                         })
@@ -47,7 +51,10 @@ export default function NavigationUser() {
     return (
         <div>
             <div className="myPage_main">
-                <p className="myPage_main_font_p" onClick={logoutbtn}>로그아웃</p>
+                <div className="myPage_main_font_div">
+                    <p>내 평점</p>
+                    <p className="myPage_main_font_p">{userRate} / 5.0</p>
+                </div>
                 <Link className="myPage_main_font" to={'/userProfile'}>유저 프로필</Link>
                 <Link className="myPage_main_font" to={'/userModify'}>회원정보 수정</Link>
                 <Link className="myPage_main_font" onClick={userDelete}>회원 탈퇴</Link>

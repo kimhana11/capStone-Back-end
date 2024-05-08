@@ -15,7 +15,7 @@
 }
 
 .modal_mate_main {
-    height: 89%;
+    height: 86%;
     padding-left: 7%;
 }
 
@@ -38,6 +38,12 @@
     color: #D2D2D2;
     margin-right: 2%;
     cursor: pointer;
+}
+
+.modal_mate_competition_p {
+    margin-left: 15%;
+    padding-top: 45%;
+    color: #D2D2D2;
 }
 
 .modal_mate {
@@ -98,7 +104,7 @@
     font-size: small;
     overflow: hidden;
     white-space: nowrap;
-    text-overflow : ellipsis
+    text-overflow: ellipsis
 }
 
 .modal_mate_user_stack {
@@ -112,6 +118,12 @@
     border-radius: 2rem;
     padding: 3px 10px 3px 10px;
     margin: 3% 2% 0% 0%;
+}
+
+.modal_mate_content {
+    margin-left: 15%;
+    padding-top: 35%;
+    color: #D2D2D2;
 }
 
 .modal_mate_group_button {
@@ -137,6 +149,9 @@
     margin: 5% 0% 5% 2%;
 }
 
-#name_p, #name, #password_p, #password{
+#name_p,
+#name,
+#password_p,
+#password {
     font-size: large;
 }

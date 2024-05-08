@@ -6,17 +6,24 @@
     background-color: #00B2FF;
 }
 
-.myPage_main>a{
+.myPage_main>a {
     text-decoration: none;
 }
 
 .myPage_main_font,
-.myPage_main_font_p {
+.myPage_main_font_div {
     color: white;
     font-size: large;
     font-weight: bold;
 }
 
+.myPage_main_font_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .myPage_main_font_p {
-    cursor: pointer;
+    margin: 0;
+    font-size: x-large;
 }
