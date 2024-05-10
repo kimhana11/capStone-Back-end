@@ -24,6 +24,7 @@ export default function UserProfile() {
         }).then(result => {
             console.log(result.data)
             setProfileData(result.data);
+            setStack(result.data.stackList);
         }).catch(err => {
             if (err.response && err.response.status === 500) {
                 Swal.fire({
@@ -51,7 +52,7 @@ export default function UserProfile() {
                 title: "공백은 추가할 수 없습니다"
             })
         } else {
-            setStack([...stack, stackForm]);
+            setStack([...stack, stackForm.value]);
             setStackForm({ value: "" });
         }
     };
@@ -74,12 +75,12 @@ export default function UserProfile() {
     };
 
     const removeStackList = (index) => {
-        const removedStackList = stack.filter((_, i) => i !== index);
+        const removedStackList = [...stack.slice(0, index), ...stack.slice(index + 1)];
         setStack(removedStackList);
     };
 
     const removeProfileList = (index) => {
-        const removedProfileList = profile.filter((_, i) => i !== index);
+        const removedProfileList = [...profile.slice(0, index), ...profile.slice(index + 1)];
         setProfile(removedProfileList);
     };
 
@@ -422,7 +423,7 @@ export default function UserProfile() {
                             <ul>
                                 {stack.map((item, index) => (
                                     <li key={index}>
-                                        {item.value}
+                                        {item}
                                         <button type="button" onClick={() => removeStackList(index)}>x</button>
                                     </li>
                                 ))}

@@ -9,8 +9,11 @@ import Swal from 'sweetalert2';
 const MateModal = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [userData, setUserData] = useState([]);
+    const [aiUserData, setAiUserData] = useState([]);
     const [contestData, setContestData] = useState([]);
     const [selectedContestId, setSelectedContestId] = useState(null);
+    const [selectedMate, setSelectedMate] = useState(false);
+    const [selectedAIMate, setSelectedAIMate] = useState(false);
 
     useEffect(() => {
         const userId = window.localStorage.getItem('userId');
@@ -39,6 +42,16 @@ const MateModal = () => {
                     setUserData([]);
                 }
             })
+            axios({
+                method: 'get',
+                url: `/profile-ai/${selectedContestId}/${userId}`
+            }).then(result => {
+                setAiUserData(result.data)
+            }).catch(err => {
+                if (err.response && err.response.status === 500) {
+                    setAiUserData([]);
+                }
+            })
         }
     }, [selectedContestId])
 
@@ -65,6 +78,16 @@ const MateModal = () => {
             padding: 0
         },
     };
+
+    const mate = () => {
+        setSelectedMate(true);
+        setSelectedAIMate(false);
+    }
+    
+    const aiMate = () => {
+        setSelectedAIMate(true);
+        setSelectedMate(false);
+    }
 
     const scrollToCenter = (contestId) => {
         setSelectedContestId(contestId);
@@ -99,13 +122,9 @@ const MateModal = () => {
 
     function createChat() {
         Swal.fire({
-            title: "채팅방 생성 시 필요한 정보",
+            title: "채팅방 이름을 입력하세요",
             html: `
-                <p id="name_p">채팅방 이름</p>
                 <input id="name" class="swal2-input">
-        
-                <p id="password_p">비밀번호</p>
-                <input type = password id="password" maxLength=10 class="swal2-input">
             `,
             showCancelButton: true,
             confirmButtonText: "채팅방 생성",
@@ -116,60 +135,117 @@ const MateModal = () => {
     }
 
     return (
-        <div>
+        <>
             <Modal isOpen={true} style={customStyles}>
                 <div className='modal_mate_top'>
-                    <p>추천 메이트</p>
-                    <p>AI 매칭 메이트</p>
+                    <p onClick={mate}>추천 메이트</p>
+                    <p onClick={aiMate}>AI 매칭 메이트</p>
                 </div>
                 <div className='modal_mate_main'>
-                    {!(contestData.length === 0) && (
+                    {/* 추천 메이트를 클릭했을 때 */}
+                    {(selectedMate === true) && (
                         <>
-                            <div className='modal_mate_competition'>
-                                {contestData.map(contest => (
-                                    <p key={contest.contestId} id={contest.contestId} onClick={() => scrollToCenter(contest.contestId)}>{contest.title}</p>
-                                ))}
-                            </div>
-                            {!(userData.length === 0) && (
+                            {!(contestData.length === 0) && (
                                 <>
-                                    <div className='modal_mate'>
-                                        {userData.map(user => (
-                                            <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
-                                                <img src={image} />
-                                                <div>
-                                                    <p className='modal_mate_user_name'>{user.userId}</p>
-                                                    <p className='modal_mate_user_content'>{user.intro}</p>
-                                                    <div className='modal_mate_user_stack'>
-                                                        {user.stackList.map((stack, index) => (
-                                                            <p key={index}>{stack}</p>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                    <div className='modal_mate_competition'>
+                                        {contestData.map(contest => (
+                                            <p key={contest.contestId} id={contest.contestId} onClick={() => scrollToCenter(contest.contestId)}>{contest.title}</p>
                                         ))}
                                     </div>
-                                    <div className='modal_mate_group_button' onClick={createChat}>
-                                        <img src={image} />
-                                        <img src={image} />
-                                        <p>그룹 방 만들기</p>
-                                    </div>
+                                    {!(userData.length === 0) && (selectedMate === true) && (
+                                        <>
+                                            <div className='modal_mate'>
+                                                {userData.map(user => (
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
+                                                        <img src={image} />
+                                                        <div>
+                                                            <p className='modal_mate_user_name'>{user.userId}</p>
+                                                            <p className='modal_mate_user_content'>{user.intro}</p>
+                                                            <div className='modal_mate_user_stack'>
+                                                                {user.stackList.map((stack, index) => (
+                                                                    <p key={index}>{stack}</p>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className='modal_mate_group_button' onClick={createChat}>
+                                                <p>그룹 방 만들기</p>
+                                            </div>
+                                        </>
+                                    )}
+                                    {userData.length === 0 && (
+                                        <>
+                                            <p className='modal_mate_content'>매칭 대기열에 등록된 유저가 없습니다</p>
+                                        </>
+                                    )}
                                 </>
                             )}
-                            {userData.length === 0 && (
+                            {contestData.length === 0 && (
                                 <>
-                                    <p className='modal_mate_content'>매칭 대기열에 등록된 유저가 없습니다</p>
+                                    <p className='modal_mate_competition_p'>매칭 대기열에 등록된 공모전이 없습니다.</p>
                                 </>
                             )}
+
                         </>
                     )}
-                    {contestData.length === 0 && (
+                    {/* ai추천 메이트를 클릭했을 때 */}
+                    {(selectedAIMate === true) && (
                         <>
-                            <p className='modal_mate_competition_p'>매칭 대기열에 등록된 공모전이 없습니다.</p>
+                            {!(contestData.length === 0) && (
+                                <>
+                                    <div className='modal_mate_competition'>
+                                        {contestData.map(contest => (
+                                            <p key={contest.contestId} id={contest.contestId} onClick={() => scrollToCenter(contest.contestId)}>{contest.title}</p>
+                                        ))}
+                                    </div>
+                                    {!(aiUserData.length === 0) && (selectedAIMate === true) && (
+                                        <>
+                                            <div className='modal_mate'>
+                                                {aiUserData.map(user => (
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
+                                                        <img src={image} />
+                                                        <div>
+                                                            <p className='modal_mate_user_name'>{user.userId}</p>
+                                                            <p className='modal_mate_user_content'>{user.intro}</p>
+                                                            <div className='modal_mate_user_stack'>
+                                                                {user.stackList.map((stack, index) => (
+                                                                    <p key={index}>{stack}</p>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <div className='modal_mate_group_button' onClick={createChat}>
+                                                <p>그룹 방 만들기</p>
+                                            </div>
+                                        </>
+                                    )}
+                                    {aiUserData.length === 0 && (
+                                        <>
+                                            <p className='modal_mate_content'>매칭 대기열에 등록된 유저가 없습니다</p>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                            {contestData.length === 0 && (
+                                <>
+                                    <p className='modal_mate_competition_p'>매칭 대기열에 등록된 공모전이 없습니다.</p>
+                                </>
+                            )}
+
+                        </>
+                    )}
+                    {(selectedMate === false) && (selectedAIMate === false) && (
+                        <>
+                            <p className='modal_mate_non_competition_p'>어떤 매칭열을 볼 지 선택해주세요!</p>
                         </>
                     )}
                 </div>
             </Modal>
-        </div>
+        </>
     )
 }
 
