@@ -15,10 +15,11 @@ connection = pymysql.connect(host='localhost',
                              cursorclass=pymysql.cursors.DictCursor)
 contest_id = sys.argv[1]
 user_id = sys.argv[2]
+
 try:
     with connection.cursor() as cursor:
         # profile 테이블에서 데이터 가져오기
-        profile_sql = f"SELECT id, collaboration_count, my_time, desired_time, rate FROM profile WHERE id = '{user_id}'"
+        profile_sql = f"SELECT id, collaboration_count, my_time, desired_time, rate FROM profile WHERE user_id = '{user_id}'"
         cursor.execute(profile_sql)
         profile_row = cursor.fetchone()  # 해당 유저의 정보를 가져옴
 
