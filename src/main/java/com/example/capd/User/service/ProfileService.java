@@ -19,7 +19,9 @@ public interface ProfileService {
     public ProfileResponseDto getMyProfile(String userId);
 
     //필요스택 필터링 일치 하는 프로필 리스트 (ai 적용x)
-    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId);
+   // public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId);
+
+    public List<ProfileParticipationRes> recommendUsers(Long contestId, String userId);
 
     //프로필 전체 조회 (ai 추천 프로필), 공모전 id값 받기
     public List<ProfileParticipationRes> aiRecommendUsers(Long contestId, String userId);

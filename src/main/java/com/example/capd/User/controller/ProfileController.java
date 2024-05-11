@@ -68,9 +68,9 @@ public class ProfileController {
     }
 
     //스택만으로 추천
-    @GetMapping("profile-stack/{contestId}/{userId}")
+    @GetMapping("profile-list/{contestId}/{userId}")
     public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
-        return profileService.stackRecommendUsers(contestId, userId);
+        return profileService.recommendUsers(contestId, userId);
     }
 
     // ai 추천
