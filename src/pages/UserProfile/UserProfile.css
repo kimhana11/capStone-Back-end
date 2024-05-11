@@ -56,9 +56,9 @@
 }
 
 .user_stack,
-.user_profile_contestName,
+.user_profile_title,
 .user_profile_stack,
-.user_profile_contestPeriod,
+.user_profile_period,
 .user_profile_gitHub {
     outline: none;
     border: none;

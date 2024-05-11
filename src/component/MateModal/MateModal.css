@@ -50,13 +50,22 @@
 .modal_mate_non_competition_p {
     margin-left: 20%;
     padding-top: 45%;
-    color: #D2D2D2;
+    color: #00B2FF;
 }
 
 .modal_mate {
     height: 70%;
     overflow-y: auto
 }
+
+.modal_mate::-webkit-scrollbar{
+    width: 10px;
+}
+
+.modal_mate::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 178, 255, 0.6);
+    border-radius: 10px;
+  }
 
 .modal_mate_user.active {
     width: 87%;
@@ -117,6 +126,7 @@
 .modal_mate_user_stack {
     width: 100%;
     display: flex;
+    overflow: hidden;
 }
 
 .modal_mate_user_stack>p {

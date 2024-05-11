@@ -13,7 +13,7 @@ export default function UserProfile() {
     const [profile, setProfile] = useState([]);
     const [profileData, setProfileData] = useState([]);
     const [stackForm, setStackForm] = useState({ value: "" });
-    const [profileForm, setProfileForm] = useState({ contestName: "", stack: "", contestPeriod: "", gitHub: "" });
+    const [profileForm, setProfileForm] = useState({ title: "", stack: "", period: "", gitHub: "" });
 
     useEffect(() => {
         setUserId(window.localStorage.getItem('userId'));
@@ -25,6 +25,7 @@ export default function UserProfile() {
             console.log(result.data)
             setProfileData(result.data);
             setStack(result.data.stackList);
+            setProfile(result.data.careers);
         }).catch(err => {
             if (err.response && err.response.status === 500) {
                 Swal.fire({
@@ -66,9 +67,9 @@ export default function UserProfile() {
         } else {
             setProfile([...profile, profileForm]);
             setProfileForm({
-                contestName: "",
+                title: "",
                 stack: "",
-                contestPeriod: "",
+                period: "",
                 gitHub: ""
             });
         }
@@ -169,14 +170,14 @@ export default function UserProfile() {
         const userProfile = {
             userId: userId,
             intro: user_intro,
-            stackList: stack.map(item => item.value),
+            stackList: stack.map(item => item),
             myTime: user_profile_time,
             desiredTime: user_profile_desiredTime,
             collaborationCount: user_profile_count,
             careers: profile.map(item => ({
-                title: item.contestName,
+                title: item.title,
                 stack: item.stack,
-                period: parseInt(item.contestPeriod),
+                period: parseInt(item.period),
                 gitHub: item.gitHub
             }))
         };
@@ -185,12 +186,26 @@ export default function UserProfile() {
                 method: 'post',
                 url: '/user-profile',
                 data: userProfile
-            }).then(result => {
+            }).then(() => {
                 Swal.fire({
                     title: "프로필이 저장되었습니다"
                 }).then(() => {
                     navigate('/mypage');
                 });
+            }).catch(err => {
+                if (err.response && err.response.status === 500) {
+                    axios({
+                        method: 'post',
+                        url: '/profile-update',
+                        data: userProfile
+                    }).then(() => {
+                        Swal.fire({
+                            title: "프로필이 수정되었습니다"
+                        }).then(() => {
+                            navigate('/mypage');
+                        });
+                    })
+                }
             })
         } catch (err) {
             console.error(err);
@@ -200,11 +215,14 @@ export default function UserProfile() {
     const deleteUserProflie = (e) => {
         e.preventDefault();
         document.querySelector('#user_profile_intro').value = "";
+        document.querySelector('#user_profile_time').value = "";
+        document.querySelector('#user_profile_desiredTime').value = "";
+        document.querySelector('#user_profile_count').value = "";
         setStackForm({ value: "" });
         setProfileForm({
-            contestName: "",
+            title: "",
             stack: "",
-            contestPeriod: "",
+            period: "",
             gitHub: ""
         });
         setStack([]);
@@ -267,9 +285,9 @@ export default function UserProfile() {
                         <div className="user_profile_box">
                             <input
                                 type="text"
-                                name="contestName"
-                                value={profileForm.contestName}
-                                className="user_profile_contestName"
+                                name="title"
+                                value={profileForm.title}
+                                className="user_profile_title"
                                 onChange={onChangeInput_Plus}
                                 placeholder="공모명을 입력하세요"
                             />
@@ -283,9 +301,9 @@ export default function UserProfile() {
                             />
                             <input
                                 type="text"
-                                name="contestPeriod"
-                                value={profileForm.contestPeriod}
-                                className="user_profile_contestPeriod"
+                                name="period"
+                                value={profileForm.period}
+                                className="user_profile_period"
                                 onChange={onChangeInput_Plus}
                                 placeholder="공모전 기간(일수만)을 입력하세요"
                             />
@@ -306,9 +324,9 @@ export default function UserProfile() {
                                 {profile.map((item, index) => (
                                     <li key={item.id}>
                                         <div>
-                                            <div><p>공모명</p> - {item.contestName}<br /></div>
+                                            <div><p>공모명</p> - {item.title}<br /></div>
                                             <div><p>기술 스택</p> - {item.stack}<br /></div>
-                                            <div><p>공모전 기간(일수)</p> - {item.contestPeriod}<br /></div>
+                                            <div><p>공모전 기간(일수)</p> - {item.period}<br /></div>
                                             <div><p>깃허브 주소</p> - {item.gitHub}</div>
                                         </div>
                                         <button type="button" onClick={() => removeProfileList(index)}>x</button>
@@ -434,9 +452,9 @@ export default function UserProfile() {
                         <div className="user_profile_box">
                             <input
                                 type="text"
-                                name="contestName"
-                                value={profileForm.contestName}
-                                className="user_profile_contestName"
+                                name="title"
+                                value={profileForm.title}
+                                className="user_profile_title"
                                 onChange={onChangeInput_Plus}
                                 placeholder="공모명을 입력하세요"
                             />
@@ -450,9 +468,9 @@ export default function UserProfile() {
                             />
                             <input
                                 type="text"
-                                name="contestPeriod"
-                                value={profileForm.contestPeriod}
-                                className="user_profile_contestPeriod"
+                                name="period"
+                                value={profileForm.period}
+                                className="user_profile_period"
                                 onChange={onChangeInput_Plus}
                                 placeholder="공모전 기간(일수만)을 입력하세요"
                             />
@@ -473,9 +491,9 @@ export default function UserProfile() {
                                 {profile.map((item, index) => (
                                     <li key={item.id}>
                                         <div>
-                                            <div><p>공모명</p> - {item.contestName}<br /></div>
+                                            <div><p>공모명</p> - {item.title}<br /></div>
                                             <div><p>기술 스택</p> - {item.stack}<br /></div>
-                                            <div><p>공모전 기간(일수)</p> - {item.contestPeriod}<br /></div>
+                                            <div><p>공모전 기간(일수)</p> - {item.period}<br /></div>
                                             <div><p>깃허브 주소</p> - {item.gitHub}</div>
                                         </div>
                                         <button type="button" onClick={() => removeProfileList(index)}>x</button>
@@ -485,7 +503,7 @@ export default function UserProfile() {
                         </div>
                     </div>
                     <div className="user_profile_button_box">
-                        <button type="button" onClick={saveUserProflie}>저장</button>
+                        <button type="button" onClick={saveUserProflie}>수정</button>
                         <button type="button" onClick={deleteUserProflie}>리셋</button>
                     </div>
                 </form>

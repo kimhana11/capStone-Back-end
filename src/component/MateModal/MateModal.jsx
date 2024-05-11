@@ -162,7 +162,7 @@ const MateModal = () => {
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
                                                             <p className='modal_mate_user_content'>{user.intro}</p>
                                                             <div className='modal_mate_user_stack'>
-                                                                {user.stackList.map((stack, index) => (
+                                                                {user.stackList.slice(0, 4).map((stack, index) => (
                                                                     <p key={index}>{stack}</p>
                                                                 ))}
                                                             </div>
@@ -210,7 +210,7 @@ const MateModal = () => {
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
                                                             <p className='modal_mate_user_content'>{user.intro}</p>
                                                             <div className='modal_mate_user_stack'>
-                                                                {user.stackList.map((stack, index) => (
+                                                                {user.stackList.slice(0, 4).map((stack, index) => (
                                                                     <p key={index}>{stack}</p>
                                                                 ))}
                                                             </div>
