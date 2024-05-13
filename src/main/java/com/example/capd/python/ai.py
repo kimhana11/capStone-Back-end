@@ -61,9 +61,9 @@ try:
                 FROM profile p
                 JOIN profile_stack_list psl ON p.id = psl.profile_id
                 LEFT JOIN career c ON p.id = c.profile_id
-                JOIN participation par ON par.user_id = p.id
+                JOIN participation par ON par.user_id = p.user_id
                 JOIN contest cont ON par.contest_id = cont.id
-                WHERE cont.id = '{contest_id}' AND p.id != '{user_id}'
+                WHERE cont.id = '{contest_id}' AND p.user_id != '{user_id}'
                 GROUP BY p.id, p.my_time, p.rate;
             """
             cursor.execute(other_users_profile_sql)
