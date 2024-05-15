@@ -274,7 +274,7 @@ export default function UserProfile() {
                             <ul>
                                 {stack.map((item, index) => (
                                     <li key={index}>
-                                        {item.value}
+                                        {item}
                                         <button type="button" onClick={() => removeStackList(index)}>x</button>
                                     </li>
                                 ))}

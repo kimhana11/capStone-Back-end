@@ -100,6 +100,7 @@ export default function SignUI() {
                     }).then(() => {
                         window.localStorage.setItem('token', result.data.token);
                         window.localStorage.setItem('userId', result.data.userId);
+                        window.localStorage.setItem('id', result.data.id);
                         navigate('/');
                         window.location.reload();
                     });

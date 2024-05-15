@@ -153,3 +153,13 @@
     background-color: #D8D8D8;
     padding: 150px 115px 150px 115px;
 }
+
+.navigation_main_chat {
+    position: fixed;
+    top: 750px;
+    left: 1650px;
+}
+
+.navigation_main_chat_icon {
+    cursor: pointer;
+}

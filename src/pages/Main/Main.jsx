@@ -1,17 +1,21 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Main.css';
-import Logo from '../../img/Logo.png'
+import Logo from '../../img/Logo.png';
+import CIO from '../../img/Group 79.png';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import ChatModal from '../../component/ChatModal/ChatModal.jsx';
 import SimpleSlider from '../../component/SimpleSlider/SimpleSlider';
+import Swal from 'sweetalert2';
 
 const Main = () => {
+    const navigate = useNavigate();
+    const [modalOpen, setModalOpen] = useState(false);
     const [competitionData, setCompetitionData] = useState([]);
     const [bestCompetitionData, setBestCompetitionData] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+    const currentPage = 1;
     const competitionsPerPage = 4;
     const bestcompetitionsPerPage = 5;
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
     const currentDate = new Date(); // 현재 날짜 가져오기
     const bestIndexOfLastCompetition = currentPage * bestcompetitionsPerPage;
     const bestIndexOfFirstCompetition = bestIndexOfLastCompetition - bestcompetitionsPerPage;
@@ -54,6 +58,31 @@ const Main = () => {
             // 현재 날짜가 접수 기간 이전인 경우
             return '접수 예정';
         }
+    };
+
+    const toggleModal = () => {
+        const userId = window.localStorage.getItem('userId');
+        axios({
+            method: 'get',
+            url: `/rooms/${userId}`
+        }).then(result => {
+            if (result.status === 200) {
+                setModalOpen(!modalOpen);
+            }
+        }).catch(err => {
+            if (err.response && err.response.status === 500) {
+                Swal.fire({
+                    title: "채팅을 사용하려면<br/>로그인을 해주세요",
+                    showCancelButton: true,
+                    confirmButtonText: "네",
+                    cancelButtonText: "아뇨, 구경만 할게요"
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        navigate('signui')
+                    }
+                })
+            }
+        })
     };
 
     return (
@@ -175,6 +204,10 @@ const Main = () => {
                         )
                     ))}
                 </div>
+            </div>
+            <div className='navigation_main_chat'>
+                <img src={CIO} className='navigation_main_chat_icon' onClick={toggleModal} />
+                {modalOpen && <ChatModal />}
             </div>
         </div>
     )

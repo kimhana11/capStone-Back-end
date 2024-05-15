@@ -1,12 +1,11 @@
 import Modal from 'react-modal';
-import './MateModal.css'
 import image from '../../img/Ellipse 16.png'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const MateModal = () => {
+const ChatModal = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
     const [userData, setUserData] = useState([]);
     const [aiUserData, setAiUserData] = useState([]);
@@ -272,4 +271,4 @@ const MateModal = () => {
     )
 }
 
-export default MateModal;
+export default ChatModal;
