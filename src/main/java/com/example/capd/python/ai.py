@@ -19,7 +19,7 @@ user_id = sys.argv[2]
 try:
     with connection.cursor() as cursor:
         # profile 테이블에서 데이터 가져오기
-        profile_sql = f"SELECT id, collaboration_count, my_time, desired_time, rate FROM profile WHERE user_id = '{user_id}'"
+        profile_sql = f"SELECT user_id, collaboration_count, my_time, desired_time, rate FROM profile WHERE user_id = '{user_id}'"
         cursor.execute(profile_sql)
         profile_row = cursor.fetchone()  # 해당 유저의 정보를 가져옴
 
@@ -46,7 +46,7 @@ try:
 
             # 프로필 정보 저장 (id, 원하는 스택, 원하는 경력 횟수, 원하는 투자시간, 내 평점)
             profile_info = {
-                'id': profile_row['id'],
+                'id': profile_row['user_id'],
                 'stack_list': combined_stack_list,
                 'collaboration_count': profile_row['collaboration_count'],
                 'desired_time': profile_row['desired_time'],
@@ -57,7 +57,7 @@ try:
 
             # 다른 유저들의 프로필 정보 가져오기 (id, 본인 스택, 경력횟수, 투자가능시간 ,별점)
             other_users_profile_sql = f"""
-                SELECT p.id, GROUP_CONCAT(DISTINCT psl.stack_list) AS stack_list, COUNT(DISTINCT c.id) AS collaboration_count, p.my_time, p.rate
+                SELECT p.user_id, GROUP_CONCAT(DISTINCT psl.stack_list) AS stack_list, COUNT(DISTINCT c.id) AS collaboration_count, p.my_time, p.rate
                 FROM profile p
                 JOIN profile_stack_list psl ON p.id = psl.profile_id
                 LEFT JOIN career c ON p.id = c.profile_id
@@ -71,7 +71,7 @@ try:
 
             for row in other_users_profile_rows:
                 other_user_profile_info = {
-                    'id': row['id'],
+                    'id': row['user_id'],
                     'stack_list': row['stack_list'],
                     'collaboration_count': row['collaboration_count'],
                     'my_time': row['my_time'],
@@ -105,7 +105,7 @@ other_people = []
 
 for row in other_users_profile_rows:
     other_person = {
-        'id': row['id'],
+        'id': row['user_id'],
         'stack_list': row['stack_list'],
         'collaboration_count': row['collaboration_count'],
         'my_time': row['my_time'],
@@ -186,75 +186,75 @@ for i in range(1, len(other_people_formatted)+1) : # 0번째는 내가 원하는
 # ----------------- 1. 각각 막대그래프 따로 그리기 (순위변화 보기 용이함) ------------------------
 # matplotlib의 barh() 가로막대그래프
 # X축 : 코사인 유사도
-plt.figure(figsize=(12, 6))
-plt.subplot(1, 2, 1)
-xData = cosine_similarities[0][1:]
-# # Y축 : 각 userId
-yData = [str(other_person[0]) for other_person in other_people_formatted]
+# plt.figure(figsize=(12, 6))
+# plt.subplot(1, 2, 1)
+# xData = cosine_similarities[0][1:]
+# # # Y축 : 각 userId
+# yData = [str(other_person[0]) for other_person in other_people_formatted]
+#
+# plt.barh(yData, xData, label='Cosine Similarity', color='r')
+#
+# plt.ylabel('userId') # y축 이름
+# plt.xlabel('Cosine Similarity') # x축 이름
+# plt.title('Cosine Similarity by userId Horizental bar graph\n Before applying weight') # 그래프 제목
+# plt.grid()
+# # # 각 유사도 값 그래프 바 옆에 표시하기
+# for index, value in enumerate(xData) :
+#     if value != 0.0 : # ha속성은 바 끝으로부터 어느쪽으로 텍스트를 보여줄건지 결정
+#         plt.text(value, index, str(value), ha='right')
+#     else : # 값이 0.0일때 왼쪽으로 표시하면 왼쪽에 userId가 겹쳐서 잘 안보임..
+#         plt.text(value, index, str(value), ha='left')
+#
+# # # 가중치 적용 이후 코사인 유사도 가로 바 그래프
+# xData = weighted_similarities
+# plt.subplot(1, 2, 2)  # 1행 2열의 두 번째 그래프
+# plt.barh(yData, xData, color='skyblue', label='Weighted Cosine Similarity')
+# plt.ylabel('user Id')
+# plt.xlabel('Weighted Cosine Similarity')
+# plt.title('Cosine Similarity by userId Horizental bar graph\nAfter applying weight')
+# plt.grid()
+# for index, value in enumerate(xData):
+#     if value != 0.0:
+#         plt.text(value, index, str(value), ha='right')
+#     else:
+#         plt.text(value, index, str(value), ha='left')
+# plt.show()
 
-plt.barh(yData, xData, label='Cosine Similarity', color='r')
-
-plt.ylabel('userId') # y축 이름
-plt.xlabel('Cosine Similarity') # x축 이름
-plt.title('Cosine Similarity by userId Horizental bar graph\n Before applying weight') # 그래프 제목
-plt.grid()
-# # 각 유사도 값 그래프 바 옆에 표시하기
-for index, value in enumerate(xData) :
-    if value != 0.0 : # ha속성은 바 끝으로부터 어느쪽으로 텍스트를 보여줄건지 결정
-        plt.text(value, index, str(value), ha='right')
-    else : # 값이 0.0일때 왼쪽으로 표시하면 왼쪽에 userId가 겹쳐서 잘 안보임..
-        plt.text(value, index, str(value), ha='left')
-
-# # 가중치 적용 이후 코사인 유사도 가로 바 그래프
-xData = weighted_similarities
-plt.subplot(1, 2, 2)  # 1행 2열의 두 번째 그래프
-plt.barh(yData, xData, color='skyblue', label='Weighted Cosine Similarity')
-plt.ylabel('user Id')
-plt.xlabel('Weighted Cosine Similarity')
-plt.title('Cosine Similarity by userId Horizental bar graph\nAfter applying weight')
-plt.grid()
-for index, value in enumerate(xData):
-    if value != 0.0:
-        plt.text(value, index, str(value), ha='right')
-    else:
-        plt.text(value, index, str(value), ha='left')
-plt.show()
-
-# # ----------------- 2. 한번에 그리기 (가중치 적용 전후 얼마나 변화했는지 보기 용이함) ------------------------
-xData = cosine_similarities[0][1:]  # 적용 전 코사인 유사도
-xData_weighted = weighted_similarities  # 적용 후 코사인 유사도
-yData = [str(other_person[0]) for other_person in other_people_formatted]  # userId 혹은 다른 식별자
-
-# # 그래프 그리기
-plt.figure(figsize=(10, 6))  # 그래프 사이즈 설정
-
-# # 가로 막대 그래프 그리기 (적용 전)
-plt.barh(np.arange(len(yData)), xData, color='skyblue', label='Before Weighted', height=0.4)
-
-# # 가로 막대 그래프 그리기 (적용 후)
-plt.barh(np.arange(len(yData)) + 0.4, xData_weighted, color='orange', label='After Weighted', height=0.4)
-
-# # 그래프에 텍스트 표시
-for i, value in enumerate(xData):
-    if value != 0.0:
-        plt.text(value, i, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 전 막대 오른쪽에 텍스트 표시
-    else:
-        plt.text(value, i, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
-for i, value in enumerate(xData_weighted):
-    if value != 0.0:
-        plt.text(value, i + 0.4, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 후 막대 오른쪽에 텍스트 표시
-    else:
-        plt.text(value, i + 0.4, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
-
-# # 그래프 제목, 축 이름 설정
-plt.title('Cosine Similarity Before and After Weighted')
-plt.xlabel('Cosine Similarity')
-plt.ylabel('User Id')
-plt.yticks(np.arange(len(yData)) + 0.2, yData)  # y 축에 userId 표시
-plt.grid(axis='x')  # x 축에만 그리드 표시
-plt.legend()  # 범례 표시
-plt.tight_layout()  # 그래프 간격 조정
-plt.show()
+# # # ----------------- 2. 한번에 그리기 (가중치 적용 전후 얼마나 변화했는지 보기 용이함) ------------------------
+# xData = cosine_similarities[0][1:]  # 적용 전 코사인 유사도
+# xData_weighted = weighted_similarities  # 적용 후 코사인 유사도
+# yData = [str(other_person[0]) for other_person in other_people_formatted]  # userId 혹은 다른 식별자
+#
+# # # 그래프 그리기
+# plt.figure(figsize=(10, 6))  # 그래프 사이즈 설정
+#
+# # # 가로 막대 그래프 그리기 (적용 전)
+# plt.barh(np.arange(len(yData)), xData, color='skyblue', label='Before Weighted', height=0.4)
+#
+# # # 가로 막대 그래프 그리기 (적용 후)
+# plt.barh(np.arange(len(yData)) + 0.4, xData_weighted, color='orange', label='After Weighted', height=0.4)
+#
+# # # 그래프에 텍스트 표시
+# for i, value in enumerate(xData):
+#     if value != 0.0:
+#         plt.text(value, i, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 전 막대 오른쪽에 텍스트 표시
+#     else:
+#         plt.text(value, i, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
+# for i, value in enumerate(xData_weighted):
+#     if value != 0.0:
+#         plt.text(value, i + 0.4, str(round(value, 2)), ha='right', va='center', fontsize=10)  # 적용 후 막대 오른쪽에 텍스트 표시
+#     else:
+#         plt.text(value, i + 0.4, str(round(value, 2)), ha='left', va='center', fontsize=10)  # 값이 0.0일 때 왼쪽에 텍스트 표시
+#
+# # # 그래프 제목, 축 이름 설정
+# plt.title('Cosine Similarity Before and After Weighted')
+# plt.xlabel('Cosine Similarity')
+# plt.ylabel('User Id')
+# plt.yticks(np.arange(len(yData)) + 0.2, yData)  # y 축에 userId 표시
+# plt.grid(axis='x')  # x 축에만 그리드 표시
+# plt.legend()  # 범례 표시
+# plt.tight_layout()  # 그래프 간격 조정
+# plt.show()
 
 
 
