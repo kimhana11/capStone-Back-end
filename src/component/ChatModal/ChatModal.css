@@ -1,0 +1,40 @@
+.chat_modal_box {
+    width: 100%;
+    height: 90%;
+    display: flex;
+    justify-content: center;
+    padding: 30px 0px 0px 0px;
+}
+
+.chat_modal {
+    width: 85%;
+    height: 20%;
+    display: flex;
+    border-radius: 1rem;
+    padding: 4% 2% 0% 4%;
+    box-shadow: 1px 1px 1px 3px rgba(212, 212, 212, 0.3);
+    cursor: pointer;
+}
+
+.chat_modal>div{
+    width: 80%;
+}
+
+.chat_modal_title {
+    font-weight: bold;
+    margin: 0px 0px 20px 0px;
+}
+
+.chat_modal_content {
+    width: 100%;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat_modal_time {
+    font-size: small;
+    color: #c9c9c9;
+    margin: 0;
+}

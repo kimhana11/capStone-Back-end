@@ -1,0 +1,62 @@
+.cheer_box{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #00B2FF;
+}
+
+.cheer_div{
+    width: 65%;
+    display: flex;
+}
+
+.cheer_user_box{
+    width: auto;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    background-color: #00A2E9;
+    color: white;
+    border-radius: 1.2rem;
+    margin-right: 2%;
+}
+
+.cheer_user_name{
+    width: auto;
+    text-align: center;
+    padding: 0px 15px 0px 15px;
+}
+
+.cheer_user_content{
+    width: auto;
+    text-align: center;
+    padding: 0px 15px 0px 15px;
+}
+
+.cheer_input_box{
+    width: 20%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 1.2rem;
+}
+
+.cheer_input{
+    width: 78%;
+    height: 80%;
+    margin-left: 5%;
+    border: none;
+    border-right: solid 1px black;
+}
+
+.cheer_button{
+    width: 20%;
+    height: 40px;
+    border: none;
+    border-radius: 1rem;
+    background-color: white;
+    cursor: pointer;
+}

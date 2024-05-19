@@ -161,5 +161,6 @@
 }
 
 .navigation_main_chat_icon {
+    width: 80%;
     cursor: pointer;
 }

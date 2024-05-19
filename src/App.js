@@ -8,11 +8,13 @@ import SignUI from './pages/SignUI/SignUI.jsx';
 import MyPage from './pages/Mypage/Mypage.jsx';
 import UserModify from './pages/UserModify/UserModify.jsx';
 import UserProfile from './pages/UserProfile/UserProfile.jsx';
+import Cheer from './component/Cheer/Cheer.jsx';
 
 
 function App() {
   return (
     <div className="App">
+      <Cheer/>
       <Navigation/>
       <div className="App-body">
         <Routes>

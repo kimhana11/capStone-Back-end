@@ -1,8 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import './Main.css';
 import Logo from '../../img/Logo.png';
 import CIO from '../../img/Group 79.png';
-import { useState, useEffect } from 'react';
+import CIC from '../../img/Group 80.png';
 import axios from 'axios';
 import ChatModal from '../../component/ChatModal/ChatModal.jsx';
 import SimpleSlider from '../../component/SimpleSlider/SimpleSlider';
@@ -206,7 +207,7 @@ const Main = () => {
                 </div>
             </div>
             <div className='navigation_main_chat'>
-                <img src={CIO} className='navigation_main_chat_icon' onClick={toggleModal} />
+                <img src={modalOpen ? CIC : CIO}  className='navigation_main_chat_icon' onClick={toggleModal} />
                 {modalOpen && <ChatModal />}
             </div>
         </div>

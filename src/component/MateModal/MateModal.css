@@ -98,8 +98,8 @@
     margin-left: 3%;
 }
 
-.modal_mate_user>img {
-    width: 66px;
+.modal_mate_user>svg {
+    width: 60px;
     height: 65px;
     display: flex;
     align-items: center;
@@ -118,9 +118,9 @@
 .modal_mate_user_content {
     width: 70%;
     font-size: small;
-    overflow: hidden;
     white-space: nowrap;
-    text-overflow: ellipsis
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .modal_mate_user_stack {
