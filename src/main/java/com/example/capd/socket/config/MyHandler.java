@@ -10,20 +10,23 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
 import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class MyHandler extends TextWebSocketHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSubscribers = new HashMap<>();
     private final Deque<CheeringMessageDto> cheeringMessagesQueue = new ArrayDeque<>(); //응원글 저장할
-    private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
-
     private final ChatService chatService;
 
     public MyHandler(ChatService chatService) {
@@ -93,11 +96,7 @@ public class MyHandler extends TextWebSocketHandler {
             // 발행 메시지 처리
             handlePublicationMessage(session, message, sessions);
         }
-        //실시간 응원글
-        else if (payload.contains("cheer")) {
-            handleCheerMessage(message);
-        }
-        // 기타 메시지는 기존 방식으로 처리
+        //실시간 응원글 및 기타 메시지는 기존 방식으로 처리
         else {
             chatService.processMessage(session, message, sessions);
         }
@@ -175,24 +174,6 @@ public class MyHandler extends TextWebSocketHandler {
             session.sendMessage(new TextMessage(historyObject.toJSONString()));
         } catch (IOException e) {
             // Handle exception as needed
-        }
-    }
-
-    // 모든 클라이언트에게 응원 메시지 전송 메서드
-    private void handleCheerMessage(TextMessage message) {
-        try {
-            // 클라이언트로부터 받은 메시지 파싱
-            sessions.values().forEach((s) -> {
-                if (s.isOpen()) {
-                    try {
-                        s.sendMessage(message);
-                    } catch (IOException e) {
-                        logger.error("Error sending cheering message to all: {}", e.getMessage());
-                    }
-                }
-            });
-        } catch (Exception  e) {
-            logger.error("Error processing cheer message: {}", e.getMessage());
         }
     }
 }

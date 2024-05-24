@@ -10,9 +10,4 @@ import lombok.*;
 public class CheeringMessageDto {
     private String senderName;
     private String message;
-
-    // senderId: message 형식의 문자열 반환
-    public String toJsonString() {
-        return senderName + ":" + message;
-    }
 }
