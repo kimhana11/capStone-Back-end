@@ -3,6 +3,7 @@ package com.example.capd.socket.config;
 import com.example.capd.socket.dto.CheeringMessageDto;
 import com.example.capd.socket.dto.MessageDto;
 import com.example.capd.socket.service.ChatService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -77,6 +78,7 @@ public class MyHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
+        logger.info("Received cheer message payload: {}", payload); // payload 출력
 
         //구독 메시지 확인
         if (payload.startsWith("/sub/chat/")) {
@@ -92,15 +94,15 @@ public class MyHandler extends TextWebSocketHandler {
             handlePublicationMessage(session, message, sessions);
         }
         //실시간 응원글
-        else if (payload.equals("/cheer")) {
-            sendCheeringMessagesToAll();
+        else if (payload.contains("cheer")) {
+            handleCheerMessage(message);
         }
         // 기타 메시지는 기존 방식으로 처리
         else {
             chatService.processMessage(session, message, sessions);
         }
-
     }
+
     //웹소켓 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -138,6 +140,7 @@ public class MyHandler extends TextWebSocketHandler {
         });
 
     }
+
     //발행 메시지를 처리하는 메서드
     public void handlePublicationMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) {
         String payload = message.getPayload();
@@ -175,30 +178,21 @@ public class MyHandler extends TextWebSocketHandler {
         }
     }
 
-
     // 모든 클라이언트에게 응원 메시지 전송 메서드
-    private void sendCheeringMessagesToAll() {
-        String jsonMessages = convertCheeringMessagesToJson();
-        sessions.values().forEach((session) -> {
-            if (session.isOpen()) {
-                try {
-                    session.sendMessage(new TextMessage(jsonMessages));
-                } catch (IOException e) {
-                    logger.error("Error sending cheering messages to all: {}", e.getMessage());
+    private void handleCheerMessage(TextMessage message) {
+        try {
+            // 클라이언트로부터 받은 메시지 파싱
+            sessions.values().forEach((s) -> {
+                if (s.isOpen()) {
+                    try {
+                        s.sendMessage(message);
+                    } catch (IOException e) {
+                        logger.error("Error sending cheering message to all: {}", e.getMessage());
+                    }
                 }
-            }
-        });
-    }
-
-    private List<CheeringMessageDto> cheeringMessages = new ArrayList<>();
-
-    // 응원 메시지를 JSON 형식으로 변환하는 메서드
-    private String convertCheeringMessagesToJson() {
-        cheeringMessages = chatService.getCheeringMessage();
-        // List를 JSON 형식의 문자열로 변환하여 반환
-        String jsonMessages = cheeringMessages.stream()
-                .map(message -> "{ \"senderId\": \"" + message.getSenderId() + "\", \"message\": \"" + message.getMessage() + "\" }")
-                .collect(Collectors.joining(",", "[", "]"));
-        return jsonMessages;
+            });
+        } catch (Exception  e) {
+            logger.error("Error processing cheer message: {}", e.getMessage());
+        }
     }
 }

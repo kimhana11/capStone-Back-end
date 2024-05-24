@@ -8,11 +8,11 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CheeringMessageDto {
-    private String senderId;
+    private String senderName;
     private String message;
 
     // senderId: message 형식의 문자열 반환
     public String toJsonString() {
-        return senderId + ":" + message;
+        return senderName + ":" + message;
     }
 }

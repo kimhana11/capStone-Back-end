@@ -46,7 +46,7 @@ public class ChatService {
         if (isCheeringMessage(message)) {
             // Cheer 메시지 처리
             CheeringMessageDto cheeringMessageDto = objectMapper.readValue(message.getPayload(), CheeringMessageDto.class);
-            saveCheeringMessage(cheeringMessageDto.getSenderId(), cheeringMessageDto.getMessage());
+            saveCheeringMessage(cheeringMessageDto.getSenderName(), cheeringMessageDto.getMessage());
 
         } else if (isChatMessage(message)) {
             // Chat 메시지 처리
