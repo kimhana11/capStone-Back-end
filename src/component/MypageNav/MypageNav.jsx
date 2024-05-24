@@ -18,6 +18,10 @@ export default function NavigationUser() {
             if (result.status == 200) {
                 setUserRate(result.data);
             }
+        }).catch(err => {
+            if (err.response && err.response.status === 404) {
+                
+            }
         })
         setUserId(window.localStorage.getItem('userId'));
     })

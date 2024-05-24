@@ -47,6 +47,8 @@ const Navigation = () => {
     const logout = () => {
         setIsToken(window.localStorage.removeItem('token'));
         window.localStorage.removeItem('userId');
+        window.localStorage.removeItem('id');
+        window.localStorage.removeItem('name');
         navigate('/');
         window.location.reload();
     }
