@@ -1,5 +1,6 @@
 package com.example.capd.socket.service;
 
+import com.example.capd.User.domain.User;
 import com.example.capd.contest.repository.ContestRepository;
 import com.example.capd.socket.config.MyHandler;
 import com.example.capd.socket.domain.Message;
@@ -25,6 +26,7 @@ public class ChatService {
     private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
     private final RoomRepository roomRepository;
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
 
     //이전 채팅 불러오기
@@ -32,9 +34,10 @@ public class ChatService {
         List<Message> messages = messageRepository.findByRoomIdOrderByTimeStamp(roomId);
         List<MessageDto> messageDtoList = messages.stream()
                 .map(message -> {
+                    Optional<User> sender = userRepository.findByUserId(message.getSenderId());
                     return MessageDto.builder()
                             .roomId(message.getId())
-                            .senderId(message.getSenderId())
+                            .senderId(sender.get().getUsername())
                             .message(message.getMessage())
                             .build();
                 })

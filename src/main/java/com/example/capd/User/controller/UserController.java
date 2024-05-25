@@ -41,7 +41,7 @@ public class UserController {
         String token = this.authService.login(request);
         String userId = request.getUserId(); // 클라이언트에게 전달할 사용자 아이디
         String id = String.valueOf(userRepository.findUserByUserId(userId).getId());
-        String name = String.valueOf(userRepository.findByUsername(userId).getUsername());
+        String name = String.valueOf(userRepository.findUserByUserId(userId).getUsername());
         Map<String, String> response = new HashMap<>();
         response.put("token", token);
         response.put("userId", userId);

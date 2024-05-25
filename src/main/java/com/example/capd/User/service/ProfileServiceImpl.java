@@ -251,6 +251,7 @@ public class ProfileServiceImpl implements ProfileService {
         ProfileResponseDto dto = new ProfileResponseDto();
         dto.setId(profile.getId());
         dto.setUserId(profile.getUser().getUserId());
+        dto.setUserName(profile.getUser().getUsername());
         dto.setIntro(profile.getIntro());
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());
