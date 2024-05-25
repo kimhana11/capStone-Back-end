@@ -3,26 +3,30 @@ package com.example.capd.socket.config;
 import com.example.capd.socket.dto.CheeringMessageDto;
 import com.example.capd.socket.dto.MessageDto;
 import com.example.capd.socket.service.ChatService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
 import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class MyHandler extends TextWebSocketHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
     private final Map<String, WebSocketSession> sessions = new HashMap<>();
     private final Map<String, Set<WebSocketSession>> roomSubscribers = new HashMap<>();
     private final Deque<CheeringMessageDto> cheeringMessagesQueue = new ArrayDeque<>(); //응원글 저장할
-    private static final Logger logger = LoggerFactory.getLogger(MyHandler.class);
-
     private final ChatService chatService;
 
     public MyHandler(ChatService chatService) {
@@ -77,6 +81,7 @@ public class MyHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
+        logger.info("Received cheer message payload: {}", payload); // payload 출력
 
         //구독 메시지 확인
         if (payload.startsWith("/sub/chat/")) {
@@ -91,16 +96,12 @@ public class MyHandler extends TextWebSocketHandler {
             // 발행 메시지 처리
             handlePublicationMessage(session, message, sessions);
         }
-        //실시간 응원글
-        else if (payload.equals("/cheer")) {
-            sendCheeringMessagesToAll();
-        }
-        // 기타 메시지는 기존 방식으로 처리
+        //실시간 응원글 및 기타 메시지는 기존 방식으로 처리
         else {
             chatService.processMessage(session, message, sessions);
         }
-
     }
+
     //웹소켓 종료
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
@@ -138,6 +139,7 @@ public class MyHandler extends TextWebSocketHandler {
         });
 
     }
+
     //발행 메시지를 처리하는 메서드
     public void handlePublicationMessage(WebSocketSession session, TextMessage message, Map<String, WebSocketSession> sessions) {
         String payload = message.getPayload();
@@ -173,32 +175,5 @@ public class MyHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             // Handle exception as needed
         }
-    }
-
-
-    // 모든 클라이언트에게 응원 메시지 전송 메서드
-    private void sendCheeringMessagesToAll() {
-        String jsonMessages = convertCheeringMessagesToJson();
-        sessions.values().forEach((session) -> {
-            if (session.isOpen()) {
-                try {
-                    session.sendMessage(new TextMessage(jsonMessages));
-                } catch (IOException e) {
-                    logger.error("Error sending cheering messages to all: {}", e.getMessage());
-                }
-            }
-        });
-    }
-
-    private List<CheeringMessageDto> cheeringMessages = new ArrayList<>();
-
-    // 응원 메시지를 JSON 형식으로 변환하는 메서드
-    private String convertCheeringMessagesToJson() {
-        cheeringMessages = chatService.getCheeringMessage();
-        // List를 JSON 형식의 문자열로 변환하여 반환
-        String jsonMessages = cheeringMessages.stream()
-                .map(message -> "{ \"senderId\": \"" + message.getSenderId() + "\", \"message\": \"" + message.getMessage() + "\" }")
-                .collect(Collectors.joining(",", "[", "]"));
-        return jsonMessages;
     }
 }
