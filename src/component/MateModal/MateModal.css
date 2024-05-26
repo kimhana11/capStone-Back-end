@@ -58,14 +58,14 @@
     overflow-y: auto
 }
 
-.modal_mate::-webkit-scrollbar{
+.modal_mate::-webkit-scrollbar {
     width: 10px;
 }
 
 .modal_mate::-webkit-scrollbar-thumb {
     background-color: rgba(0, 178, 255, 0.6);
     border-radius: 10px;
-  }
+}
 
 .modal_mate_user.active {
     width: 87%;

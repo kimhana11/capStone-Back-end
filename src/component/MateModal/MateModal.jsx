@@ -69,7 +69,7 @@ const MateModal = () => {
             height: "550px",
             zIndex: 150,
             position: "absolute",
-            top: "47%",
+            top: "53%",
             left: "73%",
             transform: "translate(-50%, -50%)",
             borderRadius: "1rem",
@@ -111,16 +111,16 @@ const MateModal = () => {
         });
     };
 
-    const handleUserClick = (userId) => {
-        const firstUserId = window.localStorage.getItem('id');
+    const handleUserClick = (userName) => {
+        const firstUserName = window.localStorage.getItem('name');
         setSelectedUsers(prevSelectedUsers => {
-            if (!prevSelectedUsers.includes(firstUserId)) {
-                prevSelectedUsers = [firstUserId, ...prevSelectedUsers];
+            if (!prevSelectedUsers.includes(firstUserName)) {
+                prevSelectedUsers = [firstUserName, ...prevSelectedUsers];
             }
-            if (prevSelectedUsers.includes(userId)) {
-                return prevSelectedUsers.filter(id => id !== userId); // 이미 선택된 경우 선택 해제
+            if (prevSelectedUsers.includes(userName)) {
+                return prevSelectedUsers.filter(name => name !== userName); // 이미 선택된 경우 선택 해제
             } else {
-                return [...prevSelectedUsers, userId]; // 새로 선택한 경우 선택 추가   
+                return [...prevSelectedUsers, userName]; // 새로 선택한 경우 선택 추가   
             }
         });
     };
@@ -180,7 +180,7 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {userData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
                                                         <FontAwesomeIcon icon={faFaceSmile} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
@@ -228,7 +228,7 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {aiUserData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.id)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
                                                         <FontAwesomeIcon icon={faFaceSmile} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>

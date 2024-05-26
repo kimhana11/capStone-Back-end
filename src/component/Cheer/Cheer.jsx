@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './Cheer.css';
+import Swal from 'sweetalert2';
 
 const Cheer = () => {
     const [username, setUsername] = useState(null);
@@ -17,10 +18,12 @@ const Cheer = () => {
         };
 
         websocket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            console.log(message)
-            if (message.type === 'cheer') {
-                setCheers(prevCheers => [...prevCheers, message]);
+            if (isValidJson(event.data)) {
+                const message = JSON.parse(event.data);
+                console.log(message)
+                if (message.type === 'cheer') {
+                    setCheers(message.cheeringMessages.map(cheer => `${cheer.senderName} : ${cheer.message}`));
+                }
             }
         };
 
@@ -34,14 +37,29 @@ const Cheer = () => {
     };
 
     const handleButtonClick = () => {
-        if (inputValue.trim() !== '' && ws) {
+        const token = window.localStorage.getItem('token');
+        if (inputValue.trim() !== '' && ws && token) {
             const cheerMessage = {
-                type: 'cheer',
-                userName: username,
-                content: inputValue.trim()
+                senderName: username,
+                message: inputValue.trim()
             };
             ws.send(JSON.stringify(cheerMessage));
             setInputValue('');
+        } else if (token === undefined || token === null) {
+            setInputValue('');
+            Swal.fire({
+                title: "응원글을 사용하려면<br/>로그인이 필요해요!",
+                confirmButtonText: "네",
+            })
+        }
+    };
+
+    const isValidJson = (str) => {
+        try {
+            JSON.parse(str);
+            return true;
+        } catch (e) {
+            return false;
         }
     };
 
@@ -51,7 +69,7 @@ const Cheer = () => {
                 <div className='cheer_div'>
                     {cheers.map((cheer, index) => (
                         <div key={index} className='cheer_user_box'>
-                            <p className='cheer_user_name'>{cheer.userName}</p> | <p className='cheer_user_content'>{cheer.content}</p>
+                            <p className='cheer_user_content'>{cheer}</p>
                         </div>
                     ))}
                 </div>
