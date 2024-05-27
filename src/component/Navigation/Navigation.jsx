@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 
 const Navigation = () => {
     const [modalOpen, setModalOpen] = useState(false);
-    const [isToken, setIsToken] = useState("");
+    const [isToken, setIsToken] = useState(null);
     const navigate = useNavigate();
 
     const toggleModal = () => {
@@ -57,7 +57,7 @@ const Navigation = () => {
         <div>
             <div className='navaigation_bar'>
                 <div className='navaigation_sign_bar'>
-                    {isToken === undefined || !isToken ? (
+                    {isToken === undefined || !isToken || isToken === null ? (
                         <>
                             <Link id='navaigation_sign_bar_frist' to={'/signui'}>회원가입</Link> |
                             <Link to={'/signui'}>로그인</Link> |
