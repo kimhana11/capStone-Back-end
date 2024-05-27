@@ -180,7 +180,7 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {userData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.user_id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.user_id)}>
                                                         <FontAwesomeIcon icon={faFaceSmile} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
@@ -228,7 +228,7 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {aiUserData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.user_id) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.user_id)}>
                                                         <FontAwesomeIcon icon={faFaceSmile} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
