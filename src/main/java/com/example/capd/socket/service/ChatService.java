@@ -62,7 +62,9 @@ public class ChatService {
             if (room != null) {
                 Message newMessage = chatMessageDto.toEntity(room);
                 messageRepository.save(newMessage);
+                Optional<User> sender = userRepository.findByUserId(chatMessageDto.getSenderId());
                 // 다른 세션에 새로운 채팅 메시지 전송
+                chatMessageDto.setSenderId(sender.get().getUsername());
                 broadcastMessageToAll(sessionId, objectMapper.writeValueAsString(chatMessageDto), sessions);
             }
         }
