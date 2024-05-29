@@ -36,7 +36,7 @@ public class ChatService {
                 .map(message -> {
                     Optional<User> sender = userRepository.findByUserId(message.getSenderId());
                     return MessageDto.builder()
-                            .roomId(message.getId())
+                            .roomId(message.getRoom().getId())
                             .senderId(sender.get().getUsername())
                             .message(message.getMessage())
                             .build();

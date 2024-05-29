@@ -67,7 +67,7 @@ public class ProfileController {
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
-    //스택만으로 추천
+    //전체 추천
     @GetMapping("profile-list/{contestId}/{userId}")
     public List<ProfileParticipationRes> profileList(@PathVariable Long contestId, @PathVariable String userId){
         return profileService.recommendUsers(contestId, userId);
