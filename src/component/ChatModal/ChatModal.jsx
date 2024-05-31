@@ -3,20 +3,23 @@ import './ChatModal.css';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Arrow_Button from '../../img/Arrow-Button-Left-3--Streamline-Ultimate.png'
+import Swal from 'sweetalert2';
 
 const ChatModal = (onRequestClose) => {
     const [rooms, setRooms] = useState([]);
+    const [user, setUser] = useState('');
+    const [contestId, setContestId] = useState("");
+    const [leaderId, setLeaderId] = useState("");
     const [selectedRoomId, setSelectedRoomId] = useState(null);
     const [selectedRoomName, setSelectedRoomName] = useState(null);
     const [socket, setSocket] = useState(null);
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState('');
-    const [username, setUsername] = useState('');
     const messagesContainerRef = useRef(null);
 
     useEffect(() => {
         const userId = window.localStorage.getItem('userId');
-        setUsername(window.localStorage.getItem('userId'));
+        setUser(window.localStorage.getItem('userId'));
         axios.get(`/rooms/${userId}`).then(result => {
             setRooms(result.data);
         }).catch(err => {
@@ -75,13 +78,21 @@ const ChatModal = (onRequestClose) => {
     const handleRoomClick = (roomId, name) => {
         setSelectedRoomId(roomId);
         setSelectedRoomName(name);
+
+        axios({
+            method: 'get',
+            url: `/room/${roomId}`
+        }).then(result => {
+            setLeaderId(result.data.leaderId);
+            setContestId(result.data.contestId);
+        })
     };
 
     const handleSendMessage = () => {
         if (socket && inputMessage.trim() !== '') {
             const messageDto = {
                 message: inputMessage,
-                senderId: username,
+                senderId: user,
                 roomId: selectedRoomId,
             };
             setMessages(prevMessages => [...prevMessages, messageDto]);
@@ -96,6 +107,40 @@ const ChatModal = (onRequestClose) => {
         }
         setSelectedRoomId(null);
         setMessages([]);
+    }
+
+    const deleteRoom = () => {
+        axios({
+            method: 'delete',
+            url: `/delete-room/${selectedRoomId}`
+        }).then(
+            Swal.fire({
+                title: "채팅방이 삭제되었습니다."
+            }).then(
+                window.location.reload()
+            )
+        )
+    }
+
+    const updateRoom = () => {
+        const updateRoom = {
+            contestId: contestId,
+            userId: leaderId,
+            roomId: selectedRoomId,
+            status: true
+        };
+        axios({
+            method: 'post',
+            url: '/room-update/status',
+            data: updateRoom
+        }).then(result => {
+            if(result.status === 200){
+                Swal.fire({
+                    title: "팀이 확정되었습니다."
+                })
+            }
+
+        })
     }
 
     const chatStyles = {
@@ -155,15 +200,15 @@ const ChatModal = (onRequestClose) => {
                                     <p className='chat_room_top_name'>{selectedRoomName}</p>
                                 </div>
                                 <div className='chat_room_top_second'>
-                                    <p className='chat_room_top_state'>방 삭제</p>
-                                    <p className='chat_room_top_state'>팀 확정</p>
+                                    <p className='chat_room_top_state' onClick={() => deleteRoom()}>방 삭제</p>
+                                    <p className='chat_room_top_state' onClick={() => updateRoom()}>팀 확정</p>
                                 </div>
                             </div>
                             <div ref={messagesContainerRef} className='chat_room_messagebox'>
                                 {messages.map((message, index) => (
-                                    <div className={`${message.senderId === username ? 'chat_room_message_me_width' : ''}`}>
-                                        <p key={index} className={`${message.senderId === username ? 'chat_room_message_me' : 'chat_room_message'}`}>
-                                            {message.senderId === username ? message.message : message.senderId + " : " + message.message}
+                                    <div className={`${message.senderId === user ? 'chat_room_message_me_width' : ''}`}>
+                                        <p key={index} className={`${message.senderId === user ? 'chat_room_message_me' : 'chat_room_message'}`}>
+                                            {message.senderId === user ? message.message : message.senderId + " : " + message.message}
                                         </p>
                                     </div>
                                 ))}

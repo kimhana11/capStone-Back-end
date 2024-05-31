@@ -150,7 +150,7 @@ export default function CompetitionDetail() {
                 cancelButtonText: "아뇨, 구경만 할게요"
             }).then(result => {
                 if (result.isConfirmed) {
-                    navigate('/userProfile')
+                    navigate('/mypage')
                 }
             })
         } else {

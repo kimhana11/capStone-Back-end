@@ -4,8 +4,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFaceSmile } from '@fortawesome/free-regular-svg-icons';
+import UserImg from '../../img/User-Circle-Single--Streamline-Core.png';
 
 const MateModal = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -181,7 +180,7 @@ const MateModal = () => {
                                             <div className='modal_mate'>
                                                 {userData.map(user => (
                                                     <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
-                                                        <FontAwesomeIcon icon={faFaceSmile} />
+                                                        <img src={UserImg} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
                                                             <p className='modal_mate_user_content'>{user.intro}</p>
@@ -229,7 +228,7 @@ const MateModal = () => {
                                             <div className='modal_mate'>
                                                 {aiUserData.map(user => (
                                                     <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
-                                                        <FontAwesomeIcon icon={faFaceSmile} />
+                                                        <img src={UserImg} />
                                                         <div>
                                                             <p className='modal_mate_user_name'>{user.userId}</p>
                                                             <p className='modal_mate_user_content'>{user.intro}</p>

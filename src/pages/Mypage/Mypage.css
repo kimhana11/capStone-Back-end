@@ -1,0 +1,433 @@
+.myPage_user_top{
+    width: 23%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    left: 11%;
+    top: 30%;
+    z-index: 1;
+}
+
+.myPage_user_top_div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 55%;
+    height: 25vh;
+    background-color: #EFEFEF;
+    border-radius: 50%;
+}
+
+.myPage_user_top_box{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15%;
+}
+
+.myPage_user_top>div>p{
+    color: #7C7C7C;
+    font-size: x-large;
+    margin-left: 10%;
+}
+
+.myPage_main_background{
+    width: 100%;
+    height: 150vh;
+    margin-top: 10%;
+    background-color: #0085FF;
+    position: relative;
+}
+
+.myPage_main_nav{
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 2.5%;
+    margin-left: 28%;
+    font-size: x-large;
+    font-weight: bold;
+    color: white;
+}
+
+.myPage_main_nav>p{
+    width: 12%;
+    text-align: center;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.nav-item.active {
+    text-align: center;
+    width: 12%;
+    padding-bottom: 1%;
+    border-bottom: 2px solid white;
+}
+
+.myPage_user_bottom_div{
+    width: 60%;
+    height: 30vh;
+    display: flex;
+    align-items: center;
+    margin-left: 30%;
+}
+
+.myPage_user_bottom_div>img{
+    width: 15%;
+}
+
+.myPage_user_bottom_p{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F1F1F1;
+    font-size: xx-large;
+    padding: 30px;
+    border-radius: 1rem;
+    margin-left: 3%;
+}
+
+.user_stack_box,
+.user_profile_box_update {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user_profile_box_update {
+    margin-top: 24px;
+}
+
+.user_file_form_box {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2% 0% 0% 25%;
+    border-radius: 1rem;
+    background-color: white;
+}
+
+.user_intro_form_box,
+.user_select_profile_big_box {
+    width: 100%;
+    display: flex;
+    border-bottom: solid 1px #D3D3D3;
+}
+
+.user_mate_profile_big_box_upate {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    border-top: solid 1px #D3D3D3;
+}
+
+.user_mate_profile_big_box_upate>p {
+    text-align: center;
+    color: #747474;
+}
+
+.user_mate_profile_big_box_upate>p>i {
+    font-style: normal;
+    color: #00B2FF;
+}
+
+.user_mate_profile_big_box {
+    width: 100%;
+    display: flex;
+    margin-bottom: 1%;
+}
+
+.user_intro_form_box_profile,
+.user_careers_form_box_profile,
+.user_mate_profile_big_box_p {
+    width: 20%;
+    padding-left: 5%;
+    font-size: x-large;
+    font-weight: bold;
+    color: #747474;
+}
+
+.user_intro_div_box {
+    width: auto;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3%;
+}
+
+.user_intro_div_box_update {
+    width: auto;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3%;
+    border-bottom: solid 1px #D3D3D3;
+}
+
+.user_intro_div_box_update {
+    width: auto;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3%;
+    border-bottom: solid 1px #D3D3D3;
+}
+
+.user_intro_div_box_first,
+.user_introduce,
+.user_introduce_update {
+    padding-top: 2%;
+}
+
+.user_intro_div_box_p {
+    width: 80px;
+}
+
+.user_introduce,
+.user_mytime,
+.user_time {
+    background-color: white;
+    outline: none;
+    border: none;
+}
+
+.user_introduce_update,
+.user_time_update {
+    width: 70%;
+    background-color: white;
+    outline: none;
+    border: none;
+}
+
+.user_stack_big_box,
+.user_profile_big_box {
+    width: 600px;
+    display: flex;
+}
+
+.user_stack,
+.user_profile_title,
+.user_profile_stack,
+.user_profile_period,
+.user_profile_gitHub {
+    outline: none;
+    border: none;
+    border-bottom: solid 2px #D3D3D3;
+    width: 300px;
+    margin-bottom: 10px;
+    font-size: large;
+}
+
+.user_stack_box>button,
+.user_profile_box>button,
+.user_profile_box_update>button {
+    width: 300px;
+    background-color: #00B2FF;
+    color: white;
+    border: none;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    cursor: pointer;
+}
+
+.user_profileData_button_box {
+    width: 500px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.user_profile_button_box {
+    width: 600px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.user_profile_button_box>button,
+.user_profileData_button_box>button {
+    width: 200px;
+    background-color: #00B2FF;
+    color: white;
+    border: none;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    cursor: pointer;
+    border-radius: 1rem;
+}
+
+.user_profile_list_box,
+.user_careers_list_box {
+    width: 100%;
+    display: flex;
+}
+
+
+.user_careers_list_div,
+.user_profile_list_box_update {
+    display: flex;
+    align-items: center;
+}
+
+.user_careers_list_div_box {
+    display: flex;
+    flex-direction: column;
+}
+
+.user_careers_list_box_p {
+    color: #00B2FF;
+    margin-right: 5%;
+    cursor: default;
+}
+
+.user_profile_list_box>ul {
+    margin: 0;
+}
+
+.user_profile_list_box>ul>li {
+    width: 265px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.user_profile_list_box>ul>li>div>div>p {
+    color: #747474;
+}
+
+.user_profile_list_box>ul>li>button {
+    opacity: 0;
+}
+
+.user_profile_list_box>ul>li:hover button {
+    opacity: 1;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    color: #00B2FF;
+    font-weight: bold;
+    font-size: large;
+}
+
+.UserModify_Main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.UserModify_Form {
+    width: 50%;
+    height: 1000px;
+    display: flex;
+    background-color: white;
+    border-radius: 1rem;
+    margin-top: 50px;
+    font-size: large;
+    color: #747474;
+    font-weight: 500;
+}
+
+.UserModify_Form_dbox_icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.UserModify_Form_Main {
+    width: 90%;
+    height: 12.5%;
+    display: flex;
+    align-items: center;
+    padding-left: 10%;
+    border-bottom: solid 2px #D3D3D3;
+}
+
+.UserModify_Form_Main_div {
+    width: 15%;
+    font-weight: bold;
+}
+
+.UserModify_Form_id {
+    cursor: default;
+    background-color: #eeeeee;
+    border: none;
+}
+
+.UserModify_Form_dbox_mailbox {
+    display: flex;
+    align-items: center;
+}
+
+#UserModify_Form_email_id {
+    width: 30%;
+    height: 45%;
+}
+
+.mail_box {
+    margin-left: 5%;
+    width: 50%;
+}
+
+.UserModify_Form_phone {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+#phone_second,
+#phone_third {
+    width: 100px;
+}
+
+.UserModify_Form_list {
+    width: 30%;
+}
+
+.UserModify_Form_dbox_gender_box {
+    width: 30%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.userModify_button_box {
+    width: 600px;
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.userModify_button_box_next {
+    display: block;
+
+}
+
+.userModify_button_box_span {
+    display: none;
+}
+
+.userModify_button_box>span {
+    width: 200px;
+    background-color: white;
+    color: #747474;
+    border: none;
+    padding: 13px 0px 13px 0px;
+    border-radius: 1rem;
+    cursor: pointer;
+    text-align: center;
+}
+
+.email_annotation{
+    margin-left: 3%;
+}
+
+.UserModify_Form_Main_last{
+    width: 90%;
+    height: 12.5%;
+    display: flex;
+    align-items: center;
+    padding-left: 10%;
+}
