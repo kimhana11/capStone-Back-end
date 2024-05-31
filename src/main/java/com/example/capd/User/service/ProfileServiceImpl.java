@@ -68,14 +68,14 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<ProfileParticipationRes> recommendUsers(Long contestId, String userId){
         User user1 = userRepository.findUserByUserId(userId);
-        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, user1.getId());
 
         List<User> matchingUsers = userRepository.findUsersByContestParticipation(contestId);
 
         List<ProfileParticipationRes> resultProfiles = matchingUsers.stream()
                 .filter(user -> !user.getUserId().equals(userId)&& !hasTeamForContest(user, contestId))
                 .map(user -> {
-                    return mapToProfileParticipation(user.getProfile(),participation);
+                    Participation userParticipation = participationRepository.findParticipationByContestIdAndUserId(contestId, user.getId());
+                    return mapToProfileParticipation(user.getProfile(),userParticipation);
                 })
                 .collect(Collectors.toList());
 
@@ -276,6 +276,7 @@ public class ProfileServiceImpl implements ProfileService {
         ProfileParticipationRes dto = new ProfileParticipationRes();
         dto.setId(profile.getUser().getId());
         dto.setUserId(profile.getUser().getUserId());
+        dto.setUserName(profile.getUser().getUsername());
         dto.setIntro(profile.getIntro());
         dto.setRate(profile.getRate());
         dto.setStackList(profile.getStackList());

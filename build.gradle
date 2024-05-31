@@ -44,7 +44,12 @@ dependencies {
     //웹소켓
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
-     implementation 'org.modelmapper:modelmapper:3.1.0'
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+
+    //파일 읽기
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.2'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
 
 }
 

@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-//본인 프로필 조회
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProfileRequestDto {
