@@ -8,12 +8,10 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class MessageDto {
     private String message;
     private String senderId;
+    private String senderName;
     private Long roomId;
 
     public Message toEntity(Room room) {
@@ -25,12 +23,12 @@ public class MessageDto {
                 .build();
     }
 
-    public static MessageDto fromEntity(Message message) {
-        MessageDto messageDto = new MessageDto();
-        messageDto.setMessage(message.getMessage());
-        messageDto.setSenderId(message.getSenderId());
-        messageDto.setRoomId(message.getRoom().getId());
-        return messageDto;
+    @Builder
+    MessageDto(String message, String senderId, String senderName, Long roomId){
+        this.message = message;
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.roomId = roomId;
     }
 
 }

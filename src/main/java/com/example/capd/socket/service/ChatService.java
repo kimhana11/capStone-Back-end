@@ -37,7 +37,8 @@ public class ChatService {
                     Optional<User> sender = userRepository.findByUserId(message.getSenderId());
                     return MessageDto.builder()
                             .roomId(message.getRoom().getId())
-                            .senderId(sender.get().getUsername())
+                            .senderId(sender.get().getUserId())
+                            .senderName(sender.get().getUsername())
                             .message(message.getMessage())
                             .build();
                 })
@@ -64,7 +65,7 @@ public class ChatService {
                 messageRepository.save(newMessage);
                 Optional<User> sender = userRepository.findByUserId(chatMessageDto.getSenderId());
                 // 다른 세션에 새로운 채팅 메시지 전송
-                chatMessageDto.setSenderId(sender.get().getUsername());
+                chatMessageDto.setSenderName(sender.get().getUsername());
                 broadcastMessageToAll(sessionId, objectMapper.writeValueAsString(chatMessageDto), sessions);
             }
         }

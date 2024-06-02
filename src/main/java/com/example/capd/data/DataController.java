@@ -109,7 +109,7 @@ public class DataController {
             DataFormatter formatter = new DataFormatter();
             XSSFRow row = worksheet.getRow(i);
 
-            List<String> stackList = Arrays.asList(formatter.formatCellValue(row.getCell(3)).split(","));
+            List<String> stackList = objectMapper.readValue(formatter.formatCellValue(row.getCell(3)), new TypeReference<List<String>>() {});
 
             ParticipationParam participation = ParticipationParam.builder()
                     .contestId(Long.parseLong(formatter.formatCellValue(row.getCell(0))))

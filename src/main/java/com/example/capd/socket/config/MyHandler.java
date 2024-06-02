@@ -160,6 +160,8 @@ public class MyHandler extends TextWebSocketHandler {
             JSONObject messageObject = new JSONObject();
             messageObject.put("senderId", message.getSenderId());
             messageObject.put("message", message.getMessage());
+            messageObject.put("senderName", message.getSenderName());
+            messageObject.put("roomId", message.getRoomId());
             chatHistoryArray.add(messageObject);
         }
 
