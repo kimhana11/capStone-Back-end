@@ -134,12 +134,56 @@ const ChatModal = (onRequestClose) => {
             url: '/room-update/status',
             data: updateRoom
         }).then(result => {
-            if(result.status === 200){
+            if (result.status === 200) {
                 Swal.fire({
                     title: "팀이 확정되었습니다."
                 })
             }
 
+        })
+    }
+
+    const userReview = (message) => {
+        Swal.fire({
+            title: "유저의 평점과 평가를 작성해주세요",
+            html: `
+                <input id="review_rate" type="range" min="1" max="5" step="0.1" oninput="document.getElementById('value1').innerHTML=this.value;">
+                <div id="value1"></div>
+                <input id="review_content" class="swal2-input" placeholder="ex) 같이 플젝해서 좋았어요~">
+            `,
+            showCancelButton: true,
+            confirmButtonText: "리뷰 작성",
+            cancelButtonText: "취소"
+        }).then((result) => {
+            const review_rate = document.querySelector('#review_rate').value;
+            const review_content = document.querySelector('#review_content').value;
+            const ReviewRequestDto = {
+                content: review_content,
+                rate: review_rate,
+                reviewerId: user,
+                reviewedUserId: message.senderId,
+                roomId: selectedRoomId,
+                contestId: contestId
+            };
+            if (result.isConfirmed) {
+                axios({
+                    method: 'post',
+                    url: '/user-review',
+                    data: ReviewRequestDto
+                }).then((result) => {
+                    if (result.status === 200) {
+                        Swal.fire({
+                            title: "리뷰가 작성되었습니다."
+                        })
+                    }
+                }).catch(err => {
+                    if (err.response && err.response.status === 500) {
+                        Swal.fire({
+                            title: "팀 확정을 한 후 <br/> 리뷰 작성이 가능합니다"
+                        })
+                    }
+                })
+            }
         })
     }
 
@@ -206,9 +250,13 @@ const ChatModal = (onRequestClose) => {
                             </div>
                             <div ref={messagesContainerRef} className='chat_room_messagebox'>
                                 {messages.map((message, index) => (
-                                    <div className={`${message.senderId === user ? 'chat_room_message_me_width' : ''}`}>
-                                        <p key={index} className={`${message.senderId === user ? 'chat_room_message_me' : 'chat_room_message'}`}>
-                                            {message.senderId === user ? message.message : message.senderId + " : " + message.message}
+                                    <div className={`${message.senderName === user ? 'chat_room_message_me_width' : 'chat_room_message_other_width'}`}>
+                                        <div>
+                                            <img className={`${message.senderName === user ? '' : 'chat_room_message_other_profile'}`} onClick={() => userReview(message)} />
+                                            <p key={index}>{message.senderName === user ? '' : message.senderName}</p>
+                                        </div>
+                                        <p key={index} className={`${message.senderName === user ? 'chat_room_message_me' : 'chat_room_message'}`}>
+                                            {message.senderName === user ? message.message : message.message}
                                         </p>
                                     </div>
                                 ))}

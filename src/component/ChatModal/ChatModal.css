@@ -103,6 +103,32 @@
     flex-direction: row-reverse;
 }
 
+.chat_room_message_other_width{
+    display: flex;
+    align-items: center;
+    background-color: white;
+}
+
+.chat_room_message_other_width>div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chat_room_message_other_width>div>p{
+    margin-top: 3px;
+    font-size: small;
+}
+
+.chat_room_message_other_profile{
+    width: 50px;
+    height: 48px;
+    background-image: url('../../img/User-Circle-Single--Streamline-Core.png');
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 .chat_room_message,
 .chat_room_message_me {
     background-color: rgba(0, 178, 255, 0.1);
@@ -112,6 +138,8 @@
 .chat_room_message {
     width: max-content;
     max-width: 80%;
+    margin-left: 5px;
+    margin-bottom: 30px;
 }
 
 .chat_room_message_me {
