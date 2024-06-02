@@ -82,42 +82,6 @@ public class ProfileServiceImpl implements ProfileService {
         return resultProfiles;
     }
 
-//    @Override
-//    public List<ProfileParticipationRes> stackRecommendUsers(Long contestId, String userId) {
-//
-//        User uuser = userRepository.findUserByUserId(userId);
-//        Participation participation = participationRepository.findParticipationByContestIdAndUserId(contestId, uuser.getId());
-//        List<String> stackList = (participation != null) ? participation.getStackList() : Collections.emptyList();
-//
-//        List<User> matchingUsers;
-//
-//        matchingUsers = userRepository.findUsersByContestParticipation(contestId);
-//
-//        //본일 프로필 제외,stackList 일치율 0인 사람은 제외, 일치울 높은순으로 정렬,팀 있는 유저 제외
-//        List<ProfileParticipationRes> resultProfiles = matchingUsers.stream()
-//                .filter(user ->
-//                        !user.getUserId().equals(userId) &&
-//                                user.getProfile() != null &&
-//                                user.getProfile().getStackList().stream().anyMatch(stackList::contains) &&
-//                                !hasTeamForContest(user, contestId)
-//                                )
-//                .sorted((user1, user2) ->
-//                        (int) user2.getProfile().getStackList().stream().filter(stackList::contains).count() -
-//                                (int) user1.getProfile().getStackList().stream().filter(stackList::contains).count())
-//                .map(user -> {
-//                    if (user.getProfile() != null) {
-//                        return mapToProfileParticipation(user.getProfile(),participation);
-//                    }
-//                    return null;
-//                })
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toList());
-//
-//        if (resultProfiles.isEmpty()) {
-//            throw new UserWithDesiredStackNotFoundException();
-//        }
-//        return resultProfiles;
-//    }
     // 해당 공모전에 팀이 없는지 확인하는 메서드
     private boolean hasTeamForContest(User user, Long contestId) {
         return user.getTeamMembers().stream()

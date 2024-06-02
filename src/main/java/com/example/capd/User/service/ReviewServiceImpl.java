@@ -41,34 +41,42 @@ public class ReviewServiceImpl implements ReviewService{
         Contest contest = contestRepository.findById(reviewRequestDto.getContestId())
                 .orElseThrow(() -> new EntityNotFoundException(" 존재하지 않는 공모전 id: " + reviewRequestDto.getReviewedUserId()));
 
-        //심사 기간에 ~ 없는 경우도 접수 기간으로
-        if(contest.getDecisionPeriod() != null || !contest.getDecisionPeriod().contains("~")) {//심사기간
-            String[] decisionPeriod = contest.getDecisionPeriod().split("~");
-            String endDateString = decisionPeriod[1].trim();
-
-            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-            LocalDate currentDate = LocalDate.now();
-
-            //심사 기간 마감일 경우에만 리뷰 작성
-            if (currentDate.isAfter(endDate)) {
-                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
-                reviewRepository.save(review);
-            } else {
-                throw new ReviewSubmissionPeriodNotEndedException();
-            }
-        } else{//접수 기간
-            String[] receptionPeriod = contest.getReceptionPeriod().split("~");
-            String endDateString = receptionPeriod[1].trim();
-            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
-            LocalDate currentDate = LocalDate.now();
-
-            if(currentDate.isAfter(endDate)) {
-                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
-                reviewRepository.save(review);
-            }else{
-                throw new ReviewSubmissionPeriodNotEndedException(0);
-            }
+        //팀 확정 상태인 경우만 리뷰 작성
+        if(room.getStatus()==true){
+            Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
+            reviewRepository.save(review);
+        }else{
+            throw new NullPointerException("팀이 확정되지 않아 리뷰를 작성할 수 없습니다.");
         }
+
+//        //심사 기간에 ~ 없는 경우도 접수 기간으로
+//        if(contest.getDecisionPeriod() != null || !contest.getDecisionPeriod().contains("~")) {//심사기간
+//            String[] decisionPeriod = contest.getDecisionPeriod().split("~");
+//            String endDateString = decisionPeriod[1].trim();
+//
+//            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+//            LocalDate currentDate = LocalDate.now();
+//
+//            //심사 기간 마감일 경우에만 리뷰 작성
+//            if (currentDate.isAfter(endDate)) {
+//                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
+//                reviewRepository.save(review);
+//            } else {
+//                throw new ReviewSubmissionPeriodNotEndedException();
+//            }
+//        } else{//접수 기간
+//            String[] receptionPeriod = contest.getReceptionPeriod().split("~");
+//            String endDateString = receptionPeriod[1].trim();
+//            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+//            LocalDate currentDate = LocalDate.now();
+//
+//            if(currentDate.isAfter(endDate)) {
+//                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
+//                reviewRepository.save(review);
+//            }else{
+//                throw new ReviewSubmissionPeriodNotEndedException(0);
+//            }
+//        }
 
     }
 
