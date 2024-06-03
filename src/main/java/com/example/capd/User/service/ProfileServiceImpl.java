@@ -217,7 +217,7 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setUserId(profile.getUser().getUserId());
         dto.setUserName(profile.getUser().getUsername());
         dto.setIntro(profile.getIntro());
-        dto.setRate(profile.getRate());
+        dto.setRate(rateAverage(profile.getUser().getUserId()));
         dto.setStackList(profile.getStackList());
         dto.setCareers(profile.getCareers().stream().map(this::mapCareerToDto).collect(Collectors.toList()));
         dto.setMyTime(profile.getMyTime());
@@ -242,7 +242,7 @@ public class ProfileServiceImpl implements ProfileService {
         dto.setUserId(profile.getUser().getUserId());
         dto.setUserName(profile.getUser().getUsername());
         dto.setIntro(profile.getIntro());
-        dto.setRate(profile.getRate());
+        dto.setRate(rateAverage(profile.getUser().getUserId()));
         dto.setStackList(profile.getStackList());
         dto.setAdditional(participation.getAdditional());
         dto.setTime(profile.getMyTime());
@@ -274,4 +274,20 @@ public class ProfileServiceImpl implements ProfileService {
             return Collections.emptyList();
         }
     }
+
+    public double rateAverage(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new EntityNotFoundException("id가 존재하지 않습니다:: " + userId));
+
+        List<Review> receivedReviews = user.getReceivedReviews();
+        if (!receivedReviews.isEmpty()) {
+            double totalRating = receivedReviews.stream().mapToDouble(Review::getRate).sum();
+            double averageRating = totalRating / receivedReviews.size();
+
+            return Math.round(averageRating * 10.0) / 10.0;
+        } else {
+            return 3.5;
+        }
+    }
+
 }

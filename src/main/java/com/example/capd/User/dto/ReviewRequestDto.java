@@ -3,14 +3,13 @@ package com.example.capd.User.dto;
 import com.example.capd.User.domain.Review;
 import com.example.capd.User.domain.User;
 import com.example.capd.team.domain.Room;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Builder
+@AllArgsConstructor
 public class ReviewRequestDto {
 
     private String content;
