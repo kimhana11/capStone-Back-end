@@ -18,7 +18,7 @@ export default function CompetitionDetail() {
         const id = window.localStorage.getItem('contestId');
         const userId = window.localStorage.getItem('userId');
         setUserId(userId);
-        console.log(userId)
+        console.log(id)
 
         setContestId(location.state.id);
         window.localStorage.setItem('contestId', location.state.id);
@@ -27,7 +27,6 @@ export default function CompetitionDetail() {
             method: 'get',
             url: `/contestdetail/${id}`
         }).then(result => {
-            console.log(result.data);
             const processedData = preprocessData(result.data);
             setContest(processedData);
 

@@ -207,7 +207,7 @@ const Main = () => {
                 </div>
             </div>
             <div className='navigation_main_chat'>
-                <img src={modalOpen ? CIC : CIO}  className='navigation_main_chat_icon' onClick={toggleModal} />
+                <img src={modalOpen ? CIC : CIO} className='navigation_main_chat_icon' onClick={toggleModal} />
                 {modalOpen && <ChatModal />}
             </div>
         </div>

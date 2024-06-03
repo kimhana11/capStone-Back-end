@@ -559,12 +559,6 @@ export default function MyPage() {
                         </div>
                     </div>
                 </div>
-                <div className="myPage_user_bottom_div">
-                    <img src={AIImg} alt="AI" />
-                    <p className="myPage_user_bottom_p">
-                        매칭 상대에게 바라는 경험 횟수, 투자 가능 시간을 <br /> 작성해주시면 더 정확한 추천이 가능해요!
-                    </p>
-                </div>
                 <div className="myPage_review_backcolor">
                     <p>내게 남겨진 리뷰 박스</p>
                     {userReview && userReview.length > 0 ? (
@@ -582,6 +576,12 @@ export default function MyPage() {
                     ) : (
                         <p className="myPage_review_non">존재하는 리뷰가 없습니다</p>
                     )}
+                </div>
+                <div className="myPage_user_bottom_div">
+                    <img src={AIImg} alt="AI" />
+                    <p className="myPage_user_bottom_p">
+                        매칭 상대에게 바라는 경험 횟수, 투자 가능 시간을 <br /> 작성해주시면 더 정확한 추천이 가능해요!
+                    </p>
                 </div>
             </>
         )

@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 const ChatModal = (onRequestClose) => {
     const [rooms, setRooms] = useState([]);
     const [user, setUser] = useState('');
-    const [username, setUsername] = useState('');
     const [contestId, setContestId] = useState("");
     const [leaderId, setLeaderId] = useState("");
     const [selectedRoomId, setSelectedRoomId] = useState(null);
@@ -21,7 +20,6 @@ const ChatModal = (onRequestClose) => {
     useEffect(() => {
         const userId = window.localStorage.getItem('userId');
         setUser(window.localStorage.getItem('userId'));
-        setUsername(window.localStorage.getItem('name'));
         axios.get(`/rooms/${userId}`).then(result => {
             setRooms(result.data);
         }).catch(err => {
@@ -252,13 +250,13 @@ const ChatModal = (onRequestClose) => {
                             </div>
                             <div ref={messagesContainerRef} className='chat_room_messagebox'>
                                 {messages.map((message, index) => (
-                                    <div className={`${message.senderName === username ? 'chat_room_message_me_width' : 'chat_room_message_other_width'}`}>
+                                    <div className={`${message.senderId === user ? 'chat_room_message_me_width' : 'chat_room_message_other_width'}`}>
                                         <div>
-                                            <img className={`${message.senderName === username ? '' : 'chat_room_message_other_profile'}`} onClick={() => userReview(message)} />
-                                            <p key={index}>{message.senderName === username ? '' : message.senderName}</p>
+                                            <img className={`${message.senderId === user ? '' : 'chat_room_message_other_profile'}`} onClick={() => userReview(message)} />
+                                            <p key={index}>{message.senderId === user ? '' : message.senderName}</p>
                                         </div>
-                                        <p key={index} className={`${message.senderName === username ? 'chat_room_message_me' : 'chat_room_message'}`}>
-                                            {message.senderName === username ? message.message : message.message}
+                                        <p key={index} className={`${message.senderId === user ? 'chat_room_message_me' : 'chat_room_message'}`}>
+                                            {message.senderId === user ? message.message : message.message}
                                         </p>
                                     </div>
                                 ))}

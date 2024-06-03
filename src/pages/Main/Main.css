@@ -112,6 +112,7 @@
     width: 100%;
     font-size: small;
     color: #A8A8A8;
+    max-width: 300px;
 }
 
 .main_component_best_box_best_host {
