@@ -111,10 +111,10 @@ const MateModal = () => {
     };
 
     const handleUserClick = (userName) => {
-        const firstUserName = window.localStorage.getItem('name');
+        const firstUserId = window.localStorage.getItem('userId');
         setSelectedUsers(prevSelectedUsers => {
-            if (!prevSelectedUsers.includes(firstUserName)) {
-                prevSelectedUsers = [firstUserName, ...prevSelectedUsers];
+            if (!prevSelectedUsers.includes(firstUserId)) {
+                prevSelectedUsers = [firstUserId, ...prevSelectedUsers];
             }
             if (prevSelectedUsers.includes(userName)) {
                 return prevSelectedUsers.filter(name => name !== userName); // 이미 선택된 경우 선택 해제

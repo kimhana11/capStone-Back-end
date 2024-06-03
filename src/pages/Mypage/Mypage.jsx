@@ -735,6 +735,24 @@ export default function MyPage() {
                                 매칭 상대에게 바라는 경험 횟수, 투자 가능 시간을 <br /> 작성해주시면 더 정확한 추천이 가능해요!
                             </p>
                         </div>
+                        <div className="myPage_review_backcolor">
+                            <p>내게 남겨진 리뷰 박스</p>
+                            {userReview && userReview.length > 0 ? (
+                                userReview.map((review, index) => (
+                                    <div key={index} className="myPage_review_div_box">
+                                        <div className="myPage_review_big_div">
+                                            <div className="myPage_review_div">
+                                                <FontAwesomeIcon icon={faUser} color="#b7b7b7" size="3x" />
+                                            </div>
+                                            <p>{review.reviewerId}님</p>
+                                        </div>
+                                        <p>{review.content}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="myPage_review_non">존재하는 리뷰가 없습니다</p>
+                            )}
+                        </div>
                     </>)}
                 {!(profileData.length === 0) && isUpdate === false && (
                     <>
@@ -824,6 +842,24 @@ export default function MyPage() {
                             <p className="myPage_user_bottom_p">
                                 매칭 상대에게 바라는 경험 횟수, 투자 가능 시간을 <br /> 작성해주시면 더 정확한 추천이 가능해요!
                             </p>
+                        </div>
+                        <div className="myPage_review_backcolor">
+                            <p>내게 남겨진 리뷰 박스</p>
+                            {userReview && userReview.length > 0 ? (
+                                userReview.map((review, index) => (
+                                    <div key={index} className="myPage_review_div_box">
+                                        <div className="myPage_review_big_div">
+                                            <div className="myPage_review_div">
+                                                <FontAwesomeIcon icon={faUser} color="#b7b7b7" size="3x" />
+                                            </div>
+                                            <p>{review.reviewerId}님</p>
+                                        </div>
+                                        <p>{review.content}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="myPage_review_non">존재하는 리뷰가 없습니다</p>
+                            )}
                         </div>
                     </>)}
                 {profileData && isUpdate === true && (
@@ -970,6 +1006,24 @@ export default function MyPage() {
                             <p className="myPage_user_bottom_p">
                                 매칭 상대에게 바라는 경험 횟수, 투자 가능 시간을 <br /> 작성해주시면 더 정확한 추천이 가능해요!
                             </p>
+                        </div>
+                        <div className="myPage_review_backcolor">
+                            <p>내게 남겨진 리뷰 박스</p>
+                            {userReview && userReview.length > 0 ? (
+                                userReview.map((review, index) => (
+                                    <div key={index} className="myPage_review_div_box">
+                                        <div className="myPage_review_big_div">
+                                            <div className="myPage_review_div">
+                                                <FontAwesomeIcon icon={faUser} color="#b7b7b7" size="3x" />
+                                            </div>
+                                            <p>{review.reviewerId}님</p>
+                                        </div>
+                                        <p>{review.content}</p>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="myPage_review_non">존재하는 리뷰가 없습니다</p>
+                            )}
                         </div>
                     </>)}
             </>
