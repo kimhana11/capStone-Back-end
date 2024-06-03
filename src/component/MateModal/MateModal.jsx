@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import UserImg from '../../img/User-Circle-Single--Streamline-Core.png';
+import BackButtonImg from '../../img/Back_Button.png';
 
 const MateModal = () => {
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -14,6 +15,9 @@ const MateModal = () => {
     const [selectedContestId, setSelectedContestId] = useState(null);
     const [selectedMate, setSelectedMate] = useState(false);
     const [selectedAIMate, setSelectedAIMate] = useState(false);
+    const [selectedUserDetails, setSelectedUserDetails] = useState(null);
+    const [userReviews, setUserReviews] = useState('');
+    const [showProfileDetails, setShowProfileDetails] = useState(false);
 
     useEffect(() => {
         const userId = window.localStorage.getItem('userId');
@@ -157,6 +161,26 @@ const MateModal = () => {
         })
     }
 
+    const handleUserDoubleClick = (user) => {
+        setSelectedUserDetails(user);
+        setShowProfileDetails(true);
+        axios({
+            method: 'get',
+            url: `/user-review/${user.userId}`
+        }).then(result => {
+            console.log(result.data);
+            setUserReviews(result.data); 
+        }).catch(err => {
+            if (err.response && err.response.status === 500) {
+                setUserReviews([]); 
+            }
+        });
+    };
+
+    const handleBackButtonClick = () => {
+        setShowProfileDetails(false);
+    };
+
     return (
         <>
             <Modal isOpen={true} style={customStyles}>
@@ -179,11 +203,13 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {userData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} 
+                                                    onClick={() => handleUserClick(user.userId)}
+                                                    onDoubleClick={() => handleUserDoubleClick(user)}>
                                                         <img src={UserImg} />
                                                         <div>
-                                                            <p className='modal_mate_user_name'>{user.userId}</p>
-                                                            <p className='modal_mate_user_content'>{user.intro}</p>
+                                                            <p className='modal_mate_user_name'>{user.userName}</p>
+                                                            <p className='modal_mate_user_content'>{user.additional}</p>
                                                             <div className='modal_mate_user_stack'>
                                                                 {user.stackList.slice(0, 4).map((stack, index) => (
                                                                     <p key={index}>{stack}</p>
@@ -213,6 +239,59 @@ const MateModal = () => {
 
                         </>
                     )}
+                     {/*  프로필 상세보기 */}
+            {selectedUserDetails && (
+                <div className={`modal_mate_user_details ${showProfileDetails ? 'show' : ''}`}>
+            <div className='user-info'>
+                <div className='user-info_innerbox'>
+                    <img src={UserImg} className='user-img' alt="User" />
+                    <h2 className='user-name'>{selectedUserDetails.userName}</h2>
+                </div>
+                <button onClick={handleBackButtonClick} className='back-button'>
+                    <img src={BackButtonImg} alt="Back" />
+                </button>
+            </div>
+                  <h3 style={{marginTop : '0'}}>"&nbsp;{selectedUserDetails.additional}&nbsp;"</h3>
+                    <p className='user-profile-details'>평점: {selectedUserDetails.rate} &nbsp;&nbsp;&nbsp; </p>
+                    <p className='user-profile-details'>투자가능시간: 주 {selectedUserDetails.time}시간</p>
+                    <p className='user-profile-details'>소개: {selectedUserDetails.intro}</p>
+                    <div className='modal_mate_user_stack'>
+                        {selectedUserDetails.stackList.map((stack, index) => (
+                            <p key={index}>{stack}</p>
+                        ))}
+                        
+                    </div>
+                    <p>&nbsp;</p>
+                    <div className='modal_mate_user_careers'>
+                        <h2 className='modal_mate_user_title'>프로젝트 경험</h2>
+                        {selectedUserDetails.careers.map((career, index) => (
+                            <div key={index}>
+                                
+                                <div className='careers_box'>
+                                    <h3 className='carrer_title'>{career.title}</h3>
+                                    <span className='carrer_period'>{career.period}개월</span>
+                                </div>
+                                <p style={{marginTop : '0'}}>기술스택: {career.stack}</p>
+                                <p>URL: {career.gitHub}</p>
+                                <p>&nbsp; </p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className='modal_mate_user_reviews'>
+                    <h2>&nbsp;리뷰</h2>
+                    {userReviews.length > 0 ? (
+                        userReviews.map((review, index) => (
+                            <div key={index} className='review'>
+                                    <p className='review-rate'>평점: {review.rate}</p>
+                                <p>{review.content}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className='no-reviews'>아직 리뷰가 없습니다.</p>
+                    )}
+                </div>
+                </div>
+            )}
                     {/* ai추천 메이트를 클릭했을 때 */}
                     {(selectedAIMate === true) && (
                         <>
@@ -227,11 +306,13 @@ const MateModal = () => {
                                         <>
                                             <div className='modal_mate'>
                                                 {aiUserData.map(user => (
-                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} onClick={() => handleUserClick(user.userId)}>
+                                                    <div key={user.id} className={`modal_mate_user ${selectedUsers.includes(user.userId) ? 'active' : 'noactive'}`} 
+                                                    onClick={() => handleUserClick(user.userId)}
+                                                    onDoubleClick={() => handleUserDoubleClick(user)}>
                                                         <img src={UserImg} />
                                                         <div>
-                                                            <p className='modal_mate_user_name'>{user.userId}</p>
-                                                            <p className='modal_mate_user_content'>{user.intro}</p>
+                                                            <p className='modal_mate_user_name'>{user.userName}</p>
+                                                            <p className='modal_mate_user_content'>{user.additional}</p>
                                                             <div className='modal_mate_user_stack'>
                                                                 {user.stackList.slice(0, 4).map((stack, index) => (
                                                                     <p key={index}>{stack}</p>
@@ -260,7 +341,61 @@ const MateModal = () => {
                             )}
 
                         </>
+                        
                     )}
+                              {/*  프로필 상세보기 */}
+            {selectedUserDetails && (
+                <div className={`modal_mate_user_details ${showProfileDetails ? 'show' : ''}`}>
+            <div className='user-info'>
+                <div className='user-info_innerbox'>
+                    <img src={UserImg} className='user-img' alt="User" />
+                    <h2 className='user-name'>{selectedUserDetails.userName}</h2>
+                </div>
+                <button onClick={handleBackButtonClick} className='back-button'>
+                    <img src={BackButtonImg} alt="Back" />
+                </button>
+            </div>
+                  <h3 style={{marginTop : '0'}}>"&nbsp;{selectedUserDetails.additional}&nbsp;"</h3>
+                    <p className='user-profile-details'>평점: {selectedUserDetails.rate} &nbsp;&nbsp;&nbsp; </p>
+                    <p className='user-profile-details'>투자가능시간: 주 {selectedUserDetails.time}시간</p>
+                    <p className='user-profile-details'>소개: {selectedUserDetails.intro}</p>
+                    <div className='modal_mate_user_stack'>
+                        {selectedUserDetails.stackList.map((stack, index) => (
+                            <p key={index}>{stack}</p>
+                        ))}
+                        
+                    </div>
+                    <p>&nbsp;</p>
+                    <div className='modal_mate_user_careers'>
+                        <h2 className='modal_mate_user_title'>프로젝트 경험</h2>
+                        {selectedUserDetails.careers.map((career, index) => (
+                            <div key={index}>
+                                
+                                <div className='careers_box'>
+                                    <h3 className='carrer_title'>{career.title}</h3>
+                                    <span className='carrer_period'>{career.period}개월</span>
+                                </div>
+                                <p style={{marginTop : '0'}}>기술스택: {career.stack}</p>
+                                <p>URL: {career.gitHub}</p>
+                                <p>&nbsp; </p>
+                            </div>
+                        ))}
+                    </div>
+                    <div className='modal_mate_user_reviews'>
+                    <h2>&nbsp;리뷰</h2>
+                    {userReviews.length > 0 ? (
+                        userReviews.map((review, index) => (
+                            <div key={index} className='review'>
+                                    <p className='review-rate'>평점: {review.rate}</p>
+                                <p>{review.content}</p>
+                            </div>
+                        ))
+                    ) : (
+                        <p className='no-reviews'>아직 리뷰가 없습니다.</p>
+                    )}
+                </div>
+                </div>
+            )}
                     {(selectedMate === false) && (selectedAIMate === false) && (
                         <>
                             <p className='modal_mate_non_competition_p'>어떤 매칭열을 볼 지 선택해주세요!</p>
