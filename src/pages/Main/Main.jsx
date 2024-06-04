@@ -14,16 +14,37 @@ const Main = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [competitionData, setCompetitionData] = useState([]);
     const [bestCompetitionData, setBestCompetitionData] = useState([]);
-    const currentPage = 1;
+    const [currentPage, setCurrentPage] = useState(1);
     const competitionsPerPage = 4;
     const bestcompetitionsPerPage = 5;
+
     const currentDate = new Date(); // 현재 날짜 가져오기
-    const bestIndexOfLastCompetition = currentPage * bestcompetitionsPerPage;
-    const bestIndexOfFirstCompetition = bestIndexOfLastCompetition - bestcompetitionsPerPage;
+
+    // 페이지네이션을 위한 인덱스 계산
     const indexOfLastCompetition = currentPage * competitionsPerPage;
     const indexOfFirstCompetition = indexOfLastCompetition - competitionsPerPage;
     const currentCompetitions = competitionData.slice(indexOfFirstCompetition, indexOfLastCompetition);
+
+    const bestIndexOfLastCompetition = currentPage * bestcompetitionsPerPage;
+    const bestIndexOfFirstCompetition = bestIndexOfLastCompetition - bestcompetitionsPerPage;
     const bestCurrentCompetitions = bestCompetitionData.slice(bestIndexOfFirstCompetition, bestIndexOfLastCompetition);
+
+    // 페이지 수 계산
+    const totalPages = Math.ceil(competitionData.length / competitionsPerPage);
+    const totalBestPages = Math.ceil(bestCompetitionData.length / bestcompetitionsPerPage);
+
+    // 페이지 변경 함수
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
 
     useEffect(() => {
         axios({
@@ -89,40 +110,6 @@ const Main = () => {
     return (
         <div>
             <SimpleSlider />
-            <div className='main_who'>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>누구나</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>초등학생</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>중/고등학생</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>대학생</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>대학원생</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>직장인</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>외국인</p>
-                </div>
-                <div>
-                    <Link><img src='' /></Link>
-                    <p>기타</p>
-                </div>
-            </div>
             <div className='main_component'>
                 <p>마감 임박 공모전</p>
                 <div>
@@ -186,24 +173,22 @@ const Main = () => {
                 </div>
             </div>
             <div className='main_component'>
-                <p>접수 예정 공모전</p>
+                <p>전체 공모전</p>
                 <div>
                     {currentCompetitions.map(competition => (
-                        categorizeDate(competition.receptionPeriod) === '접수 예정' ? (
-                            <Link to={'/competitionDetail'} state={{ id: competition.id }}>
-                                <div>
-                                    <img className='main_component_img' src={competition.image} />
-                                    <p className='main_component_host'>{competition.host}</p>
-                                    <p className='main_component_title'>{competition.title}</p>
-                                </div>
-                            </Link>
-                        ) : (
-                            <div className='main_empty'>
-                                <img src={Logo} className='main_empty_img' />
-                                <p>공모전 정보가 없습니다</p>
+                        <Link to={'/competitionDetail'} state={{ id: competition.id }} key={competition.id}>
+                            <div>
+                                <img className='main_component_img' src={competition.image} alt={competition.title} />
+                                <p className='main_component_host'>{competition.host}</p>
+                                <p className='main_component_title'>{competition.title}</p>
                             </div>
-                        )
+                        </Link>
                     ))}
+                </div>
+                <div id="pagination">
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>이전</button>
+                    <span>{currentPage} / {totalPages}</span>
+                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>다음</button>
                 </div>
             </div>
             <div className='navigation_main_chat'>

@@ -69,7 +69,7 @@
 
 .modal_mate_user.active {
     width: 87%;
-    height: 27%;
+    height: 37%;
     display: flex;
     align-items: center;
     border: solid 2px #0085FF;
@@ -82,7 +82,7 @@
 
 .modal_mate_user.noactive {
     width: 87%;
-    height: 27%;
+    height: 37%;
     display: flex;
     align-items: center;
     border: solid 2px #eeeeee;
@@ -126,15 +126,28 @@
 .modal_mate_user_stack {
     width: 100%;
     display: flex;
-    overflow: hidden;
+    align-items: center;
+    overflow-x: scroll;
+}
+
+.modal_mate_user_stack::-webkit-scrollbar{
+    height: 10px;
+}
+
+.modal_mate_user_stack::-webkit-scrollbar-thumb{
+    background-color: rgba(0, 178, 255, 0.6);
+    border-radius: 10px;
 }
 
 .modal_mate_user_stack>p {
+    width: auto;
+    height: 100%;
+    white-space: nowrap;
     background-color: #00B2FF;
     color: white;
     border-radius: 2rem;
-    padding: 3px 10px 3px 10px;
-    margin: 3% 2% 0% 0%;
+    padding: 3px 13px 3px 13px;
+    margin: 3% 2% 3% 0%;
 }
 
 .modal_mate_content {

@@ -38,20 +38,12 @@ const Cheer = () => {
 
     const handleButtonClick = () => {
         const token = window.localStorage.getItem('token');
-        if (inputValue.trim() !== '' && ws && token) {
             const cheerMessage = {
                 senderName: username,
                 message: inputValue.trim()
             };
             ws.send(JSON.stringify(cheerMessage));
             setInputValue('');
-        } else if (token === undefined || token === null) {
-            setInputValue('');
-            Swal.fire({
-                title: "응원글을 사용하려면<br/>로그인이 필요해요!",
-                confirmButtonText: "네",
-            })
-        }
     };
 
     const isValidJson = (str) => {
