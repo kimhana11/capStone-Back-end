@@ -13,7 +13,7 @@ import com.example.capd.User.domain.Review;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-   User findByUsername(String username);
+   User findByUsername(String userId);
 
    Optional<User> findByUserId(String userId);
 

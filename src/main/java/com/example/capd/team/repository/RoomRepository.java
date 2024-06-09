@@ -11,8 +11,11 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-      @Query("SELECT DISTINCT r FROM Room r JOIN r.team t WHERE t.id IN :teamIds")
-      List<Room> findByTeamIdIn(@Param("teamIds") List<Long> teamIds);
 
-      Room findByTeamId(Long teamId);
+      List<Room> findAllByMembersUserUserId(String userId);
+
+      List<Room> findByContestId(Long contestId);
+
+      @Query("SELECT r FROM Room r JOIN r.members m WHERE m.user.id = :userId")
+      List<Room> findByMembersUserId(Long userId) ;
 }

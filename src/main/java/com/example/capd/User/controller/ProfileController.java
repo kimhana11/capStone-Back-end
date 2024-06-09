@@ -6,7 +6,10 @@ import com.example.capd.User.dto.ProfileRequestDto;
 import com.example.capd.User.dto.ProfileResponseDto;
 import com.example.capd.User.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000/", allowedHeaders = "*")
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -63,9 +67,16 @@ public class ProfileController {
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
 
-    @GetMapping("profile-stack/{contestId}/{userId}")
-    public List<ProfileParticipationRes> stackProfileList(@PathVariable Long contestId, @PathVariable String userId){
-       return profileService.stackRecommendUsers(contestId, userId);
+    //전체 추천
+    @GetMapping("profile-list/{contestId}/{userId}")
+    public List<ProfileParticipationRes> profileList(@PathVariable Long contestId, @PathVariable String userId){
+        return profileService.recommendUsers(contestId, userId);
     }
 
+    // ai 추천
+    @GetMapping("profile-ai/{contestId}/{userId}")
+    public List<ProfileParticipationRes> aiProfileList(@PathVariable Long contestId, @PathVariable String userId){
+        profileService.aiStart(contestId, userId);
+        return profileService.aiRecommendUsers(contestId, userId);
+    }
 }

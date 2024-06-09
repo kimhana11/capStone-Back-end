@@ -1,31 +1,31 @@
 package com.example.capd.User.dto;
 
 import com.example.capd.User.domain.Review;
-import com.example.capd.team.domain.Team;
 import com.example.capd.User.domain.User;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.capd.team.domain.Room;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
+@Builder
+@AllArgsConstructor
 public class ReviewRequestDto {
 
     private String content;
     private double rate;
     private String reviewerId; //리뷰 쓰는
     private String reviewedUserId; //리뷰 받는
-    private Long teamId;
+    private Long roomId;
+    private Long contestId;
 
-    public Review toEntity(User reviewerId,User reviewedUserId, Team team) {
+    public Review toEntity(User reviewerId,User reviewedUserId, Room room) {
         return Review.builder()
                 .content(content)
                 .rate(rate)
                 .reviewer(reviewerId)
                 .reviewedUser(reviewedUserId)
-                .team(team).build();
+                .room(room).build();
     }
 
 }

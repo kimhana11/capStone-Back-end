@@ -48,7 +48,7 @@ chrome_options.add_experimental_option("detach", True)
 
 # 불필요한 에러 메시지 없애기
 chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-
+chrome_options.add_argument("headless")
 # 브라우저 생성, 웹 사이트 열기
 browser = webdriver.Chrome(options=chrome_options)
 

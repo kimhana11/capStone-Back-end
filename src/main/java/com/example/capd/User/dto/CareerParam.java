@@ -13,7 +13,7 @@ public class CareerParam {
     private String title; //공모명
     private String stack; //프로젝트에서 사용한 스택
     private int period; //프로젝트 기간
-    private String gitHub; //깃허브 주소 (null)
+    private String gitHub;
 
     @Builder
     public CareerParam(String title, String stack, int period, String gitHub){

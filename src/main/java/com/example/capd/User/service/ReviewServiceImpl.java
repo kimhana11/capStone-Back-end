@@ -1,16 +1,20 @@
 package com.example.capd.User.service;
 
-import com.example.capd.Exception.TeamNotConfirmedException;
-import com.example.capd.team.domain.Team;
+import com.example.capd.Exception.ReviewSubmissionPeriodNotEndedException;
+import com.example.capd.contest.domain.Contest;
+import com.example.capd.contest.repository.ContestRepository;
 import com.example.capd.User.domain.*;
 import com.example.capd.User.dto.ReviewRequestDto;
 import com.example.capd.User.repository.ReviewRepository;
-import com.example.capd.team.repository.TeamRepository;
 import com.example.capd.User.repository.UserRepository;
+import com.example.capd.team.domain.Room;
+import com.example.capd.team.repository.RoomRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,12 +24,13 @@ public class ReviewServiceImpl implements ReviewService{
 
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
-    private final TeamRepository teamRepository;
+    private final RoomRepository roomRepository;
+    private final ContestRepository contestRepository;
 
     @Override
     public void saveReview(ReviewRequestDto reviewRequestDto) {
-        Team team = teamRepository.findById(reviewRequestDto.getTeamId())
-                .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다: " + reviewRequestDto.getTeamId()));
+        Room room = roomRepository.findById(reviewRequestDto.getRoomId())
+                .orElseThrow(() -> new EntityNotFoundException("팀이 존재하지 않습니다: " + reviewRequestDto.getRoomId()));
 
         User reviewer = userRepository.findByUserId(reviewRequestDto.getReviewerId())
                 .orElseThrow(() -> new EntityNotFoundException("작성자 id가 존재하지 않습니다: " + reviewRequestDto.getReviewerId()));
@@ -33,13 +38,46 @@ public class ReviewServiceImpl implements ReviewService{
         User reviewedUser = userRepository.findByUserId(reviewRequestDto.getReviewedUserId())
                 .orElseThrow(() -> new EntityNotFoundException("리뷰 받는 사람 id가 존재하지 않습니다: " + reviewRequestDto.getReviewedUserId()));
 
-        //팀 현황이 확정일 경우에만 리뷰 작성 가능
-        if (Boolean.TRUE.equals(team.getStatus())) {
-            Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, team);
+        Contest contest = contestRepository.findById(reviewRequestDto.getContestId())
+                .orElseThrow(() -> new EntityNotFoundException(" 존재하지 않는 공모전 id: " + reviewRequestDto.getReviewedUserId()));
+
+        //팀 확정 상태인 경우만 리뷰 작성
+        if(room.getStatus()==true){
+            Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
             reviewRepository.save(review);
-        } else {
-            throw new TeamNotConfirmedException();
+        }else{
+            throw new NullPointerException("팀이 확정되지 않아 리뷰를 작성할 수 없습니다.");
         }
+
+//        //심사 기간에 ~ 없는 경우도 접수 기간으로
+//        if(contest.getDecisionPeriod() != null || !contest.getDecisionPeriod().contains("~")) {//심사기간
+//            String[] decisionPeriod = contest.getDecisionPeriod().split("~");
+//            String endDateString = decisionPeriod[1].trim();
+//
+//            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+//            LocalDate currentDate = LocalDate.now();
+//
+//            //심사 기간 마감일 경우에만 리뷰 작성
+//            if (currentDate.isAfter(endDate)) {
+//                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
+//                reviewRepository.save(review);
+//            } else {
+//                throw new ReviewSubmissionPeriodNotEndedException();
+//            }
+//        } else{//접수 기간
+//            String[] receptionPeriod = contest.getReceptionPeriod().split("~");
+//            String endDateString = receptionPeriod[1].trim();
+//            LocalDate endDate = LocalDate.parse(endDateString, DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+//            LocalDate currentDate = LocalDate.now();
+//
+//            if(currentDate.isAfter(endDate)) {
+//                Review review = reviewRequestDto.toEntity(reviewer, reviewedUser, room);
+//                reviewRepository.save(review);
+//            }else{
+//                throw new ReviewSubmissionPeriodNotEndedException(0);
+//            }
+//        }
+
     }
 
     @Override
@@ -75,7 +113,7 @@ public class ReviewServiceImpl implements ReviewService{
         reviewRequestDto.setRate(review.getRate());
         reviewRequestDto.setReviewerId(review.getReviewer().getUserId());
         reviewRequestDto.setReviewedUserId(review.getReviewedUser().getUserId());
-        reviewRequestDto.setTeamId(review.getTeam().getId());
+        reviewRequestDto.setRoomId(review.getRoom().getId());
 
         return reviewRequestDto;
     }

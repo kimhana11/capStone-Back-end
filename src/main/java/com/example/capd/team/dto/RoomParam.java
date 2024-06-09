@@ -1,16 +1,16 @@
 package com.example.capd.team.dto;
 
-import lombok.*;
+import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
-public class TeamParam {
+public class RoomParam
+{
 
     private Boolean status;
+    private String userId;
     private List<String> memberIds;
     private Long contestId;
-    private Long teamId;
+    private Long roomId;
 }

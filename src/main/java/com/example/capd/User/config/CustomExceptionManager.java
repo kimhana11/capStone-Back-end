@@ -34,8 +34,8 @@ public class CustomExceptionManager {
                 .message(e.getMessage()).build();
         return new ResponseEntity<>(res, res.getHttpStatus());
     }
-    @ExceptionHandler(TeamNotConfirmedException.class)
-    public ResponseEntity<CommonResponse> TeamNotException(TeamNotConfirmedException e) {
+    @ExceptionHandler(ReviewSubmissionPeriodNotEndedException.class)
+    public ResponseEntity<CommonResponse> ReviewNotException(ReviewSubmissionPeriodNotEndedException e) {
         CommonResponse res = CommonResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .httpStatus(HttpStatus.NOT_FOUND)

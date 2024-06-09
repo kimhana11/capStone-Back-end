@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인화면</title>
+</head>
+<body>
+<h1>엑셀 업로드 페이지~</h1>
+<p> 테이블 id값(기본키) 1부터 시작 안하면 에러남 주의 특히 공모전</p>
+<p> ALTER TABLE 테이블명 AUTO_INCREMENT = 1;</p>
+
+<h2>User Excel Upload</h2>
+<form th:action="@{/addUserExcel}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="업로드 !">
+</form>
+
+<h2>Profile Excel Upload</h2>
+<form th:action="@{/addProfileExcel}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="업로드 !">
+</form>
+
+<h2>Participation Excel Upload</h2>
+<form th:action="@{/addParticipationExcel}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="업로드 !">
+</form>
+
+<h2>Room Excel Upload</h2>
+<form th:action="@{/addRoomExcel}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="업로드 !">
+</form>
+
+<h2>Review Excel Upload</h2>
+<form th:action="@{/addReviewExcel}" method="POST" enctype="multipart/form-data">
+    <input type="file" name="file">
+    <input type="submit" value="업로드 !">
+</form>
+
+</body>
+</html>

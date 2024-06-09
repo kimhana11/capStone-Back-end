@@ -1,12 +1,16 @@
 package com.example.capd.User.controller;
 
 import com.example.capd.User.config.CommonResponse;
+import com.example.capd.User.dto.ContestDto;
 import com.example.capd.User.dto.ParticipationParam;
 import com.example.capd.User.service.ParticipationService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,5 +42,11 @@ public class ParticipationController {
                 null
         );
         return new ResponseEntity<>(res, res.getHttpStatus());
+    }
+
+    //참여 신청한 공모전 리스트
+    @GetMapping("/participation/{userId}")
+    public List<ContestDto> myContestList(@PathVariable String userId){
+        return participationService.myContestList(userId);
     }
 }
